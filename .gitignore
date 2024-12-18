@@ -37,4 +37,7 @@ app-example
 
 .idea
 
-.pnpm-lock.yaml
+pnpm-lock.yaml
+
+ios
+android
