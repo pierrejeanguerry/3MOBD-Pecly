@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import HighlightedWord from "./HighlightedWord";
 import styles from "./styles";
+import { Link } from "expo-router";
 
 interface SpecialityLabelProps {
   name: string;
@@ -13,15 +14,24 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
   emphasis,
 }) => {
   const words = name.split(" ");
-
+  const param: string = name;
   return (
     <View style={styles.container}>
-      {words.map((word, index) => (
-        <View key={index} style={styles.wordContainer}>
-          <HighlightedWord word={word} emphasis={emphasis} />
-          {index < words.length - 1 && <Text style={styles.normal}> </Text>}
-        </View>
-      ))}
+      <Link
+        href={{
+          pathname: "/(tabs)/(search)/[speciality]",
+          params: { speciality: param },
+        }}
+      >
+        <>
+          {words.map((word, index) => (
+            <View key={index} style={styles.wordContainer}>
+              <HighlightedWord word={word} emphasis={emphasis} />
+              {index < words.length - 1 && <Text style={styles.normal}> </Text>}
+            </View>
+          ))}
+        </>
+      </Link>
     </View>
   );
 };
