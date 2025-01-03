@@ -2,7 +2,7 @@ import styled, { css } from "styled-components/native";
 import { ButtonSize, ButtonStyleType } from "./Button.types";
 
 const sizes: Record<ButtonSize, string> = {
-  long: "width: 355px; height: 43px;",
+  long: "width: 355px; height: 43px;", // modifier les valeurs pour être plus responsive
   large: "width: 284px; height: 56px;",
   medium: "width: 175px; height: 50px;",
   small: "width: 129px; height: 58px;",
