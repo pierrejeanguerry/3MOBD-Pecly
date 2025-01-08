@@ -1,6 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
-import { StyleSheet, TextInput, TouchableHighlight, View } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 interface SearchbarProps {
   search: string;
@@ -17,9 +17,9 @@ const Searchbar: React.FC<SearchbarProps> = ({ search, setSearch }) => {
         value={search}
       />
       {search !== "" && (
-        <TouchableHighlight onPress={() => setSearch("")}>
+        <TouchableOpacity onPress={() => setSearch("")}>
           <FontAwesome size={28} name="close" />
-        </TouchableHighlight>
+        </TouchableOpacity>
       )}
     </View>
   );

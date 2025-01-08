@@ -1,11 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface SpecialistLabelProps {
   name: string;
@@ -26,12 +20,12 @@ const SpecialistLabel: React.FC<SpecialistLabelProps> = ({
   };
 
   return (
-    <TouchableHighlight style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => onPress()}>
       <>
         {icon ? (
-          <Image src={icon} />
+          <Image src={icon} style={styles.icon} />
         ) : (
-          <FontAwesome size={40} name="user" style={styles.icon} />
+          <FontAwesome size={45} name="user" style={styles.icon} />
         )}
         <View>
           <Text style={styles.text}>{name}</Text>
@@ -39,7 +33,7 @@ const SpecialistLabel: React.FC<SpecialistLabelProps> = ({
           <Text style={styles.text}>{city}</Text>
         </View>
       </>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 };
 
@@ -51,7 +45,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     textAlign: "center",
     borderRadius: 100,
-    width: 40,
+    width: 45,
   },
   container: {
     display: "flex",
