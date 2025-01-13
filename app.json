@@ -8,22 +8,27 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.x3MOBDPecly"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "googleServicesFile": "./android/app/."
       },
       "package": "com.anonymous.x3MOBDPecly"
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "static"
     },
     "plugins": [
       "expo-router",
+      "@react-native-firebase/app",
       [
         "expo-splash-screen",
         {
