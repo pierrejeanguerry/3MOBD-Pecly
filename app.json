@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "3MOBD-Pecly",
-    "slug": "3MOBD-Pecly",
+    "name": "Pecly",
+    "slug": "Pecly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,14 +13,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.x3MOBDPecly"
+      "bundleIdentifier": "com.anonymous.Pecly"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff",
-        "googleServicesFile": "./android/app/."
+        "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.x3MOBDPecly"
+      "package": "com.anonymous.Pecly"
     },
     "web": {
       "bundler": "metro",
