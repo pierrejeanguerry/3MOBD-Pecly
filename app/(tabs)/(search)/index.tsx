@@ -2,6 +2,7 @@ import Searchbar from "@/components/SearchBar";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import SpecialityLabel from "@/components/SpecialityLabel";
 import { useEffect, useState } from "react";
+import firestore from "@react-native-firebase/firestore";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 
 export default function SearchScreen() {
@@ -34,9 +35,20 @@ export default function SearchScreen() {
       speciality: "Pedopsychiatre",
     },
   ];
+
+  async function getCargivers() {
+    try {
+      const res = await firestore().collection("Caregivers").get();
+      console.log("res = ", res.docs);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   useEffect(() => {
     //requete à l'API avec la recherche
     // res donne specialityList et specialistList
+    getCargivers();
   }, [search]);
 
   return (
@@ -72,7 +84,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    marginTop: 100
+    marginTop: 100,
   },
   specialityContainer: {
     display: "flex",

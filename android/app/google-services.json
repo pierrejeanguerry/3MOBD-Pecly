@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "571479504388",
+    "project_id": "pecly-4a0c8",
+    "storage_bucket": "pecly-4a0c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571479504388:android:569cdca0213536da4ca751",
+        "android_client_info": {
+          "package_name": "com.anonymous.Pecly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChlR0MkT1ZnRW-iFL05Tq3WgfkWIdq-P4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
