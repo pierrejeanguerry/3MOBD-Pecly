@@ -22,7 +22,7 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
     <View style={styles.container}>
       <Link
         href={{
-          pathname: "/(tabs)/(search)/[speciality]",
+          pathname: "/(tabs)/search/[speciality]",
           params: { speciality: param },
         }}
       >

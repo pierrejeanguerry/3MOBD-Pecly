@@ -5,9 +5,14 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 interface SearchbarProps {
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: () => void;
 }
 
-const Searchbar: React.FC<SearchbarProps> = ({ search, setSearch }) => {
+const Searchbar: React.FC<SearchbarProps> = ({
+  search,
+  setSearch,
+  onSubmit,
+}) => {
   return (
     <View style={styles.container}>
       <FontAwesome style={styles.icon} size={28} name="search" />
@@ -15,6 +20,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ search, setSearch }) => {
         style={styles.input}
         onChangeText={(text) => setSearch(text)}
         value={search}
+        onSubmitEditing={onSubmit}
       />
       {search !== "" && (
         <TouchableOpacity onPress={() => setSearch("")}>
@@ -38,6 +44,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "white",
   },
   icon: {
     marginRight: 10,

@@ -2,7 +2,7 @@ import Searchbar from "@/components/SearchBar";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, Platform } from "react-native";
 import { useDebounce } from "@/hooks/useDebounce";
 import SpecialityLabel from "@/components/SpecialityLabel";
 
@@ -19,64 +19,65 @@ export default function SearchScreen() {
     icon: string;
   };
 
-  async function getCargivers() {
-    let slug = search.toLowerCase();
+  const getCargivers = async () => {
     if (!search) {
       setCaregiversList([]);
       setSpecialitiesList([]);
       return;
     }
+    const slug = search.toLowerCase();
     try {
-      const caregivers = await firestore()
-        .collection("Caregivers")
-        .where("lastname", ">=", slug)
-        .where("lastname", "<=", slug + "\uf8ff")
-        .get();
+      const [caregivers, specialities] = await Promise.all([
+        firestore()
+          .collection("Caregivers")
+          .where("lastname", ">=", slug)
+          .where("lastname", "<=", slug + "\uf8ff")
+          .get(),
+        firestore()
+          .collection("Specialities")
+          .where("speciality", ">=", slug)
+          .where("speciality", "<=", slug + "\uf8ff")
+          .get(),
+      ]);
 
-      const specialities = await firestore()
-        .collection("Specialities")
-        .where("speciality", ">=", slug)
-        .where("speciality", "<=", slug + "\uf8ff")
-        .get();
-
-      const caregiversData = caregivers.docs.map(
-        (doc) => doc.data() as Specialist
+      setCaregiversList(caregivers.docs.map((doc) => doc.data() as Specialist));
+      setSpecialitiesList(
+        specialities.docs.map((doc) => doc.data() as Speciality)
       );
-      setCaregiversList(caregiversData);
-
-      const specialitiesData = specialities.docs.map(
-        (doc) => doc.data() as Speciality
-      );
-      setSpecialitiesList(specialitiesData);
     } catch (e) {
       console.error(e);
     }
-  }
+  };
   const debouncedCaregivers = useDebounce(getCargivers, 500);
 
   useEffect(() => {
     debouncedCaregivers();
   }, [search]);
 
+  function onSubmit() {}
+
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.title}>Nom, spécialité, établissement, ... </Text>
-        <Searchbar search={search} setSearch={setSearch} />
-        {specialitiesList && (
+        <Searchbar search={search} setSearch={setSearch} onSubmit={onSubmit} />
+        {specialitiesList.length != 0 && (
           <FlatList
-            style={styles.specialityContainer}
+            style={styles.containerItem}
             data={specialitiesList}
             keyExtractor={(_, index) => index.toString()}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
             renderItem={({ item }) => (
               <SpecialityLabel name={item.speciality} emphasis={search} />
             )}
           />
         )}
-        {caregiversList && (
+        {caregiversList.length != 0 && (
           <FlatList
-            style={styles.caregiversContainer}
+            style={styles.containerItem}
             data={caregiversList}
+            keyExtractor={(_, index) => index.toString()}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
             renderItem={({ item }) => (
               <SpecialistLabel
                 name={item.name}
@@ -97,19 +98,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    marginTop: 100,
+    paddingTop: Platform.OS === "ios" ? 100 : 20,
+    backgroundColor: "#DFF3FF",
   },
-  specialityContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 5,
-  },
-  caregiversContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 3,
+
+  containerItem: {
+    marginTop: 10,
+    flexGrow: 0,
   },
   title: {
     fontWeight: "800",
+  },
+  separator: {
+    height: 15,
+    backgroundColor: "transparent",
   },
 });
