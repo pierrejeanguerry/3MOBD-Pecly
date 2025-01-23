@@ -13,6 +13,7 @@ export default function SearchScreen() {
 
   type Speciality = { speciality: string };
   type Specialist = {
+    id: string;
     name: string;
     speciality: string;
     city: string;
@@ -39,8 +40,14 @@ export default function SearchScreen() {
           .where("speciality", "<=", slug + "\uf8ff")
           .get(),
       ]);
-
-      setCaregiversList(caregivers.docs.map((doc) => doc.data() as Specialist));
+      const datas = caregivers.docs.map((doc) => {
+        const docData = doc.data() as Specialist;
+        return {
+          ...docData,
+          id: doc.ref.id,
+        };
+      });
+      setCaregiversList(datas);
       setSpecialitiesList(
         specialities.docs.map((doc) => doc.data() as Speciality)
       );
@@ -79,12 +86,7 @@ export default function SearchScreen() {
             keyExtractor={(_, index) => index.toString()}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             renderItem={({ item }) => (
-              <SpecialistLabel
-                name={item.name}
-                city={item.city}
-                icon={item.icon}
-                speciality={item.speciality}
-              />
+              <SpecialistLabel item={item} type="summarized" />
             )}
           />
         )}

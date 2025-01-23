@@ -8,9 +8,10 @@ export default function LocationScreen() {
   const { speciality, city } = useLocalSearchParams();
   const [caregiversList, setCaregiversList] = useState<Specialist[]>([]);
   type Specialist = {
+    id: string;
     name: string;
     speciality: string;
-    city: string;
+    address: string;
     icon: string;
   };
   const getCargivers = async () => {
@@ -26,7 +27,16 @@ export default function LocationScreen() {
         .where("city", "==", cityLowerCase)
         .where("speciality", "==", specialityLowerCase)
         .get();
-      setCaregiversList(data.docs.map((doc) => doc.data() as Specialist));
+
+      const caregivers = data.docs.map((doc) => {
+        const docData = doc.data() as Specialist;
+        return {
+          ...docData,
+          id: doc.ref.id,
+        };
+      });
+
+      setCaregiversList(caregivers);
     } catch (e) {
       console.error(e);
     }
@@ -43,12 +53,7 @@ export default function LocationScreen() {
           data={caregiversList}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item }) => (
-            <SpecialistLabel
-              name={item.name}
-              city={item.city}
-              icon={item.icon}
-              speciality={item.speciality}
-            />
+            <SpecialistLabel item={item} type="detailled" />
           )}
         />
       </View>
