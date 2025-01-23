@@ -2,35 +2,39 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LabelType } from "./Specialist.types";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useNextAvailability } from "@/hooks/useNextAvailability";
 
 interface SpecialistLabelProps {
   item: {
     id: string;
     name: string;
-    city?: string | null;
-    address?: string | null;
-    speciality: string;
+    address: {
+      city: string;
+      street: string;
+      postalCode: string;
+      country: string;
+    };
+    caregiverDetails: {
+      speciality: string;
+    };
     icon: string;
   };
   type: LabelType;
 }
 
-interface SpecialistLabelSummarizedProps {
+interface SpecialistLabelChildProps {
   item: {
+    id: string;
     name: string;
-    city?: string | null;
-    speciality: string;
-    icon: string;
-  };
-  onPress: () => void;
-}
-
-interface SpecialistLabelDetailledProps {
-  item: {
-    name: string;
-    address?: string | null;
-    speciality: string;
+    address: {
+      city: string;
+      street: string;
+      postalCode: string;
+      country: string;
+    };
+    caregiverDetails: {
+      speciality: string;
+    };
     icon: string;
   };
   onPress: () => void;
@@ -39,10 +43,6 @@ interface SpecialistLabelDetailledProps {
 const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
   const router = useRouter();
   const onPress = () => {
-    // call to api
-    // change screen
-    console.log(item.id);
-
     router.navigate(`/(tabs)/search/caregiver/${item.id}`);
   };
 
@@ -58,7 +58,7 @@ const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
   );
 };
 
-const SpecialistLabelSummarized: React.FC<SpecialistLabelSummarizedProps> = ({
+const SpecialistLabelSummarized: React.FC<SpecialistLabelChildProps> = ({
   item,
   onPress,
 }) => {
@@ -72,18 +72,19 @@ const SpecialistLabelSummarized: React.FC<SpecialistLabelSummarizedProps> = ({
         )}
         <View>
           <Text style={styles.text}>{item.name}</Text>
-          <Text style={styles.text}>{item.speciality}</Text>
-          <Text style={styles.text}>{item.city}</Text>
+          <Text style={styles.text}>{item.caregiverDetails.speciality}</Text>
+          <Text style={styles.text}>{item.address.city}</Text>
         </View>
       </>
     </TouchableOpacity>
   );
 };
 
-const SpecialistLabelDetailled: React.FC<SpecialistLabelDetailledProps> = ({
+const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
   item,
   onPress,
 }) => {
+  const { availability, loading, error } = useNextAvailability(item.id);
   return (
     <View style={styles.list}>
       <View style={styles.left}>
@@ -97,16 +98,31 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelDetailledProps> = ({
               )}
               <View>
                 <Text style={styles.text}>{item.name}</Text>
-                <Text style={styles.text}>{item.speciality}</Text>
-                <Text style={styles.text}>{item.address}</Text>
+                <Text style={styles.text}>
+                  {item.caregiverDetails.speciality}
+                </Text>
+                <Text style={styles.text}>{item.address.street},</Text>
+                <Text style={styles.text}>
+                  {item.address.postalCode} {item.address.city}
+                </Text>
               </View>
             </>
           </View>
         </TouchableOpacity>
       </View>
       <View style={styles.right}>
-        <Text>Disponibilité</Text>
-        <Text>date</Text>
+        {loading ? (
+          <Text>Chargement...</Text>
+        ) : error ? (
+          <Text>{error}</Text>
+        ) : availability ? (
+          <>
+            <Text>Prochaine disponibilité :</Text>
+            <Text style={styles.date}>{availability}</Text>
+          </>
+        ) : (
+          <Text>Aucune disponibilité trouvée.</Text>
+        )}
       </View>
     </View>
   );
@@ -135,12 +151,28 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    backgroundColor: "white",
+    borderRadius: 10,
+    gap: 10,
   },
   left: {
+    alignItems: "center",
+    justifyContent: "center",
     width: 250,
+    padding: 2,
   },
   right: {
+    alignItems: "center",
+    justifyContent: "center",
     width: 100,
+    borderLeftColor: "black",
+    borderStyle: "solid",
+    borderLeftWidth: 1,
+    padding: 2,
+  },
+  date: {
+    color: "blue",
+    textDecorationLine: "underline",
   },
 });
 

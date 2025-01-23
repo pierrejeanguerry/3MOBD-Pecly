@@ -10,8 +10,15 @@ export default function LocationScreen() {
   type Specialist = {
     id: string;
     name: string;
-    speciality: string;
-    address: string;
+    caregiverDetails: {
+      speciality: string;
+    };
+    address: {
+      city: string;
+      street: string;
+      postalCode: string;
+      country: string;
+    };
     icon: string;
   };
   const getCargivers = async () => {
@@ -23,10 +30,12 @@ export default function LocationScreen() {
         ? speciality[0].toLowerCase()
         : speciality.toLowerCase();
       const data = await firestore()
-        .collection("Caregivers")
-        .where("city", "==", cityLowerCase)
-        .where("speciality", "==", specialityLowerCase)
+        .collection("Users")
+        .where("role", "==", "caregiver")
+        .where("address.city", "==", cityLowerCase)
+        .where("caregiverDetails.speciality", "==", specialityLowerCase)
         .get();
+      console.log(data.docs);
 
       const caregivers = data.docs.map((doc) => {
         const docData = doc.data() as Specialist;
@@ -52,6 +61,7 @@ export default function LocationScreen() {
         <FlatList
           data={caregiversList}
           keyExtractor={(_, index) => index.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           renderItem={({ item }) => (
             <SpecialistLabel item={item} type="detailled" />
           )}
@@ -68,5 +78,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingTop: Platform.OS === "ios" ? 100 : 20,
     backgroundColor: "#DFF3FF",
+  },
+  separator: {
+    height: 10,
+    backgroundColor: "transparent",
   },
 });

@@ -15,8 +15,15 @@ export default function SearchScreen() {
   type Specialist = {
     id: string;
     name: string;
-    speciality: string;
-    city: string;
+    caregiverDetails: {
+      speciality: string;
+    };
+    address: {
+      city: string;
+      street: string;
+      postalCode: string;
+      country: string;
+    };
     icon: string;
   };
 
@@ -30,7 +37,8 @@ export default function SearchScreen() {
     try {
       const [caregivers, specialities] = await Promise.all([
         firestore()
-          .collection("Caregivers")
+          .collection("Users")
+          .where("role", "==", "caregiver")
           .where("lastname", ">=", slug)
           .where("lastname", "<=", slug + "\uf8ff")
           .get(),
