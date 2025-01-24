@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -9,13 +9,29 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Button from "@/components/Button";
-import { useCaregiver } from "@/hooks/useCaregiver";
+import { useCallback, useEffect } from "react";
+import { useCaregiver } from "@/contexts/caregiverContext";
+import { useAppointment } from "@/contexts/appointmentContext";
 
 export default function CaregiverScreen() {
   const { caregiver } = useLocalSearchParams();
   const caregiverId = Array.isArray(caregiver) ? caregiver[0] : caregiver;
-  const { data: caregiverData, loading, error } = useCaregiver(caregiverId);
+  const { caregiverData, loading, error, fetchCaregiver } = useCaregiver();
+  const { clearAppointmentData } = useAppointment();
+
   const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+      clearAppointmentData();
+
+      return () => clearAppointmentData();
+    }, [clearAppointmentData])
+  );
+
+  useEffect(() => {
+    fetchCaregiver(caregiverId);
+  }, [caregiverId]);
 
   if (loading) {
     return (
@@ -91,7 +107,7 @@ export default function CaregiverScreen() {
         {caregiverData.contact && (
           <View style={styles.block}>
             <Text style={styles.title}>
-              <FontAwesome name="user-md" size={18} /> CONTACTE
+              <FontAwesome name="user-md" size={18} /> CONTACT
             </Text>
             {caregiverData.contact.email && (
               <Text style={styles.text}>
