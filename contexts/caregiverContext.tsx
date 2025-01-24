@@ -45,8 +45,7 @@ export function CaregiverProvider({ children }: { children: ReactNode }) {
     try {
       const doc = await firestore().collection("Users").doc(id).get();
       if (doc.exists) {
-        setCaregiverData({ id: id } as CareData);
-        setCaregiverData(doc.data() as CareData);
+        setCaregiverData({ ...doc.data(), id } as CareData);
       } else {
         setError("Aucun praticien trouvé pour cet ID.");
       }

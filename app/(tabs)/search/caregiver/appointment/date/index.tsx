@@ -2,13 +2,15 @@ import DatePicker from "@/components/DatePicker";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { Stack } from "expo-router";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import { Availability, useAvailabilities } from "@/hooks/useAvailabilities";
+import { useEffect } from "react";
 
-export default function Date() {
+export default function DateSelect() {
   const { caregiverData } = useCaregiver();
+  const { availabilities } = useAvailabilities(caregiverData?.id);
 
-  const dates = [];
   return (
-    <View>
+    <>
       <Stack.Screen
         options={{
           title: `Dr ${caregiverData?.name}`,
@@ -18,20 +20,18 @@ export default function Date() {
       />
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>
-            Selectionnez le motif de la consultation
-          </Text>
-          {dates.length !== 0 && (
+          <Text style={styles.title}>Selectionnez la date de consultation</Text>
+          {availabilities.length > 0 && (
             <FlatList
-              data={caregiverData?.caregiverDetails.motives}
+              data={availabilities}
               keyExtractor={(_, index) => index.toString()}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({ item, index }) => <DatePicker />}
+              renderItem={({ item }) => <DatePicker data={item} />}
             />
           )}
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   separator: {
-    height: 5,
+    height: 10,
     backgroundColor: "transparent",
   },
   title: {
