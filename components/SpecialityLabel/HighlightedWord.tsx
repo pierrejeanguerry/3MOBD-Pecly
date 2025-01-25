@@ -4,28 +4,43 @@ import styles from "./styles";
 
 interface HighlightedWordProps {
   word: string;
-  emphasis: string;
+  emphasis: string[];
 }
 const HighlightedWord: React.FC<HighlightedWordProps> = ({
   word,
   emphasis,
 }) => {
-  const index = word.toLowerCase().indexOf(emphasis.toLowerCase());
-  if (index === -1) {
-    return <Text style={styles.normal}>{word}</Text>;
-  }
+  let currentWord = word;
+  const parts = [];
 
-  const before = word.substring(0, index);
-  const highlighted = word.substring(index, index + emphasis.length);
-  const after = word.substring(index + emphasis.length);
+  emphasis.forEach((em) => {
+    const index = currentWord.toLowerCase().indexOf(em.toLowerCase());
+    if (index !== -1) {
+      const before = currentWord.substring(0, index);
+      const highlighted = currentWord.substring(index, index + em.length);
+      const after = currentWord.substring(index + em.length);
 
-  return (
-    <Text>
-      <Text style={styles.normal}>{before}</Text>
-      <Text style={styles.emphasis}>{highlighted}</Text>
-      <Text style={styles.normal}>{after}</Text>
+      parts.push(
+        <Text style={styles.normal} key={`before-${em}`}>
+          {before}
+        </Text>
+      );
+      parts.push(
+        <Text style={styles.emphasis} key={`highlighted-${em}`}>
+          {highlighted}
+        </Text>
+      );
+      currentWord = after;
+    }
+  });
+
+  parts.push(
+    <Text style={styles.normal} key="remaining">
+      {currentWord}
     </Text>
   );
+
+  return <Text>{parts}</Text>;
 };
 
 export default HighlightedWord;
