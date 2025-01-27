@@ -38,7 +38,7 @@ export default function SearchScreen() {
       const [caregivers, specialities] = await Promise.all([
         firestore()
           .collection("Users")
-          .where("role", "==", "caregiver")
+          .where("isCaregiver", "==", true)
           .where("lastname", ">=", slug)
           .where("lastname", "<=", slug + "\uf8ff")
           .get(),

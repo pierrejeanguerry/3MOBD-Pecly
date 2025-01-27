@@ -48,7 +48,7 @@ export default function SpecialityScreen() {
     }
   }
 
-  if (errorMsg !== '') alert(errorMsg);
+  if (errorMsg !== "") alert(errorMsg);
 
   return (
     <View style={styles.container}>
@@ -61,9 +61,7 @@ export default function SpecialityScreen() {
             setSearch={setSearch}
             onSubmit={onSubmit}
           />
-          <TouchableHighlight
-            onPress={() => setGetLoc((prev) => (!prev))}
-          >
+          <TouchableHighlight onPress={() => setGetLoc((prev) => !prev)}>
             <View style={styles.location}>
               <FontAwesome size={28} name="location-arrow" />
               <Text>Autour de moi</Text>
@@ -80,6 +78,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: Platform.OS === "ios" ? 50 : 20,
     backgroundColor: "#DFF3FF",
+    flex: 1,
   },
 
   title: {
