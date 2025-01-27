@@ -48,6 +48,8 @@ export default function SpecialityScreen() {
     }
   }
 
+  if (errorMsg !== '') alert(errorMsg);
+
   return (
     <View style={styles.container}>
       <View>
@@ -60,7 +62,7 @@ export default function SpecialityScreen() {
             onSubmit={onSubmit}
           />
           <TouchableHighlight
-            onPress={() => setGetLoc((prev) => (prev ? false : true))}
+            onPress={() => setGetLoc((prev) => (!prev))}
           >
             <View style={styles.location}>
               <FontAwesome size={28} name="location-arrow" />
@@ -84,7 +86,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   location: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
