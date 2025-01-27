@@ -4,20 +4,24 @@ import {Link} from "expo-router";
 
 function onPress(): void {}
 
-export default function Tab() {
+export default function Account() {
     return (
         <View style={styles.container}>
 
-            <Text style={styles.titre}>Mon compte</Text>
-            <Text style={styles.description}>
-                Pecly est au service de votre santé et celle de vos proches
-            </Text>
+            <View style={styles.profileSection}>
+                <View style={styles.avatar}>
 
+                    <Image
+                        style={styles.avatarImage}
+                        source={{
+                            uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                        }}
+                    />
+                </View>
 
-            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}>Se connecter</Button>
-            <Text style={styles.signupText}>
-                Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>S’inscrire</Link>
-            </Text>
+                <Text style={styles.name}>Title Firstname FAMILYNAME</Text>
+                <Text style={styles.info}>Speciality</Text>
+            </View>
 
 
             <View style={styles.privacySection}>
@@ -41,27 +45,35 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#DFF3FF",
     },
-    titre: {
-        fontSize: 28,
+    profileSection: {
+        backgroundColor: "#3B74F2",
+        alignItems: "center",
+        paddingVertical: 30,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        overflow: "hidden",
+        marginBottom: 15,
+    },
+    avatarImage: {
+        width: "100%",
+        height: "100%",
+    },
+    name: {
+        fontSize: 18,
+        color: "#FFFFFF",
         fontWeight: "bold",
-        color: "#43193B",
     },
-    description: {
-        fontSize: 16,
-        textAlign: "center",
-        marginVertical: 20,
-        lineHeight: 22,
-        color: "#333",
-    },
-    signupText: {
-        textAlign: "center",
-        marginVertical: 10,
+    info: {
         fontSize: 14,
-        color: "#333",
-    },
-    signupLink: {
-        color: "#0A85EB",
-        fontWeight: "bold",
+        color: "#D9E6FF",
+        marginTop: 5,
     },
     privacySection: {
         marginTop: 30,
