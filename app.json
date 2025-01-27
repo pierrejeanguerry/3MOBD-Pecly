@@ -13,11 +13,16 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Pecly"
+      "bundleIdentifier": "com.anonymous.Pecly",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Nous avons besoin de votre localisation pour afficher les résultats autour de vous.",
+        "NSLocationAlwaysUsageDescription": "Nous avons besoin de votre localisation pour suivre votre position en continu."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "googleServicesFile": "./android/app/google-services.json"
       },
       "package": "com.anonymous.Pecly"
     },
@@ -33,12 +38,24 @@
         {
           "imageWidth": 200,
           "resizeMode": "contain",
+          "image": "./assets/images/splashscreen_logo.png",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Pecly to use your location"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      }
     }
   }
 }
