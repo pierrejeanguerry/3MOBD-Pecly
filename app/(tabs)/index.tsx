@@ -1,12 +1,33 @@
 import Button from "@/components/Button";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 
 export default function Tab() {
-  const { user, register, login, logout } = useAuth();
+  const { user, register, login, logout, CheckIsLogged } = useAuth();
   const [pass, setPass] = useState("");
   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    CheckIsLogged();
+  }, []);
+
+  const handleLogin = async (email: string, pass: string) => {
+    try {
+      await register(email, pass);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleRegister = async (email: string, pass: string) => {
+    try {
+      register(email, pass);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={user ? styles.logged : styles.notLogged}>
@@ -16,9 +37,9 @@ export default function Tab() {
       <TextInput style={styles.input} onChangeText={setEmail}></TextInput>
       <Text>Password</Text>
       <TextInput style={styles.input} onChangeText={setPass}></TextInput>
-      <Button onPress={() => login(email, pass)}>Login</Button>
+      <Button onPress={() => handleLogin(email, pass)}>Login</Button>
       <Button onPress={() => logout()}>Logout</Button>
-      <Button onPress={() => register(email, pass)}>Register</Button>
+      <Button onPress={() => handleRegister(email, pass)}>Register</Button>
     </View>
   );
 }

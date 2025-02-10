@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, ReactNode } from "react";
 import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface User {
   email: string;
@@ -11,6 +12,7 @@ interface AuthContextType {
   register: (email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  CheckIsLogged: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   const saltRounds = 10;
+  // bcrypt.setRandomFallback(require("crypto").randomBytes);
 
   const hashPassword = (password: string): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -56,7 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = async (email: string, password: string): Promise<void> => {
-    console.log("register");
+    if (!password || !email) throw new Error("Email or Passord empty");
+    if (password.length < 8) throw new Error("Password too small !");
 
     const querySnapshot = await firestore()
       .collection("Users")
@@ -65,22 +69,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!querySnapshot.empty) {
       throw new Error("L'utilisateur existe déjà");
     }
+
     let hashedPassword = "";
     hashPassword(password)
       .then((hash) => {
-        console.log("Mot de passe haché :", hash);
         hashedPassword = hash;
         firestore()
           .collection("Users")
           .add({ email: email, password: hashedPassword });
-        setUser({ email });
       })
       .catch((error) => {
         console.error("Erreur lors du hachage :", error);
       });
+    saveUser(email).catch((e) => {
+      throw e;
+    });
   };
 
   const login = async (email: string, password: string): Promise<void> => {
+    if (!password || !email) throw new Error("Email or Passord empty");
+    if (password.length < 8) throw new Error("Password too small !");
+
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
@@ -90,13 +99,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const userData = querySnapshot.docs[0].data();
-    comparePassword(password, userData.passworm)
+    comparePassword(password, userData.password)
       .then((isMatch) => {
         if (isMatch) {
-          console.log("Mot de passe correct !");
-          setUser({ email });
+          saveUser(email).catch((e) => {
+            throw e;
+          });
         } else {
-          console.log("Mot de passe incorrect !");
+          throw new Error("Wromg password");
         }
       })
       .catch((error) => {
@@ -104,12 +114,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
   };
 
+  const saveUser = async (email: string) => {
+    try {
+      await AsyncStorage.setItem("user", email);
+      setUser({ email: email });
+    } catch (error) {
+      console.error("Erreur lors de l’enregistrement", error);
+    }
+  };
+
+  const CheckIsLogged = async () => {
+    try {
+      const value = await AsyncStorage.getItem("user");
+      if (value !== null) setUser({ email: value });
+    } catch (error) {
+      console.error("Erreur lors de la récupération", error);
+    }
+  };
+
   const logout = (): void => {
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, register, login, logout, CheckIsLogged }}
+    >
       {children}
     </AuthContext.Provider>
   );
