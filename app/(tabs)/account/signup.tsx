@@ -2,28 +2,49 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
 import DatePicker from 'react-native-date-picker'
+import auth from "@react-native-firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+
 
 function onPress(): void {
 }
 
 
 export default function Signup() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const [gender, setGender] = useState("");
     const [date, setDate] = useState(new Date())
+
+    const handleRegister = async () => {
+        try {
+            await auth().createUserWithEmailAndPassword(email, password);
+            alert("Compte créé");
+            const navigation = useNavigation();
+            /*navigation.navigate("");*/
+        } catch (error: any) {
+            setError(error?.message || "erreur");
+        }
+    };
 
     return (
         <View style={styles.container}>
 
             <Text style={styles.titre}>Créer un compte</Text>
 
-            <Text style={styles.label}>Saisissez votre adresse email</Text>
+            <Text style={styles.label}>Saisissez votre adresse e-mail</Text>
             <TextInput style={styles.input} placeholder="adresse e-mail"
                        placeholderTextColor="#A9A9A9"
-                       keyboardType="email-address"/>
+                       keyboardType="email-address"
+                       value={email}
+                       onChangeText={setEmail}/>
 
             <Text style={styles.label}>Mot de passe</Text>
             <TextInput style={styles.input} placeholder="mot de passe..." placeholderTextColor="#A9A9A9"
-                       secureTextEntry={true}/>
+                       secureTextEntry={true}
+                       value={password}
+                       onChangeText={setPassword}/>
 
             <Text style={styles.label}>Sexe à l’état civil</Text>
             <View style={styles.genderContainer}>
@@ -50,14 +71,16 @@ export default function Signup() {
             </View>
 
             <Text style={styles.label}>Date de naissance</Text>
-            <DatePicker date={date} mode="date" onDateChange={setDate} />
+            <DatePicker date={date} mode="date" onDateChange={setDate}/>
 
 
             <Text style={styles.label}>Numéro de téléphone</Text>
             <TextInput style={styles.input} placeholder="06 00 00 00 00" placeholderTextColor="#A9A9A9"
                        keyboardType="phone-pad"/>
 
-            <Button size={"large"} styleType={"primary"} onPress={() => onPress}>Créer un compte</Button>
+            {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+
+            <Button size={"large"} styleType={"primary"} onPress={(handleRegister)}>Créer un compte</Button>
 
 
         </View>

@@ -2,7 +2,8 @@ import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import Button from "../../../components/Button/Button";
 import {Link} from "expo-router";
 
-function onPress(): void {}
+function onPress(): void {
+}
 
 export default function Tab() {
     return (
@@ -14,9 +15,10 @@ export default function Tab() {
             </Text>
 
 
-            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}>Se connecter</Button>
+            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}><Link href={"/(tabs)/account/login"}>Se connecter</Link></Button>
             <Text style={styles.signupText}>
-                Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>S’inscrire</Link>
+                Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"}
+                                                  style={styles.signupLink}>S’inscrire</Link>
             </Text>
 
 
@@ -24,8 +26,11 @@ export default function Tab() {
                 <TouchableOpacity style={styles.privacyOption}>
                     <Text style={styles.privacyOptionText}>Mes préférences</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.privacyOption}>
-                    <Text style={styles.privacyOptionText}>Informations légales</Text>
+                    <Text style={styles.privacyOptionText}>
+                        <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
+                    </Text>
                 </TouchableOpacity>
             </View>
 
