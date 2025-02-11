@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
 import DatePicker from 'react-native-date-picker'
-import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
 
@@ -17,16 +16,16 @@ export default function Signup() {
     const [gender, setGender] = useState("");
     const [date, setDate] = useState(new Date())
 
-    const handleRegister = async () => {
+    /*const handleRegister = async () => {
         try {
             await auth().createUserWithEmailAndPassword(email, password);
             alert("Compte créé");
             const navigation = useNavigation();
-            /*navigation.navigate("");*/
+            /*navigation.navigate("");
         } catch (error: any) {
             setError(error?.message || "erreur");
         }
-    };
+    }; */
 
     return (
         <View style={styles.container}>

@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
-import auth from "@react-native-firebase/auth";
 
 function onPress(): void {
 }
@@ -11,14 +10,14 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = async () => {
+   /* const handleLogin = async () => {
         try {
             await auth().signInWithEmailAndPassword(email, password);
             alert("connecté");
         } catch (error: any) {
             setError(error?.message || "erreur");
         }
-    };
+    }; */
 
     return (
         <View style={styles.container}>
