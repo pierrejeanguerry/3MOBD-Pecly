@@ -5,7 +5,44 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import nativeRNDatePicker from "react-native-date-picker/src/fabric/NativeRNDatePicker";
 
 interface User {
+  id: string;
+  address?: {
+    city?: string;
+    country?: string;
+    postalCode?: string;
+    street?: string;
+  };
+  caregiverDetails?: {
+    instruction?: string;
+    licenseNumber?: string;
+    motives?: string[];
+    paymentMeans?: {
+      card: boolean;
+      cash: boolean;
+      check: boolean;
+    };
+    presentation?: string;
+    price?: {
+      convention?: number;
+      prices?: {
+        price?: number;
+        title?: string;
+      }[];
+      thirdParty?: string;
+      vitalCard?: boolean;
+    };
+    speciality?: string;
+  };
+  contact?: {
+    email?: string;
+    phone?: string;
+  };
+  dateOfBirth?: string;
   email: string;
+  isCaregiver: boolean;
+  lastname?: string;
+  name?: string;
+  password: string;
 }
 
 interface AuthContextType {
@@ -71,6 +108,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw new Error("L'utilisateur existe déjà");
     }
 
+    const user: User = {
+      email: email,
+      password: password,
+      isCaregiver: false,
+      id: querySnapshot.docs[0].ref.id,
+    };
     let hashedPassword = "";
     hashPassword(password)
       .then((hash) => {
@@ -82,7 +125,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .catch((error) => {
         console.error("Erreur lors du hachage :", error);
       });
-    saveUser(email).catch((e) => {
+    saveUser(user).catch((e) => {
       throw e;
     });
   };
@@ -99,15 +142,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw new Error("Utilisateur non trouvé");
     }
 
-    const userData = querySnapshot.docs[0].data();
+    let userData: User = querySnapshot.docs[0].data() as User;
+    userData.id = querySnapshot.docs[0].ref.id;
     comparePassword(password, userData.password)
       .then((isMatch) => {
         if (isMatch) {
-          saveUser(email).catch((e) => {
+          saveUser(userData).catch((e) => {
             throw e;
           });
         } else {
-          throw new Error("Wromg password");
+          throw new Error("Wrong password");
         }
       })
       .catch((error) => {
@@ -115,10 +159,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
   };
 
-  const saveUser = async (email: string) => {
+  const saveUser = async (user: User) => {
     try {
-      await AsyncStorage.setItem("user", email);
-      setUser({ email: email });
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+      console.log(user);
     } catch (error) {
       console.error("Erreur lors de l’enregistrement", error);
     }
@@ -126,8 +171,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const CheckIsLogged = async () => {
     try {
-      const value = await AsyncStorage.getItem("user");
-      if (value !== null) setUser({ email: value });
+      const user = await AsyncStorage.getItem("user");
+      console.log(user);
+
+      if (user !== null) setUser(JSON.parse(user));
     } catch (error) {
       console.error("Erreur lors de la récupération", error);
     }
