@@ -12,7 +12,7 @@ interface AuthContextType {
   user: User | null;
   register: (email: string, password: string, gender: string, lastName: string, firstName: string, date: Date, phone: string ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   CheckIsLogged: () => void;
 }
 
@@ -133,11 +133,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = (): void => {
+  const logout = async (): Promise<void> => {
+    console.log("Logout");
+    await AsyncStorage.removeItem("user");
     setUser(null);
-    (async () => {
-      await AsyncStorage.removeItem("user");
-    })()
   };
 
   return (

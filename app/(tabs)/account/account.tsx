@@ -1,11 +1,17 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import Button from "../../../components/Button/Button";
 import {Link} from "expo-router";
+import {useAuth} from "@/hooks/useAuth";
 
-function onPress(): void {
-}
+
 
 export default function Account() {
+    const {logout, user} = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+    }
+
     return (
         <View style={styles.container}>
 
@@ -27,7 +33,7 @@ export default function Account() {
                 </TouchableOpacity>
             </View>
 
-            <Button size={"medium"} styleType={"danger"} onPress={() => onPress}>Se déconnecter</Button>
+            <Button size={"medium"} styleType={"danger"} onPress={handleLogout}>Se déconnecter</Button>
 
 
         </View>

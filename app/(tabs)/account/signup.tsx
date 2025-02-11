@@ -3,12 +3,6 @@ import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native"
 import Button from "../../../components/Button/Button";
 import DatePicker from 'react-native-date-picker'
 import {useAuth} from "@/hooks/useAuth";
-import { useRouter } from "expo-router";
-
-
-
-function onPress(): void {
-}
 
 
 export default function Signup() {
@@ -20,17 +14,8 @@ export default function Signup() {
     const [firstName, setFirstName] = useState("");
     const [date, setDate] = useState(new Date())
     const [phone, setPhone] = useState("")
-    const router = useRouter();
 
-    useEffect(() => {
-        CheckIsLogged();
-    }, []);
 
-    useEffect(() => {
-        if (user) {
-            router.replace("/(tabs)/account/account");
-        }
-    }, [user]);
 
     const handleRegister = async (email: string, pass: string, gender: string, lastName: string, firstName: string, date: Date, phone: string) => {
         try {

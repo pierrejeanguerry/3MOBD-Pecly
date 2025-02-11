@@ -2,14 +2,26 @@ import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import Button from "../../../components/Button/Button";
 import {Link} from "expo-router";
 import {useEffect} from "react";
-import { useAuth } from "@/hooks/useAuth";
+import {useAuth} from "@/hooks/useAuth";
+import {useRouter} from "expo-router";
 
 
 function onPress(): void {
 }
 
 export default function Tab() {
+    const {user, register, login, CheckIsLogged} = useAuth();
+    const router = useRouter();
 
+    useEffect(() => {
+        CheckIsLogged();
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            router.replace("/(tabs)/account/account");
+        }
+    }, [user]);
 
     return (
         <View style={styles.container}>
@@ -20,7 +32,8 @@ export default function Tab() {
             </Text>
 
 
-            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}><Link href={"/(tabs)/account/login"}>Se connecter</Link></Button>
+            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}><Link href={"/(tabs)/account/login"}>Se
+                connecter</Link></Button>
             <Text style={styles.signupText}>
                 Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"}
                                                   style={styles.signupLink}>S’inscrire</Link>
