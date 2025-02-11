@@ -1,4 +1,4 @@
-import DatePicker from "@/components/DatePicker";
+import AppointmentPicker from "@/components/AppointmentPicker";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { Stack } from "expo-router";
 import { View, Text, FlatList, StyleSheet } from "react-native";
@@ -26,7 +26,7 @@ export default function DateSelect() {
               data={availabilities}
               keyExtractor={(_, index) => index.toString()}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({ item }) => <DatePicker data={item} />}
+              renderItem={({ item }) => <AppointmentPicker data={item} />}
             />
           )}
         </View>
