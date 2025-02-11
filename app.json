@@ -14,7 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.Pecly",
-      "googleServicesFile": "./ios/3MOBDPecly/GoogleService-Info.plist",
+      "googleServicesFile": "./ios/Pecly/GoogleService-Info.plist",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Nous avons besoin de votre localisation pour afficher les résultats autour de vous.",
         "NSLocationAlwaysUsageDescription": "Nous avons besoin de votre localisation pour suivre votre position en continu."
