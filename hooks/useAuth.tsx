@@ -135,6 +135,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = (): void => {
     setUser(null);
+    (async () => {
+      await AsyncStorage.removeItem("user");
+    })()
   };
 
   return (
