@@ -9,19 +9,22 @@ import {useEffect} from "react";
 export default function Account() {
     const {logout, user} = useAuth();
     const router = useRouter();
+    //const [birthday, setBirthday] = useState(new Date(user?.dateOfBirth.));
 
     const handleLogout = async () => {
         await logout();
         router.replace("../account/");
     }
 
+
+
     return (
         <View style={styles.container}>
 
             <View style={styles.profileSection}>
 
-                <Text style={styles.name}>{user?.name}</Text>
-                <Text style={styles.info}>Date de naissance</Text>
+                <Text style={styles.name}>{user?.firstName} {user?.lastName}</Text>
+                <Text style={styles.info}>{user?.date}</Text>
             </View>
 
 

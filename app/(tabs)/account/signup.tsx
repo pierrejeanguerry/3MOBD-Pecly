@@ -12,14 +12,18 @@ export default function Signup() {
     const [gender, setGender] = useState("");
     const [lastName, setLastName] = useState("");
     const [firstName, setFirstName] = useState("");
-    const [date, setDate] = useState(new Date())
+    const [date, setDate] = useState<Date>(new Date())
     const [phone, setPhone] = useState("")
 
-
+    const handleDateChange = (newDate : any) => {
+        console.log(typeof newDate);
+        const dateOfBirth : Date = new Date(newDate.seconds as number);
+        setDate(dateOfBirth);
+    }
 
     const handleRegister = async (email: string, pass: string, gender: string, lastName: string, firstName: string, date: Date, phone: string) => {
         try {
-            await register(email, pass, gender, lastName, firstName, date, phone);
+            await register(email, pass, gender, lastName, firstName, date.toDateString(), phone);
         } catch (e) {
             console.error(e);
         }
@@ -73,7 +77,7 @@ export default function Signup() {
             </View>
 
             <Text style={styles.label}>Date de naissance</Text>
-            <DatePicker date={date} mode="date" onDateChange={setDate}/>
+            <DatePicker date={date} mode="date" onDateChange={handleDateChange}/>
 
 
             <Text style={styles.label}>Numéro de téléphone</Text>

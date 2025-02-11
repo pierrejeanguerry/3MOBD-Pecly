@@ -47,7 +47,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  register: (email: string, password: string, gender: string, lastName: string, firstName: string, date: Date, phone: string ) => Promise<void>;
+  register: (email: string, password: string, gender: string, lastName: string, firstName: string, dateOfBirth: string, phone: string ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   CheckIsLogged: () => void;
@@ -96,8 +96,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const register = async (email: string, password: string, gender: string, lastName: string, firstName: string, date : Date, phone: string): Promise<void> => {
-    if (!password || !email || !gender || !lastName || !firstName || !date || !phone) throw new Error("Something is empty");
+  const register = async (email: string, password: string, gender: string, lastName: string, firstName: string, dateOfBirth : string, phone: string): Promise<void> => {
+    if (!password || !email || !gender || !lastName || !firstName || !dateOfBirth || !phone) throw new Error("Something is empty");
     if (password.length < 8) throw new Error("Password too small !");
 
     const querySnapshot = await firestore()
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         hashedPassword = hash;
         firestore()
           .collection("Users")
-          .add({ email: email, password: hashedPassword, gender: gender, lastName: lastName, firstName: firstName, date: date, phone: phone });
+          .add({ email: email, password: hashedPassword, gender: gender, lastName: lastName, firstName: firstName, dateOfBirth: dateOfBirth, phone: phone });
       })
       .catch((error) => {
         console.error("Erreur lors du hachage :", error);
