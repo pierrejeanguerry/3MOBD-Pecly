@@ -23,7 +23,6 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
-        "googleServicesFile": "./android/app/google-services.json"
       },
       "package": "com.anonymous.Pecly",
       "googleServicesFile":"./android/app/google-services.json"
