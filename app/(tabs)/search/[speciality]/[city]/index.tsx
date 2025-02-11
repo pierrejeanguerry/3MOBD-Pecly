@@ -31,7 +31,7 @@ export default function LocationScreen() {
         : speciality.toLowerCase();
       const data = await firestore()
         .collection("Users")
-        .where("role", "==", "caregiver")
+        .where("isCaregiver", '==', true)
         .where("address.city", "==", cityLowerCase)
         .where("caregiverDetails.speciality", "==", specialityLowerCase)
         .get();
