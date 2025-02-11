@@ -41,7 +41,7 @@ interface User {
   email: string;
   isCaregiver: boolean;
   lastname?: string;
-  name?: string;
+  firstname?: string;
   password: string;
 }
 
@@ -96,18 +96,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+<<<<<<< HEAD
   const register = async (email: string, password: string, gender: string, lastName: string, firstName: string, date : Date, phone: string): Promise<void> => {
     if (!password || !email || !gender || !lastName || !firstName || !date || !phone) throw new Error("Something is empty");
+=======
+  const register = async (email: string, password: string): Promise<void> => {
+    if (!email || !password) throw new Error("Email or Password empty");
+>>>>>>> caf6f70 (fix register)
     if (password.length < 8) throw new Error("Password too small !");
 
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
       .get();
-    if (!querySnapshot.empty) {
-      throw new Error("L'utilisateur existe déjà");
-    }
+    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
 
+<<<<<<< HEAD
     const user: User = {
       email: email,
       password: password,
@@ -128,6 +132,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     saveUser(user).catch((e) => {
       throw e;
     });
+=======
+    try {
+      const hash = await hashPassword(password);
+      const userRef = await firestore()
+        .collection("Users")
+        .add({ email, password: hash, isCaregiver: false });
+
+      saveUser({ id: userRef.id, email, password: hash, isCaregiver: false });
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement :", error);
+    }
+>>>>>>> caf6f70 (fix register)
   };
 
   const login = async (email: string, password: string): Promise<void> => {
@@ -162,8 +178,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const saveUser = async (user: User) => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
+      console.log("user = ", user);
+
       setUser(user);
-      console.log(user);
     } catch (error) {
       console.error("Erreur lors de l’enregistrement", error);
     }
