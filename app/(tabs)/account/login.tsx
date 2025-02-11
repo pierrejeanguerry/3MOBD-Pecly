@@ -10,15 +10,19 @@ export default function Login() {
     const {user, login, CheckIsLogged} = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
     const handleLogin = async (email: string, pass: string) => {
         try {
+            setLoading(true);
             await login(email, pass);
+            setLoading(false);
         } catch (e) {
             console.error(e);
         }
     };
+
 
     return (
         <View style={styles.container}>
@@ -39,7 +43,8 @@ export default function Login() {
                        onChangeText={setPass}/>
 
 
-            <Button size={"large"} styleType={"primary"} onPress={() => handleLogin(email, pass)}>Créer un compte</Button>
+            <Button size={"large"} styleType={"primary"} onPress={() => handleLogin(email, pass)}>Se connecter</Button>
+            {loading && <Text style={{color:'green'}}>Connexion...</Text>}
 
 
         </View>

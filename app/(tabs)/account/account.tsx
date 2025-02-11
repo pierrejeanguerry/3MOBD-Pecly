@@ -1,15 +1,18 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import Button from "../../../components/Button/Button";
-import {Link} from "expo-router";
+import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
+import {useEffect} from "react";
 
 
 
 export default function Account() {
     const {logout, user} = useAuth();
+    const router = useRouter();
 
     const handleLogout = async () => {
         await logout();
+        router.replace("../account/");
     }
 
     return (
@@ -17,7 +20,7 @@ export default function Account() {
 
             <View style={styles.profileSection}>
 
-                <Text style={styles.name}>Title Firstname FAMILYNAME</Text>
+                <Text style={styles.name}>{user?.name}</Text>
                 <Text style={styles.info}>Date de naissance</Text>
             </View>
 
