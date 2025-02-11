@@ -2,6 +2,7 @@ import { useState, createContext, useContext, ReactNode } from "react";
 import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import nativeRNDatePicker from "react-native-date-picker/src/fabric/NativeRNDatePicker";
 
 interface User {
   email: string;
@@ -9,7 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, gender: string, lastName: string, firstName: string, date: Date, phone: string ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   CheckIsLogged: () => void;
@@ -58,8 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const register = async (email: string, password: string): Promise<void> => {
-    if (!password || !email) throw new Error("Email or Passord empty");
+  const register = async (email: string, password: string, gender: string, lastName: string, firstName: string, date : Date, phone: string): Promise<void> => {
+    if (!password || !email || !gender || !lastName || !firstName || !date || !phone) throw new Error("Something is empty");
     if (password.length < 8) throw new Error("Password too small !");
 
     const querySnapshot = await firestore()
@@ -76,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         hashedPassword = hash;
         firestore()
           .collection("Users")
-          .add({ email: email, password: hashedPassword });
+          .add({ email: email, password: hashedPassword, gender: gender, lastName: lastName, firstName: firstName, date: date, phone: phone });
       })
       .catch((error) => {
         console.error("Erreur lors du hachage :", error);

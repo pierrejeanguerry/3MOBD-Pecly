@@ -1,8 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
 import DatePicker from 'react-native-date-picker'
-import { useNavigation } from "@react-navigation/native";
+import {useAuth} from "@/hooks/useAuth";
+import { useRouter } from "expo-router";
+
 
 
 function onPress(): void {
@@ -10,22 +12,33 @@ function onPress(): void {
 
 
 export default function Signup() {
+    const {user, register, login, CheckIsLogged} = useAuth();
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [pass, setPass] = useState("");
     const [gender, setGender] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [firstName, setFirstName] = useState("");
     const [date, setDate] = useState(new Date())
+    const [phone, setPhone] = useState("")
+    const router = useRouter();
 
-    /*const handleRegister = async () => {
-        try {
-            await auth().createUserWithEmailAndPassword(email, password);
-            alert("Compte créé");
-            const navigation = useNavigation();
-            /*navigation.navigate("");
-        } catch (error: any) {
-            setError(error?.message || "erreur");
+    useEffect(() => {
+        CheckIsLogged();
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            router.replace("/(tabs)/account/account");
         }
-    }; */
+    }, [user]);
+
+    const handleRegister = async (email: string, pass: string, gender: string, lastName: string, firstName: string, date: Date, phone: string) => {
+        try {
+            await register(email, pass, gender, lastName, firstName, date, phone);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -42,8 +55,8 @@ export default function Signup() {
             <Text style={styles.label}>Mot de passe</Text>
             <TextInput style={styles.input} placeholder="mot de passe..." placeholderTextColor="#A9A9A9"
                        secureTextEntry={true}
-                       value={password}
-                       onChangeText={setPassword}/>
+                       value={pass}
+                       onChangeText={setPass}/>
 
             <Text style={styles.label}>Sexe à l’état civil</Text>
             <View style={styles.genderContainer}>
@@ -64,9 +77,14 @@ export default function Signup() {
             <Text style={styles.label}>Nom et Prénom</Text>
             <View style={styles.nameContainer}>
                 <TextInput style={[styles.input, styles.nameInput]} placeholder="Nom..."
-                           placeholderTextColor="#A9A9A9"/>
+                           placeholderTextColor="#A9A9A9"
+                           value={lastName}
+                           onChangeText={setLastName}/>
+
                 <TextInput style={[styles.input, styles.nameInput]} placeholder="Prénom..."
-                           placeholderTextColor="#A9A9A9"/>
+                           placeholderTextColor="#A9A9A9"
+                           value={firstName}
+                           onChangeText={setFirstName}/>
             </View>
 
             <Text style={styles.label}>Date de naissance</Text>
@@ -75,11 +93,15 @@ export default function Signup() {
 
             <Text style={styles.label}>Numéro de téléphone</Text>
             <TextInput style={styles.input} placeholder="06 00 00 00 00" placeholderTextColor="#A9A9A9"
-                       keyboardType="phone-pad"/>
+                       keyboardType="phone-pad"
+                       value={phone}
+                       onChangeText={setPhone}/>
 
-            {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-            <Button size={"large"} styleType={"primary"} onPress={(handleRegister)}>Créer un compte</Button>
+            <Button size={"large"} styleType={"primary"}
+                    onPress={() => handleRegister(email, pass, gender, lastName, firstName, date, phone)}>Créer
+                un compte</Button>
+
 
 
         </View>

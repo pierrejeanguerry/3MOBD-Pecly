@@ -2,25 +2,17 @@ import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import Button from "../../../components/Button/Button";
 import {Link} from "expo-router";
 
-function onPress(): void {}
+function onPress(): void {
+}
 
 export default function Account() {
     return (
         <View style={styles.container}>
 
             <View style={styles.profileSection}>
-                <View style={styles.avatar}>
-
-                    <Image
-                        style={styles.avatarImage}
-                        source={{
-                            uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                        }}
-                    />
-                </View>
 
                 <Text style={styles.name}>Title Firstname FAMILYNAME</Text>
-                <Text style={styles.info}>Speciality</Text>
+                <Text style={styles.info}>Date de naissance</Text>
             </View>
 
 
@@ -29,9 +21,13 @@ export default function Account() {
                     <Text style={styles.privacyOptionText}>Mes préférences</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.privacyOption}>
-                    <Text style={styles.privacyOptionText}>Informations légales</Text>
+                    <Text style={styles.privacyOptionText}> <Link href={"/(tabs)/account/infos"}>Informations
+                        légales </Link>
+                    </Text>
                 </TouchableOpacity>
             </View>
+
+            <Button size={"medium"} styleType={"danger"} onPress={() => onPress}>Se déconnecter</Button>
 
 
         </View>
@@ -48,9 +44,8 @@ const styles = StyleSheet.create({
     profileSection: {
         backgroundColor: "#3B74F2",
         alignItems: "center",
-        paddingVertical: 30,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        padding: 30,
+        borderRadius: 20,
     },
     avatar: {
         width: 100,
@@ -76,7 +71,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     privacySection: {
-        marginTop: 30,
+        margin: 30,
     },
     privacyOption: {
         backgroundColor: "#FFFFFF",

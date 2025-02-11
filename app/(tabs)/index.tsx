@@ -14,7 +14,7 @@ export default function Tab() {
 
   const handleLogin = async (email: string, pass: string) => {
     try {
-      await register(email, pass);
+      await login(email, pass);
     } catch (e) {
       console.error(e);
     }

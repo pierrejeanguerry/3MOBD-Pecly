@@ -1,23 +1,24 @@
 import React, {useState} from "react";
 import {View, Text, StyleSheet, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
+import {useAuth} from "@/hooks/useAuth";
 
 function onPress(): void {
 }
 
 export default function Login() {
+    const {user, login, CheckIsLogged} = useAuth();
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [pass, setPass] = useState("");
 
-   /* const handleLogin = async () => {
+
+    const handleLogin = async (email: string, pass: string) => {
         try {
-            await auth().signInWithEmailAndPassword(email, password);
-            alert("connecté");
-        } catch (error: any) {
-            setError(error?.message || "erreur");
+            await login(email, pass);
+        } catch (e) {
+            console.error(e);
         }
-    }; */
+    };
 
     return (
         <View style={styles.container}>
@@ -34,12 +35,11 @@ export default function Login() {
             <Text style={styles.label}>Mot de passe</Text>
             <TextInput style={styles.input} placeholder="Mot de passe..." placeholderTextColor="#A9A9A9"
                        secureTextEntry={true}
-                       value={password}
-                       onChangeText={setPassword}/>
+                       value={pass}
+                       onChangeText={setPass}/>
 
-            {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-            <Button size={"large"} styleType={"primary"} onPress={(handleLogin)}>Créer un compte</Button>
+            <Button size={"large"} styleType={"primary"} onPress={() => handleLogin(email, pass)}>Créer un compte</Button>
 
 
         </View>
