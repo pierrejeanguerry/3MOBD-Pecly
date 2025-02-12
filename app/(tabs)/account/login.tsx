@@ -8,7 +8,7 @@ function onPress(): void {
 }
 
 export default function Login() {
-    const {user, login, checkIsLogged} = useAuth();
+    const {login, checkIsLogged} = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [loading, setLoading] = useState(false);

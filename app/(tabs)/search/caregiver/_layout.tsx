@@ -8,11 +8,11 @@ export default function CaregiverLayout() {
       <AppointmentProvider>
         <Stack>
           <Stack.Screen
-            name="[caregiver]"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: "#34659A" },
-            }}
+              name="[caregiver]"
+              options={{
+                  title: "",
+                  headerStyle: { backgroundColor: "#34659A" },
+              }}
           />
         </Stack>
       </AppointmentProvider>

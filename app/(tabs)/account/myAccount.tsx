@@ -2,14 +2,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
 
 export default function MyAccount() {
-  const { logout, user, checkIsLogged } = useAuth();
+  const { logout, user } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logout();
+    if (await logout())
     router.replace("../account/");
   };
 
