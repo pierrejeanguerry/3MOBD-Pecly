@@ -34,7 +34,6 @@ export default function CaregiverScreen() {
 
   useEffect(() => {
     fetchCaregiver(caregiverId);
-    console.log(caregiverData);
   }, [caregiverId]);
 
   if (loading) return <Loader />;

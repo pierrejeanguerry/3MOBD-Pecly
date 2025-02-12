@@ -31,11 +31,10 @@ export default function LocationScreen() {
         : speciality.toLowerCase();
       const data = await firestore()
         .collection("Users")
-        .where("isCaregiver", '==', true)
+        .where("isCaregiver", "==", true)
         .where("address.city", "==", cityLowerCase)
         .where("caregiverDetails.speciality", "==", specialityLowerCase)
         .get();
-      console.log(data.docs);
 
       const caregivers = data.docs.map((doc) => {
         const docData = doc.data() as Specialist;
