@@ -18,6 +18,7 @@ type CareData = {
     speciality: string;
     presentation: string;
     motives: string[];
+    mustBeReferred: boolean;
   };
 };
 

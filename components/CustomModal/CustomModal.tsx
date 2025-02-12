@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
   },
@@ -93,10 +93,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   small: {
-    height: 200,
+    height: 300,
   },
   medium: {
-    height: 400,
+    height: 500,
   },
   long: {
     height: "95%",
