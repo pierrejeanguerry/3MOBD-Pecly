@@ -2,22 +2,20 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
 
 export default function MyAccount() {
   const { logout, user } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logout();
+    if (await logout())
     router.replace("../account/");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.name}>{user?.firstname}</Text>
-        <Text style={styles.info}>Date de naissance</Text>
+        <Text style={styles.name}>{user?.firstname} {user?.lastname}</Text>
       </View>
 
       <View style={styles.privacySection}>

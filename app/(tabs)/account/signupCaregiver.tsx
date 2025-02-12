@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     View,
     Text,
@@ -7,30 +7,29 @@ import {
     TextInput,
 } from "react-native";
 import Button from "../../../components/Button/Button";
-import DatePicker from "react-native-date-picker";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SignupCaregiver() {
-    const { user, registerCaregiver, CheckIsLogged } = useAuth();
+    const { user, registerCaregiver, checkIsLogged } = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [lastName, setLastName] = useState("");
     const [firstName, setFirstName] = useState("");
-    const [date, setDate] = useState(new Date());
     const [phone, setPhone] = useState("");
     const [licenseNumber, setLicenseNumber] = useState("");
+    const [gender, setGender] = useState("");
 
     const handleRegisterCaregiver = async (
         email: string,
         pass: string,
         lastName: string,
         firstName: string,
-        date: Date,
         phone: string,
-        licenseNumber: string
+        licenseNumber: string,
+        gender: string
     ) => {
         try {
-            await registerCaregiver(email, pass, lastName, firstName, date, phone, licenseNumber);
+            await registerCaregiver(email, pass, lastName, firstName, phone, licenseNumber, gender);
         } catch (e) {
             console.error(e);
         }
@@ -80,8 +79,26 @@ export default function SignupCaregiver() {
                 />
             </View>
 
-            <Text style={styles.label}>Date de naissance</Text>
-            <DatePicker date={date} mode="date" onDateChange={setDate} />
+            <View style={styles.genderContainer}>
+                <TouchableOpacity
+                    style={[
+                        styles.genderButton,
+                        gender === "Féminin" && styles.genderButtonSelected,
+                    ]}
+                    onPress={() => setGender("Féminin")}
+                >
+                    <Text style={styles.genderText}>Féminin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.genderButton,
+                        gender === "Masculin" && styles.genderButtonSelected,
+                    ]}
+                    onPress={() => setGender("Masculin")}
+                >
+                    <Text style={styles.genderText}>Masculin</Text>
+                </TouchableOpacity>
+            </View>
 
             <Text style={styles.label}>Numéro de téléphone</Text>
             <TextInput
@@ -107,7 +124,7 @@ export default function SignupCaregiver() {
                 size={"large"}
                 styleType={"primary"}
                 onPress={() =>
-                    handleRegisterCaregiver(email, pass, lastName, firstName, date, phone, licenseNumber)
+                    handleRegisterCaregiver(email, pass, lastName, firstName, phone, licenseNumber, gender)
                 }
             >
                 Créer un compte
@@ -155,5 +172,30 @@ const styles = StyleSheet.create({
     nameInput: {
         flex: 1,
         marginHorizontal: 5,
+    },
+    genderContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 10,
+    },
+    genderButton: {
+        flex: 1,
+        backgroundColor: "#FFF",
+        padding: 15,
+        borderRadius: 10,
+        marginHorizontal: 5,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+        elevation: 2,
+    },
+    genderButtonSelected: {
+        backgroundColor: "#007BFF",
+    },
+    genderText: {
+        fontSize: 14,
+        color: "#333",
     },
 });

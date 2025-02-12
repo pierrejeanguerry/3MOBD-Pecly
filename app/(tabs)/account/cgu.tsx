@@ -1,9 +1,6 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 
 
-function onPress(): void {
-}
-
 export default function Cgu() {
     return (
         <View style={styles.container}>

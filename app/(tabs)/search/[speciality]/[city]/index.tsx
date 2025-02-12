@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Platform, StyleSheet, Text, View } from "react-native";
+import { FlatList, Platform, StyleSheet, View } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import SpecialistLabel from "@/components/SpecialistLabel";
 
