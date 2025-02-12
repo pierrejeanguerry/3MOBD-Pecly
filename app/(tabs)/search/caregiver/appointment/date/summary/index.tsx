@@ -9,6 +9,7 @@ import { useCaregiver } from "@/contexts/caregiverContext";
 import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
+import Login from "@/app/(tabs)/account/login";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -35,7 +36,7 @@ export default function Summary() {
     {
       title: "Adresse",
       value: caregiverData?.address
-        ? `${caregiverData.address.street}\n ${caregiverData.address.postalCode} ${caregiverData.address.city}`
+        ? `${caregiverData.address.street}\n${caregiverData.address.postalCode}, ${caregiverData.address.city}`
         : null,
     },
   ].filter((condition) => condition.value !== null);
@@ -58,7 +59,11 @@ export default function Summary() {
   }
 
   async function handlePress() {
-    if (!user || !appointmentData)
+    if (!user) {
+      router.push("/account/login");
+      return;
+    }
+    if (!appointmentData)
       throw new Error("User not logged in, or data problemes");
     if (!appointmentData.dateTime) return;
     const date = appointmentData.dateTime?.toDate();
