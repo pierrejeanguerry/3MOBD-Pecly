@@ -23,7 +23,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="appointment"
+        name="myAppointment"
         options={{
           title: "Rendez-vous",
           tabBarIcon: ({ color }) => (
