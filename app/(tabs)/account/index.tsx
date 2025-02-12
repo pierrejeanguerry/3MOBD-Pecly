@@ -42,6 +42,15 @@ export default function Tab() {
           S’inscrire
         </Link>
       </Text>
+      <Text style={styles.signupText}>
+        Vous êtes soignant ?{" "}
+        <Link
+          href={"/(tabs)/account/signupCaregiver"}
+          style={styles.signupLink}
+        >
+          S’inscrire
+        </Link>
+      </Text>
 
       <View style={styles.privacySection}>
         <TouchableOpacity style={styles.privacyOption}>
