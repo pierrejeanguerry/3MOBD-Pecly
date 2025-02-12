@@ -8,58 +8,55 @@ import { useRouter } from "expo-router";
 function onPress(): void {}
 
 export default function Tab() {
-  const { user, register, login, CheckIsLogged } = useAuth();
-  const router = useRouter();
+    const {user, register, login, CheckIsLogged} = useAuth();
+    const router = useRouter();
 
-  useEffect(() => {
-    CheckIsLogged();
-  }, []);
+    useEffect(() => {
+        CheckIsLogged();
+    }, []);
 
-  useEffect(() => {
-    if (user) {
-      router.replace("/(tabs)/account/myAccount");
-    }
-  }, [user]);
+    useEffect(() => {
+        if (user) {
+            router.replace("/(tabs)/account/myAccount");
+        }
+    }, [user]);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.titre}>Mon compte</Text>
-      <Text style={styles.description}>
-        Pecly est au service de votre santé et celle de vos proches
-      </Text>
+    return (
+        <View style={styles.container}>
 
-      <Button size={"medium"} styleType={"primary"} onPress={() => onPress}>
-        <Link href={"/(tabs)/account/login"}>Se connecter</Link>
-      </Button>
-      <Text style={styles.signupText}>
-        Vous n’avez pas de compte ?{" "}
-        <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>
-          S’inscrire
-        </Link>
-      </Text>
-      <Text style={styles.signupText}>
-        Vous êtes soignant ?{" "}
-        <Link
-          href={"/(tabs)/account/signupCaregiver"}
-          style={styles.signupLink}
-        >
-          S’inscrire
-        </Link>
-      </Text>
+            <Text style={styles.titre}>Mon compte</Text>
+            <Text style={styles.description}>
+                Pecly est au service de votre santé et celle de vos proches
+            </Text>
 
-      <View style={styles.privacySection}>
-        <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>Mes préférences</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>
-            <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}><Link href={"/(tabs)/account/login"}>Se
+                connecter</Link></Button>
+            <Text style={styles.signupText}>
+                Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"}
+                                                  style={styles.signupLink}>S’inscrire</Link>
+            </Text>
+            <Text style={styles.signupText}>
+                Vous êtes soignant ? <Link href={"/(tabs)/account/signupCaregiver"}
+                                                  style={styles.signupLink}>S’inscrire</Link>
+            </Text>
+
+
+            <View style={styles.privacySection}>
+                <TouchableOpacity style={styles.privacyOption}>
+                    <Text style={styles.privacyOptionText}>Mes préférences</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.privacyOption}>
+                    <Text style={styles.privacyOptionText}>
+                        <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
+
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
