@@ -5,7 +5,7 @@ import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
 
 export default function Instructions() {
-    const [instructions, setInstructions] = useState("");
+    const [instruction, setInstruction] = useState("");
     const [motives, setMotives] = useState("");
 
     return (
@@ -19,8 +19,8 @@ export default function Instructions() {
                 style={styles.input}
                 placeholder="Les instructions seront visibles par vos patients..."
                 placeholderTextColor="#A9A9A9"
-                value={instructions}
-                onChangeText={setInstructions}
+                value={instruction}
+                onChangeText={setInstruction}
             />
 
             <Text style={styles.label}>Saissisez vos motivations</Text>
