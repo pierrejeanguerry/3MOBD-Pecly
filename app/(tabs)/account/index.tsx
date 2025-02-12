@@ -4,12 +4,7 @@ import { Link } from "expo-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
-import { Link } from "expo-router";
-import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "expo-router";
 
-function onPress(): void {}
 function onPress(): void {}
 
 export default function Tab() {
