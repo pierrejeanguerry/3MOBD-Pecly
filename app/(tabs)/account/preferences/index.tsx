@@ -1,48 +1,40 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Button from "../../../components/Button/Button";
+import Button from "../../../../components/Button/Button";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
-export default function MyAccount() {
-    const { logout, user } = useAuth();
-    const router = useRouter();
+export default function Tab() {
 
-    const handleLogout = async () => {
-        await logout();
-        router.replace("../account/");
-    };
 
     return (
         <View style={styles.container}>
+
+            <Text style={styles.titre}>Mes préférences</Text>
 
 
             <View style={styles.privacySection}>
                 <TouchableOpacity style={styles.privacyOption}>
                     <Text style={styles.privacyOptionText}>
-
-                        <Link href={"/(tabs)/account/preferences"}>Modifier mon adresse</Link>
-                    </Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.privacyOption}>
-                    <Text style={styles.privacyOptionText}>
-                        {" "}
-                        <Link href={"/(tabs)/account/infos"}>Instructions et motivations</Link>
+                        <Link href={"/(tabs)/account/preferences/adresse"}>Modifier mon adresse</Link>
                     </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.privacyOption}>
                     <Text style={styles.privacyOptionText}>
-                        {" "}
-                        <Link href={"/(tabs)/account/infos"}>Présentation</Link>
+                        <Link href={"/(tabs)/account/preferences/instructions"}>Instructions et motivations</Link>
                     </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.privacyOption}>
                     <Text style={styles.privacyOptionText}>
-                        {" "}
-                        <Link href={"/(tabs)/account/infos"}>Payments</Link>
+                        <Link href={"/(tabs)/account/preferences/presentation"}>Présentation</Link>
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.privacyOption}>
+                    <Text style={styles.privacyOptionText}>
+                        <Link href={"/(tabs)/account/preferences/payments"}>Moyens de payments</Link>
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -58,6 +50,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#DFF3FF",
+    },
+    titre: {
+        fontSize: 28,
+        fontWeight: "bold",
+        color: "#43193B",
     },
     privacySection: {
         margin: 30,

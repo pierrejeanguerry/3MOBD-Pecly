@@ -22,7 +22,10 @@ export default function MyAccount() {
 
       <View style={styles.privacySection}>
         <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>Mes préférences</Text>
+          <Text style={styles.privacyOptionText}>
+            {" "}
+            <Link href={"../account/preferences/"}> Mes préférences</Link>
+            </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.privacyOption}>
           <Text style={styles.privacyOptionText}>
