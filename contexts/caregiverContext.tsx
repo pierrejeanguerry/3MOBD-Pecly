@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import firestore from "@react-native-firebase/firestore";
 
-type CareData = {
+export type CareData = {
   id: string;
   firstname: string;
   lastname: string;
@@ -21,6 +21,20 @@ type CareData = {
     presentation: string;
     motives: string[];
     mustBeReferred: boolean;
+    price: {
+      convention: number;
+      prices: {
+        price: number;
+        title: string;
+      }[];
+      thirdParty: string;
+      vitalCard: boolean;
+    };
+    paymentMeans: {
+      card: boolean;
+      cash: boolean;
+      check: boolean;
+    };
   };
 };
 
