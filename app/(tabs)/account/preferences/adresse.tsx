@@ -1,15 +1,29 @@
 import {View, Text, StyleSheet, TextInput} from "react-native";
 import Button from "../../../../components/Button/Button";
 import {Link, useRouter} from "expo-router";
-import {useAuth} from "@/hooks/useAuth";
+import {usePreferences} from "@/hooks/usePreferences";
 import React, {useEffect, useState} from "react";
 
+
 export default function Adresse() {
+    const { adresse } = usePreferences();
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [postalCode, setPostalCode] = useState("");
     const [street, setStreet] = useState("");
 
+    const handleAdresse = async (
+        country: string,
+        city: string,
+        postalCode: string,
+        street: string,
+    ) => {
+        try {
+            await adresse(country, city, postalCode, street);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -56,7 +70,9 @@ export default function Adresse() {
             <Button
                 size={"medium"}
                 styleType={"primary"}
-            >
+                onPress={() =>
+                    handleAdresse(country, city, postalCode, street)
+                }            >
                 Appliquer </Button>
 
         </View>
