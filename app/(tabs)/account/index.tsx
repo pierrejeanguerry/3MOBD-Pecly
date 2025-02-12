@@ -19,7 +19,7 @@ export default function Tab() {
 
     useEffect(() => {
         if (user) {
-            router.replace("/(tabs)/account/account");
+            router.replace("/(tabs)/account/myAccount");
         }
     }, [user]);
 
@@ -36,6 +36,10 @@ export default function Tab() {
                 connecter</Link></Button>
             <Text style={styles.signupText}>
                 Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"}
+                                                  style={styles.signupLink}>S’inscrire</Link>
+            </Text>
+            <Text style={styles.signupText}>
+                Vous êtes soignant ? <Link href={"/(tabs)/account/signupCaregiver"}
                                                   style={styles.signupLink}>S’inscrire</Link>
             </Text>
 
