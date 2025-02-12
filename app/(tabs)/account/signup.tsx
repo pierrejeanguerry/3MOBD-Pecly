@@ -7,7 +7,6 @@ import {
   TextInput,
 } from "react-native";
 import Button from "../../../components/Button/Button";
-import DatePicker from "react-native-date-picker";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Signup() {
