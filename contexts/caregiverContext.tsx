@@ -3,6 +3,8 @@ import firestore from "@react-native-firebase/firestore";
 
 type CareData = {
   id: string;
+  firstname: string;
+  lastname: string;
   name: string;
   icon?: string;
   address?: {
@@ -18,6 +20,7 @@ type CareData = {
     speciality: string;
     presentation: string;
     motives: string[];
+    mustBeReferred: boolean;
   };
 };
 
@@ -45,9 +48,18 @@ export function CaregiverProvider({ children }: { children: ReactNode }) {
     try {
       const doc = await firestore().collection("Users").doc(id).get();
       if (doc.exists) {
-        setCaregiverData({ ...doc.data(), id } as CareData);
+        const data = doc.data();
+        if (data) {
+          setCaregiverData({
+            ...data,
+            id,
+            name: `${data.firstname} ${data.lastname}`,
+          } as CareData);
+        } else {
+          setError("Données du soignant non disponibles.");
+        }
       } else {
-        setError("Aucun praticien trouvé pour cet ID.");
+        setError("Aucun soignant trouvé pour cet ID.");
       }
     } catch (err: any) {
       setError(err.message || "Erreur inconnue.");

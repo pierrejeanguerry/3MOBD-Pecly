@@ -5,6 +5,7 @@ import { format } from "date-fns";
 export type Availability = {
   date: string;
   slots: string[];
+  value: Date;
 };
 
 export function useAvailabilities(caregiverId?: string) {
@@ -33,8 +34,9 @@ export function useAvailabilities(caregiverId?: string) {
             const docData = doc.data() as Availability;
             const formattedDate = format(new Date(docData.date), "dd/MM/yyyy");
             return {
-              ...docData,
+              slots: docData.slots.sort(),
               date: formattedDate,
+              value: new Date(docData.date),
             };
           });
           setAvailabilities(formattedData);
