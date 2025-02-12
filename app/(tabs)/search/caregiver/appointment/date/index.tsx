@@ -1,13 +1,43 @@
-import DatePicker from "@/components/DatePicker";
+import AppointmentPicker from "@/components/AppointmentPicker";
 import { useCaregiver } from "@/contexts/caregiverContext";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { Availability, useAvailabilities } from "@/hooks/useAvailabilities";
-import { useEffect } from "react";
+import { useAvailabilities } from "@/hooks/useAvailabilities";
+
+import { useAppointment } from "@/contexts/appointmentContext";
+import { useState } from "react";
+import CustomModal from "@/components/CustomModal";
+import Button from "@/components/Button";
+import { Timestamp } from "@react-native-firebase/firestore";
+import { addHours, addMinutes } from "date-fns";
 
 export default function DateSelect() {
   const { caregiverData } = useCaregiver();
   const { availabilities } = useAvailabilities(caregiverData?.id);
+  const { setAppointmentData, appointmentData } = useAppointment();
+  const [toogleModal, setToggleModal] = useState(false);
+  const router = useRouter();
+
+  function calculateTimeStamp(date: Date, slot: string) {
+    const [hours, minutes] = slot.split(":").map(Number);
+    const dateTime = new Timestamp(
+      Math.floor(addMinutes(addHours(date, hours), minutes).getTime() / 1000),
+      (date.getTime() % 1000) * 1_000_000
+    );
+    setAppointmentData({ ...appointmentData, dateTime: dateTime });
+  }
+
+  function onPress(date: Date, slot: string) {
+    calculateTimeStamp(date, slot);
+    if (caregiverData && caregiverData?.caregiverDetails.mustBeReferred)
+      setToggleModal((prev) => !prev);
+    else router.push("./date/summary");
+  }
+
+  function handlePressModal() {
+    setToggleModal(false);
+    router.push("./date/summary");
+  }
 
   return (
     <>
@@ -26,11 +56,31 @@ export default function DateSelect() {
               data={availabilities}
               keyExtractor={(_, index) => index.toString()}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({ item }) => <DatePicker data={item} />}
+              renderItem={({ item }) => (
+                <AppointmentPicker data={item} onPress={onPress} />
+              )}
             />
           )}
         </View>
       </View>
+      <CustomModal
+        visible={toogleModal}
+        onClose={() => setToggleModal(false)}
+        size="small"
+        title="A lire avant de prendre rendez-vous"
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.textModal}>
+            Afin de prendre ce rendez-vous, vous devez être adressé(e) par votre
+            medecin traitant ou spécialiste. Veuuillez partager la lettre de
+            d’adressage via Doctolib en amont de votre consultation pour ne plus
+            avoir à y penser (ou l’apporter le jour de votre consultation).
+          </Text>
+          <Button size="long" styleType="primary" onPress={handlePressModal}>
+            <Text>J'AI LU ET J'ACCEPTE LA CONSIGNE</Text>
+          </Button>
+        </View>
+      </CustomModal>
     </>
   );
 }
@@ -50,5 +100,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     paddingBottom: 20,
+  },
+  textModal: {
+    fontSize: 18,
+  },
+  modalContent: {
+    alignItems: "center",
+    gap: 20,
   },
 });

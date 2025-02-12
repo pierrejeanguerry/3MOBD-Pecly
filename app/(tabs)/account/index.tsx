@@ -1,13 +1,11 @@
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
-import {Link} from "expo-router";
-import {useEffect} from "react";
-import {useAuth} from "@/hooks/useAuth";
-import {useRouter} from "expo-router";
+import { Link } from "expo-router";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "expo-router";
 
-
-function onPress(): void {
-}
+function onPress(): void {}
 
 export default function Tab() {
     const {checkIsLogged} = useAuth();
@@ -61,49 +59,48 @@ export default function Tab() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#DFF3FF",
-    },
-    titre: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: "#43193B",
-    },
-    description: {
-        fontSize: 16,
-        textAlign: "center",
-        marginVertical: 20,
-        lineHeight: 22,
-        color: "#333",
-    },
-    signupText: {
-        textAlign: "center",
-        marginVertical: 10,
-        fontSize: 14,
-        color: "#333",
-    },
-    signupLink: {
-        color: "#0A85EB",
-        fontWeight: "bold",
-    },
-    privacySection: {
-        marginTop: 30,
-    },
-    privacyOption: {
-        backgroundColor: "#FFFFFF",
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 10,
-        shadowColor: "#000000",
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-    },
-    privacyOptionText: {
-        fontSize: 16,
-        color: "#333",
-    },
-
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#DFF3FF",
+  },
+  titre: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#43193B",
+  },
+  description: {
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 20,
+    lineHeight: 22,
+    color: "#333",
+  },
+  signupText: {
+    textAlign: "center",
+    marginVertical: 10,
+    fontSize: 14,
+    color: "#333",
+  },
+  signupLink: {
+    color: "#0A85EB",
+    fontWeight: "bold",
+  },
+  privacySection: {
+    marginTop: 30,
+  },
+  privacyOption: {
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  privacyOptionText: {
+    fontSize: 16,
+    color: "#333",
+  },
 });

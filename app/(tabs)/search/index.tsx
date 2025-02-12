@@ -14,6 +14,8 @@ export default function SearchScreen() {
   type Speciality = { speciality: string };
   type Specialist = {
     id: string;
+    firstname: string;
+    lastname: string;
     name: string;
     caregiverDetails: {
       speciality: string;
@@ -53,6 +55,7 @@ export default function SearchScreen() {
         return {
           ...docData,
           id: doc.ref.id,
+          name: `${docData.firstname} ${docData.lastname}`,
         };
       });
       setCaregiversList(datas);

@@ -2,7 +2,6 @@ import MotivesPicker from "@/components/MotivesPicker";
 import { AppointmentData, useAppointment } from "@/contexts/appointmentContext";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Appointment() {
@@ -10,13 +9,17 @@ export default function Appointment() {
   const { appointmentData, setAppointmentData } = useAppointment();
   const motives = caregiverData?.caregiverDetails.motives ?? [];
   const router = useRouter();
-  useEffect(() => {
-    if (caregiverData)
-      setAppointmentData({ caregiverId: caregiverData.id } as AppointmentData);
-  }, []);
+  // useEffect(() => {
+  //   if (caregiverData)
+  //     setAppointmentData({ caregiverId: caregiverData.id } as AppointmentData);
+  // }, []);
 
   function onPress(item: string) {
-    setAppointmentData({ motive: item } as AppointmentData);
+    if (caregiverData)
+      setAppointmentData({
+        motive: item,
+        caregiverId: caregiverData.id,
+      } as AppointmentData);
     router.push("./appointment/date");
   }
   return (

@@ -2,11 +2,11 @@ import { createContext, useContext, useState, ReactNode } from "react";
 import { Timestamp } from "@react-native-firebase/firestore";
 
 export type AppointmentData = {
-  caregiverId: string;
-  patientId: string;
-  dateTime: Timestamp;
-  motive: string;
-  status: string;
+  caregiverId?: string;
+  patientId?: string;
+  dateTime?: Timestamp;
+  motive?: string;
+  status?: string;
 };
 
 type AppointmentContextType = {
