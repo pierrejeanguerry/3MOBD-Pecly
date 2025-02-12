@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
 import { Link } from "expo-router";
 import { useEffect } from "react";
