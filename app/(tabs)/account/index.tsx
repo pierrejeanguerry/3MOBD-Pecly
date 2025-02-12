@@ -4,7 +4,12 @@ import { Link } from "expo-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
+import { Link } from "expo-router";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "expo-router";
 
+function onPress(): void {}
 function onPress(): void {}
 
 export default function Tab() {
@@ -34,15 +39,6 @@ export default function Tab() {
       <Text style={styles.signupText}>
         Vous n’avez pas de compte ?{" "}
         <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>
-          S’inscrire
-        </Link>
-      </Text>
-      <Text style={styles.signupText}>
-        Vous êtes soignant ?{" "}
-        <Link
-          href={"/(tabs)/account/signupCaregiver"}
-          style={styles.signupLink}
-        >
           S’inscrire
         </Link>
       </Text>
