@@ -2,12 +2,63 @@ import AppointmentPicker from "@/components/AppointmentPicker";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { Stack } from "expo-router";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { Availability, useAvailabilities } from "@/hooks/useAvailabilities";
-import { useEffect } from "react";
+import { useAvailabilities } from "@/hooks/useAvailabilities";
+import { useAuth } from "@/hooks/useAuth";
+import firestore, { Timestamp } from "@react-native-firebase/firestore";
+import { addHours, addMinutes, min } from "date-fns";
+import { useAppointment } from "@/contexts/appointmentContext";
 
 export default function DateSelect() {
+  const { user } = useAuth();
   const { caregiverData } = useCaregiver();
   const { availabilities } = useAvailabilities(caregiverData?.id);
+  const { appointmentData } = useAppointment();
+
+  // async function onPress(date: Date, slot: string) {
+  //   if (!user || !appointmentData)
+  //     throw new Error("User not logged in, or data problemes");
+
+  //   const [hours, minutes] = slot.split(":").map(Number);
+  //   const dateTime = new Timestamp(
+  //     Math.floor(addMinutes(addHours(date, hours), minutes).getTime() / 1000),
+  //     (date.getTime() % 1000) * 1_000_000
+  //   );
+
+  //   try {
+  //     const isAlreadyReserved = await firestore()
+  //       .collection("Appointments")
+  //       .where("caregiverId", "==", caregiverData?.id)
+  //       .where("dateTime", "==", dateTime)
+  //       .get();
+
+  //     if (!isAlreadyReserved.empty) throw new Error("Slot isn't available");
+
+  //     await firestore().collection("Appointments").add({
+  //       caregiverId: appointmentData.caregiverId,
+  //       dateTime,
+  //       motive: appointmentData.motive,
+  //       patientId: user.id,
+  //       status: "pending",
+  //     });
+
+  //     const oldAvailabilityRef = await firestore()
+  //       .collection("Users")
+  //       .doc(appointmentData.caregiverId)
+  //       .collection("Availabilities")
+  //       .where("date", "==", date.toISOString().split("T")[0])
+  //       .get();
+
+  //     if (!oldAvailabilityRef.empty) {
+  //       await oldAvailabilityRef.docs[0].ref.update({
+  //         slots: firestore.FieldValue.arrayRemove(slot),
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.error("Erreur Firestore:", e);
+  //   }
+  // }
+
+  function onPress() {}
 
   return (
     <>
@@ -26,7 +77,9 @@ export default function DateSelect() {
               data={availabilities}
               keyExtractor={(_, index) => index.toString()}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({ item }) => <AppointmentPicker data={item} />}
+              renderItem={({ item }) => (
+                <AppointmentPicker data={item} onPress={onPress} />
+              )}
             />
           )}
         </View>

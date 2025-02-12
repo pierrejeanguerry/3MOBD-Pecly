@@ -47,7 +47,7 @@ export function CaregiverProvider({ children }: { children: ReactNode }) {
       if (doc.exists) {
         setCaregiverData({ ...doc.data(), id } as CareData);
       } else {
-        setError("Aucun praticien trouvé pour cet ID.");
+        setError("Aucun soignant trouvé pour cet ID.");
       }
     } catch (err: any) {
       setError(err.message || "Erreur inconnue.");

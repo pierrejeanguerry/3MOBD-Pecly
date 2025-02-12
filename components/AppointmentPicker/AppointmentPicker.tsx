@@ -3,7 +3,13 @@ import { useState } from "react";
 import { Availability } from "@/hooks/useAvailabilities";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export default function DatePicker({ data }: { data: Availability }) {
+export default function AppointmentPicker({
+  data,
+  onPress,
+}: {
+  data: Availability;
+  onPress: (date: Date, slot: string) => void;
+}) {
   const [toggle, setToggle] = useState<Boolean>(false);
 
   return (
@@ -31,8 +37,12 @@ export default function DatePicker({ data }: { data: Availability }) {
             </>
           </TouchableOpacity>
           <View style={styles.bottom}>
-            {data.slots.map((slot) => (
-              <TouchableOpacity style={styles.label}>
+            {data.slots.map((slot, index) => (
+              <TouchableOpacity
+                style={styles.label}
+                onPress={() => onPress(data.value, slot)}
+                key={index}
+              >
                 <Text style={styles.labelText}>{slot}</Text>
               </TouchableOpacity>
             ))}
