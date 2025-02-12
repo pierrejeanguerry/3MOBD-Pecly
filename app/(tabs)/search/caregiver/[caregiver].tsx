@@ -5,19 +5,22 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Button from "@/components/Button";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CareData, useCaregiver } from "@/contexts/caregiverContext";
 import { useAppointment } from "@/contexts/appointmentContext";
+import CustomModal from "@/components/CustomModal";
 
 export default function CaregiverScreen() {
   const { caregiver } = useLocalSearchParams();
   const caregiverId = Array.isArray(caregiver) ? caregiver[0] : caregiver;
   const { caregiverData, loading, error, fetchCaregiver } = useCaregiver();
   const { clearAppointmentData } = useAppointment();
+  const [togglePriceModal, setTogglePriceModal] = useState(false);
 
   const router = useRouter();
 
@@ -126,15 +129,24 @@ const InfoBlock = ({
   title,
   icon,
   lines,
+  onPress,
 }: {
   title: string;
   icon: keyof typeof FontAwesome.glyphMap;
   lines: string[];
+  onPress?: () => void;
 }) => (
   <View style={styles.block}>
-    <Text style={styles.title}>
-      <FontAwesome name={icon} size={18} /> {title}
-    </Text>
+    <View style={styles.top}>
+      <Text style={styles.title}>
+        <FontAwesome name={icon} size={18} /> {title}
+      </Text>
+      {onPress && (
+        <TouchableHighlight onPress={onPress}>
+          <Text style={styles.seeMore}>Voir plus</Text>
+        </TouchableHighlight>
+      )}
+    </View>
     {lines.map((line, index) => (
       <Text key={index} style={styles.text}>
         {line}
@@ -155,20 +167,40 @@ const PriceBlock = ({
     thirdParty: string;
     vitalCard: boolean;
   };
-}) => (
-  <InfoBlock
-    title="Tarifs et remboursement"
-    icon="euro"
-    lines={
-      [
-        price?.convention && `Conventionné secteur ${price.convention}`,
-        price?.thirdParty && `Tiers payant: ${price.thirdParty}`,
-        price?.vitalCard &&
-          `Carte vitale ${price.vitalCard ? "acceptée" : "refusée"}`,
-      ].filter(Boolean) as string[]
-    }
-  />
-);
+}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  return (
+    <>
+      <InfoBlock
+        title="Tarifs et remboursement"
+        icon="euro"
+        lines={
+          [
+            price?.convention && `Conventionné secteur ${price.convention}`,
+            price?.thirdParty && `Tiers payant: ${price.thirdParty}`,
+            price?.vitalCard &&
+              `Carte vitale ${price.vitalCard ? "acceptée" : "refusée"}`,
+          ].filter(Boolean) as string[]
+        }
+        onPress={() => setModalVisible(true)}
+      />
+      <CustomModal
+        onClose={() => setModalVisible(false)}
+        size="long"
+        visible={modalVisible}
+        title="Tarifs"
+      >
+        {price.prices.map((item, index) => (
+          <View style={styles.prices} key={index}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.text}>{item.price}</Text>
+          </View>
+        ))}
+        <Text></Text>
+      </CustomModal>
+    </>
+  );
+};
 
 const PaymentBlock = ({
   payment,
@@ -260,5 +292,20 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderRadius: 20,
     backgroundColor: "white",
+  },
+  prices: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 50,
+  },
+  seeMore: {
+    color: "#34659A",
+    fontWeight: "bold",
+  },
+  top: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
