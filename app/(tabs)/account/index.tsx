@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
 import { Link } from "expo-router";
 import { useEffect } from "react";
@@ -34,15 +35,6 @@ export default function Tab() {
       <Text style={styles.signupText}>
         Vous n’avez pas de compte ?{" "}
         <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>
-          S’inscrire
-        </Link>
-      </Text>
-      <Text style={styles.signupText}>
-        Vous êtes soignant ?{" "}
-        <Link
-          href={"/(tabs)/account/signupCaregiver"}
-          style={styles.signupLink}
-        >
           S’inscrire
         </Link>
       </Text>
