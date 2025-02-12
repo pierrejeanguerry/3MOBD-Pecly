@@ -55,6 +55,15 @@ interface AuthContextType {
     date: Date,
     phone: string
   ) => Promise<void>;
+  registerCaregiver: (
+      email: string,
+      password: string,
+      lastName: string,
+      firstName: string,
+      date: Date,
+      phone: string,
+      licenseNumber: string
+  ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   CheckIsLogged: () => void;
@@ -142,6 +151,63 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const registerCaregiver = async (
+      email: string,
+      password: string,
+      lastName: string,
+      firstName: string,
+      date: Date,
+      phone: string,
+      licenseNumber: string
+  ): Promise<void> => {
+    if (
+        !password ||
+        !email ||
+        !lastName ||
+        !firstName ||
+        !date ||
+        !phone ||
+        !licenseNumber
+    )
+      throw new Error("Something is empty");
+    if (password.length < 8) throw new Error("Password too small !");
+
+    const querySnapshot = await firestore()
+        .collection("Users")
+        .where("email", "==", email)
+        .get();
+    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
+
+    try {
+      const hash = await hashPassword(password);
+      const userRef = await firestore()
+          .collection("Users")
+          .add({
+            email,
+            password: hash,
+            isCaregiver: true,
+            lastname: lastName,
+            firstname: firstName,
+            dateOfBirth: date.toISOString(),
+            contact: {phone},
+            caregiverDetails: {licenseNumber}
+          });
+
+      saveUser({
+        id: userRef.id, email,
+        password: hash,
+        isCaregiver: true,
+        lastname: lastName,
+        firstname: firstName,
+        dateOfBirth: date.toISOString(),
+        contact: {phone},
+        caregiverDetails: {licenseNumber}
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement :", error);
+    }
+  };
+
   const login = async (email: string, password: string): Promise<void> => {
     if (!password || !email) throw new Error("Email or Passord empty");
     if (password.length < 8) throw new Error("Password too small !");
@@ -201,7 +267,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, register, login, logout, CheckIsLogged }}
+      value={{ user, register, registerCaregiver, login, logout, CheckIsLogged }}
     >
       {children}
     </AuthContext.Provider>

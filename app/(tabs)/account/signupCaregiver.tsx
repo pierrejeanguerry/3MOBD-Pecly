@@ -11,26 +11,26 @@ import DatePicker from "react-native-date-picker";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SignupCaregiver() {
-    const { user, register, login, CheckIsLogged } = useAuth();
+    const { user, registerCaregiver, CheckIsLogged } = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
-    const [gender, setGender] = useState("");
     const [lastName, setLastName] = useState("");
     const [firstName, setFirstName] = useState("");
     const [date, setDate] = useState(new Date());
     const [phone, setPhone] = useState("");
+    const [licenseNumber, setLicenseNumber] = useState("");
 
-    const handleRegister = async (
+    const handleRegisterCaregiver = async (
         email: string,
         pass: string,
-        gender: string,
         lastName: string,
         firstName: string,
         date: Date,
-        phone: string
+        phone: string,
+        licenseNumber: string
     ) => {
         try {
-            await register(email, pass, gender, lastName, firstName, date, phone);
+            await registerCaregiver(email, pass, lastName, firstName, date, phone, licenseNumber);
         } catch (e) {
             console.error(e);
         }
@@ -99,13 +99,15 @@ export default function SignupCaregiver() {
                 placeholder="adresse e-mail"
                 placeholderTextColor="#A9A9A9"
                 keyboardType="email-address"
+                value={licenseNumber}
+                onChangeText={setLicenseNumber}
             />
 
             <Button
                 size={"large"}
                 styleType={"primary"}
                 onPress={() =>
-                    handleRegister(email, pass, gender, lastName, firstName, date, phone)
+                    handleRegisterCaregiver(email, pass, lastName, firstName, date, phone, licenseNumber)
                 }
             >
                 Créer un compte

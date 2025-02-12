@@ -11,7 +11,7 @@ import DatePicker from "react-native-date-picker";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Signup() {
-  const { user, register, login, CheckIsLogged } = useAuth();
+  const { user, register, CheckIsLogged } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [gender, setGender] = useState("");
