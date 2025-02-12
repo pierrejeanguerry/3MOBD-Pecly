@@ -10,18 +10,17 @@ function onPress(): void {
 }
 
 export default function Tab() {
-    const {user, register, login, CheckIsLogged} = useAuth();
+    const {checkIsLogged} = useAuth();
     const router = useRouter();
 
-    useEffect(() => {
-        CheckIsLogged();
-    }, []);
-
-    useEffect(() => {
-        if (user) {
-            router.replace("/(tabs)/account/myAccount");
+    useEffect(()=>{
+        const check = async () => {
+            if (await checkIsLogged()) {
+                router.replace("../account/myAccount");
+            }
         }
-    }, [user]);
+        check().then(null);
+    },[])
 
     return (
         <View style={styles.container}>

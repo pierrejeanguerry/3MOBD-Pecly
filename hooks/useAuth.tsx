@@ -63,9 +63,9 @@ interface AuthContextType {
       licenseNumber: string,
       gender: string,
   ) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  CheckIsLogged: () => void;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<boolean>;
+  checkIsLogged: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -141,7 +141,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userRef = await firestore()
         .collection("Users")
         .add({ email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, phone : phone, gender: gender });
-
       await saveUser({ id: userRef.id, email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, contact : {phone}, gender: gender });
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
@@ -189,7 +188,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           });
 
       await saveUser({
-        id: userRef.id, email,
+        id: userRef.id,
+        email: email,
         password: hash,
         isCaregiver: true,
         lastname: lastName,
@@ -203,7 +203,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     if (!password || !email) throw new Error("Email or Passord empty");
     if (password.length < 8) throw new Error("Password too small !");
 
@@ -217,52 +217,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     let userData: User = querySnapshot.docs[0].data() as User;
     userData.id = querySnapshot.docs[0].ref.id;
-    comparePassword(password, userData.password)
-      .then((isMatch) => {
-        if (isMatch) {
-          saveUser(userData).catch((e) => {
-            throw e;
-          });
-        } else {
-          throw new Error("Wrong password");
-        }
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la comparaison :", error);
-      });
+
+    if (await comparePassword(password, userData.password)){
+      await saveUser(userData);
+      return true;
+    }else return false;
   };
 
-  const saveUser = async (user: User) => {
+  const saveUser = async (user: User): Promise<boolean> => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
       console.log("user = ", user);
-
       setUser(user);
+      return true;
     } catch (error) {
       console.error("Erreur lors de l’enregistrement", error);
+      return false;
     }
   };
 
-  const CheckIsLogged = async () => {
+  const checkIsLogged = async ():Promise<boolean> => {
     try {
       const user = await AsyncStorage.getItem("user");
-      console.log(user);
-
-      if (user !== null) setUser(JSON.parse(user));
+      if (user !== null) {
+        setUser(JSON.parse(user));
+        return true;
+      }
+      return false;
     } catch (error) {
       console.error("Erreur lors de la récupération", error);
+      return false;
     }
   };
 
-  const logout = async (): Promise<void> => {
-    console.log("Logout");
-    await AsyncStorage.removeItem("user");
-    setUser(null);
+  const logout = async (): Promise<boolean> => {
+    try {
+      await AsyncStorage.removeItem("user");
+      setUser(null);
+      return true;
+    } catch (error) {
+      return false;
+    }
+
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, register, registerCaregiver, login, logout, CheckIsLogged }}
+      value={{ user, register, registerCaregiver, login, logout, checkIsLogged }}
     >
       {children}
     </AuthContext.Provider>

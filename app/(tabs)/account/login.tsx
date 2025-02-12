@@ -1,27 +1,41 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet, TextInput} from "react-native";
 import Button from "../../../components/Button/Button";
 import {useAuth} from "@/hooks/useAuth";
+import {useRouter} from "expo-router";
 
 function onPress(): void {
 }
 
 export default function Login() {
-    const {user, login, CheckIsLogged} = useAuth();
+    const {user, login, checkIsLogged} = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
 
     const handleLogin = async (email: string, pass: string) => {
         try {
             setLoading(true);
-            await login(email, pass);
-            setLoading(false);
+            if (await login(email, pass)){
+                setLoading(false);
+                router.push("../account/myAccount")
+            }
+
         } catch (e) {
             console.error(e);
         }
     };
+
+    useEffect(()=>{
+        const check = async () => {
+            if (await checkIsLogged()) {
+                router.replace("../account/myAccount");
+            }
+        }
+        check().then(null);
+    },[])
 
 
     return (
@@ -81,6 +95,7 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 2},
         shadowRadius: 5,
         elevation: 2,
+        width: 200
     },
 
 

@@ -10,7 +10,7 @@ import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SignupCaregiver() {
-    const { user, registerCaregiver, CheckIsLogged } = useAuth();
+    const { user, registerCaregiver, checkIsLogged } = useAuth();
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
     const [lastName, setLastName] = useState("");

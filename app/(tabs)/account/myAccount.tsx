@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 
 export default function MyAccount() {
-  const { logout, user } = useAuth();
+  const { logout, user, checkIsLogged } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
