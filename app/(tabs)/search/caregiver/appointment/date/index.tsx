@@ -21,7 +21,9 @@ export default function DateSelect() {
   function calculateTimeStamp(date: Date, slot: string) {
     const [hours, minutes] = slot.split(":").map(Number);
     const dateTime = new Timestamp(
-      Math.floor(addMinutes(addHours(date, hours), minutes).getTime() / 1000),
+      Math.floor(
+        addMinutes(addHours(date, hours - 2), minutes).getTime() / 1000
+      ),
       (date.getTime() % 1000) * 1_000_000
     );
     setAppointmentData({ ...appointmentData, dateTime: dateTime });

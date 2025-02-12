@@ -32,12 +32,14 @@ const types: Record<ButtonStyleType, any> = {
 export const StyledButton = styled.TouchableHighlight<{
   size: ButtonSize;
   styleType: ButtonStyleType;
+  disabled?: boolean;
 }>`
   ${({ size }) => sizes[size] || sizes.medium}
   border-radius: 8px;
   align-items: center;
   justify-content: center;
   ${({ styleType }) => types[styleType] || types.default}
+  ${({ disabled }) => disabled && "opacity: 0.5; pointer-events: none;"}
 `;
 
 export const ButtonText = styled.Text<{
