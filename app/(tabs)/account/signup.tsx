@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,13 +11,12 @@ import DatePicker from "react-native-date-picker";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Signup() {
-  const { user, register, CheckIsLogged } = useAuth();
+  const { register } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [gender, setGender] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [date, setDate] = useState(new Date());
   const [phone, setPhone] = useState("");
 
   const handleRegister = async (
@@ -26,11 +25,10 @@ export default function Signup() {
     gender: string,
     lastName: string,
     firstName: string,
-    date: Date,
     phone: string
   ) => {
     try {
-      await register(email, pass, gender, lastName, firstName, date, phone);
+      await register(email, pass, gender, lastName, firstName, phone);
     } catch (e) {
       console.error(e);
     }
@@ -101,9 +99,6 @@ export default function Signup() {
         />
       </View>
 
-      <Text style={styles.label}>Date de naissance</Text>
-      <DatePicker date={date} mode="date" onDateChange={setDate} />
-
       <Text style={styles.label}>Numéro de téléphone</Text>
       <TextInput
         style={styles.input}
@@ -118,7 +113,7 @@ export default function Signup() {
         size={"large"}
         styleType={"primary"}
         onPress={() =>
-          handleRegister(email, pass, gender, lastName, firstName, date, phone)
+          handleRegister(email, pass, gender, lastName, firstName, phone)
         }
       >
         Créer un compte

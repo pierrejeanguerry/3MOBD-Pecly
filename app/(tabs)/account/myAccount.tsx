@@ -16,8 +16,7 @@ export default function MyAccount() {
   return (
     <View style={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.name}>{user?.firstname}</Text>
-        <Text style={styles.info}>Date de naissance</Text>
+        <Text style={styles.name}>{user?.firstname} {user?.lastname}</Text>
       </View>
 
       <View style={styles.privacySection}>

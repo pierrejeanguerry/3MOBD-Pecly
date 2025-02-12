@@ -36,12 +36,12 @@ interface User {
     email?: string;
     phone?: string;
   };
-  dateOfBirth?: string;
   email: string;
   isCaregiver: boolean;
   lastname?: string;
   firstname?: string;
   password: string;
+  gender: string;
 }
 
 interface AuthContextType {
@@ -52,7 +52,6 @@ interface AuthContextType {
     gender: string,
     lastName: string,
     firstName: string,
-    date: Date,
     phone: string
   ) => Promise<void>;
   registerCaregiver: (
@@ -60,9 +59,9 @@ interface AuthContextType {
       password: string,
       lastName: string,
       firstName: string,
-      date: Date,
       phone: string,
-      licenseNumber: string
+      licenseNumber: string,
+      gender: string,
   ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -118,7 +117,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     gender: string,
     lastName: string,
     firstName: string,
-    date: Date,
     phone: string
   ): Promise<void> => {
     if (
@@ -127,7 +125,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       !gender ||
       !lastName ||
       !firstName ||
-      !date ||
       !phone
     )
       throw new Error("Something is empty");
@@ -143,9 +140,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const hash = await hashPassword(password);
       const userRef = await firestore()
         .collection("Users")
-        .add({ email, password: hash, isCaregiver: false });
+        .add({ email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, phone : phone, gender: gender });
 
-      saveUser({ id: userRef.id, email, password: hash, isCaregiver: false });
+      await saveUser({ id: userRef.id, email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, contact : {phone}, gender: gender });
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
     }
@@ -156,16 +153,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password: string,
       lastName: string,
       firstName: string,
-      date: Date,
       phone: string,
-      licenseNumber: string
+      licenseNumber: string,
+      gender: string,
   ): Promise<void> => {
     if (
         !password ||
         !email ||
         !lastName ||
         !firstName ||
-        !date ||
         !phone ||
         !licenseNumber
     )
@@ -188,20 +184,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             isCaregiver: true,
             lastname: lastName,
             firstname: firstName,
-            dateOfBirth: date.toISOString(),
             contact: {phone},
             caregiverDetails: {licenseNumber}
           });
 
-      saveUser({
+      await saveUser({
         id: userRef.id, email,
         password: hash,
         isCaregiver: true,
         lastname: lastName,
         firstname: firstName,
-        dateOfBirth: date.toISOString(),
         contact: {phone},
-        caregiverDetails: {licenseNumber}
+        caregiverDetails: {licenseNumber},
+        gender: gender,
       });
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
