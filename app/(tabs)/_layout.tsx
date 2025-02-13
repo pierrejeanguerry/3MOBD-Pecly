@@ -1,7 +1,15 @@
+import { useAuth } from "@/hooks/useAuth";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function TabLayout() {
+  const router = useRouter();
+  const { checkIsLogged } = useAuth();
+
+  useEffect(() => {
+    checkIsLogged();
+  }, []);
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "blue", headerShown: false }}>
       <Tabs.Screen
@@ -16,10 +24,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: "Rechercher",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="search" color={color} />
-          ),
+          href: null,
+          // title: "Rechercher",
+          // tabBarIcon: ({ color }) => (
+          //   <FontAwesome size={28} name="search" color={color} />
+          // ),
         }}
       />
       <Tabs.Screen
