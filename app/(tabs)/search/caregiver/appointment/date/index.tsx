@@ -31,7 +31,10 @@ export default function DateSelect() {
 
   function onPress(date: Date, slot: string) {
     calculateTimeStamp(date, slot);
-    if (caregiverData && caregiverData?.caregiverDetails.mustBeReferred)
+    if (
+      caregiverData?.caregiverDetails &&
+      caregiverData?.caregiverDetails.mustBeReferred
+    )
       setToggleModal((prev) => !prev);
     else router.push("./date/summary");
   }
