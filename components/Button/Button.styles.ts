@@ -29,7 +29,7 @@ const types: Record<ButtonStyleType, any> = {
   `,
 };
 
-export const StyledButton = styled.TouchableHighlight<{
+export const StyledButton = styled.TouchableOpacity<{
   size: ButtonSize;
   styleType: ButtonStyleType;
   disabled?: boolean;
@@ -53,6 +53,6 @@ export const ButtonText = styled.Text<{
     styleType === "empty"
       ? "#0a85eb"
       : styleType === "default"
-      ? "#000000"
+      ? "#34659A"
       : "#FFFFFF"};
 `;
