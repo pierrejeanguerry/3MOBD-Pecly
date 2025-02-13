@@ -2,12 +2,14 @@ import { useAuth } from "@/hooks/useAuth";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect } from "react";
+import { LogBox } from "react-native";
 
 export default function TabLayout() {
   const router = useRouter();
   const { checkIsLogged } = useAuth();
 
   useEffect(() => {
+    LogBox.ignoreAllLogs(true);
     checkIsLogged();
   }, []);
   return (
