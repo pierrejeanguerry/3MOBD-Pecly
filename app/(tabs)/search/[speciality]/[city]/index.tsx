@@ -3,24 +3,12 @@ import { useEffect, useState } from "react";
 import { FlatList, Platform, StyleSheet, View } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import SpecialistLabel from "@/components/SpecialistLabel";
+import { User } from "@/types/user";
 
 export default function LocationScreen() {
   const { speciality, city } = useLocalSearchParams();
-  const [caregiversList, setCaregiversList] = useState<Specialist[]>([]);
-  type Specialist = {
-    id: string;
-    name: string;
-    caregiverDetails: {
-      speciality: string;
-    };
-    address: {
-      city: string;
-      street: string;
-      postalCode: string;
-      country: string;
-    };
-    icon: string;
-  };
+  const [caregiversList, setCaregiversList] = useState<User[]>([]);
+
   const getCargivers = async () => {
     try {
       const cityLowerCase = Array.isArray(city)
@@ -37,7 +25,7 @@ export default function LocationScreen() {
         .get();
 
       const caregivers = data.docs.map((doc) => {
-        const docData = doc.data() as Specialist;
+        const docData = doc.data() as User;
         return {
           ...docData,
           id: doc.ref.id,
