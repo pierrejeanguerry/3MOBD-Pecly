@@ -100,6 +100,24 @@ export default function Summary() {
           slots: firestore.FieldValue.arrayRemove(slot),
         });
       }
+
+      const userRef = firestore().doc(`Users/${user.id}`);
+
+      const userDoc = await userRef.get();
+      const userData = userDoc.data();
+
+      if (!userData) throw new Error("Utilisateur introuvable");
+
+      let { history = [] } = userData;
+
+      history = history.filter(
+        (id: string) => id !== appointmentData.caregiverId
+      );
+
+      history.push(appointmentData.caregiverId);
+
+      await userRef.update({ history });
+
       router.push("./summary/confirmed");
     } catch (e) {
       console.error("Erreur Firestore:", e);
