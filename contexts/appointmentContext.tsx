@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { AppointmentData } from "@/types/appointment";
+import { ContextError, ERROR_MESSAGES } from "@/utils/errors";
 
 type AppointmentContextType = {
   appointmentData?: AppointmentData;
@@ -36,9 +37,7 @@ export const AppointmentProvider = ({ children }: { children: ReactNode }) => {
 export const useAppointment = () => {
   const context = useContext(AppointmentContext);
   if (!context) {
-    throw new Error(
-      "useAppointment doit être utilisé à l'intérieur d'un AppointmentProvider"
-    );
+    throw new ContextError(ERROR_MESSAGES.CONTEXT_PROVIDER_ERROR);
   }
   return context;
 };

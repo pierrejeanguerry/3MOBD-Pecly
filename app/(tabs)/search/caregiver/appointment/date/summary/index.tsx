@@ -10,6 +10,7 @@ import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
 import Login from "@/app/(tabs)/account/login";
+import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -63,8 +64,7 @@ export default function Summary() {
       router.push("/account/login");
       return;
     }
-    if (!appointmentData)
-      throw new Error("User not logged in, or data problemes");
+    if (!appointmentData) throw new DatabaseError(ERROR_MESSAGES.FETCH_ERROR);
     if (!appointmentData.dateTime) return;
     const date = appointmentData.dateTime?.toDate();
     const slot = `${
@@ -78,7 +78,8 @@ export default function Summary() {
         .where("dateTime", "==", appointmentData.dateTime)
         .get();
 
-      if (!isAlreadyReserved.empty) throw new Error("Slot isn't available");
+      if (!isAlreadyReserved.empty)
+        throw new DatabaseError(ERROR_MESSAGES.SLOT_ERROR);
 
       await firestore().collection("Appointments").add({
         caregiverId: appointmentData.caregiverId,
@@ -106,7 +107,7 @@ export default function Summary() {
       const userDoc = await userRef.get();
       const userData = userDoc.data();
 
-      if (!userData) throw new Error("Utilisateur introuvable");
+      if (!userData) throw new DatabaseError(ERROR_MESSAGES.USER_NOT_FOUND);
 
       let { history = [] } = userData;
 
