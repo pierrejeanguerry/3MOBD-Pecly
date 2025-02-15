@@ -5,11 +5,12 @@ import firestore from "@react-native-firebase/firestore";
 import { View, Text, StyleSheet, FlatList, Platform } from "react-native";
 import { useDebounce } from "@/hooks/useDebounce";
 import SpecialityLabel from "@/components/SpecialityLabel";
+import { User } from "@/types/user";
 
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
   const [specialitiesList, setSpecialitiesList] = useState<Speciality[]>([]);
-  const [caregiversList, setCaregiversList] = useState<Specialist[]>([]);
+  const [caregiversList, setCaregiversList] = useState<User[]>([]);
 
   type Speciality = { speciality: string };
   type Specialist = {
@@ -51,7 +52,7 @@ export default function SearchScreen() {
           .get(),
       ]);
       const datas = caregivers.docs.map((doc) => {
-        const docData = doc.data() as Specialist;
+        const docData = doc.data() as User;
         return {
           ...docData,
           id: doc.ref.id,
@@ -92,7 +93,7 @@ export default function SearchScreen() {
         )}
         {caregiversList.length != 0 && (
           <FlatList
-            style={styles.containerItem}
+            // style={styles.containerItem}
             data={caregiversList}
             keyExtractor={(_, index) => index.toString()}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
