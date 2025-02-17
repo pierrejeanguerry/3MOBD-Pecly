@@ -21,7 +21,7 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
   const param: string = name;
 
   function onPress() {
-    router.push(`/(tabs)/home/search/${param}`);
+    router.push(`./search/${param}`);
   }
 
   return (
