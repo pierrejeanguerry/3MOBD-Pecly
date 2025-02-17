@@ -18,7 +18,7 @@ interface SpecialistLabelChildProps {
 const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
   const router = useRouter();
   const onPress = () => {
-    router.navigate(`/(tabs)/search/caregiver/${item.id}`);
+    router.push(`/(tabs)/home/search/caregiver/${item.id}`);
   };
 
   return (

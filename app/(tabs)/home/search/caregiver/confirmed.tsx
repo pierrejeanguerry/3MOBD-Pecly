@@ -1,18 +1,17 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { Stack, useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Link, Stack, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Button from "@/components/Button";
 import { useAppointment } from "@/contexts/appointmentContext";
 
-export default function error() {
+export default function confirmed() {
   const router = useRouter();
-  const { setAppointmentData, appointmentData } = useAppointment();
+  const { clearAppointmentData } = useAppointment();
   function handlePress() {
-    setAppointmentData({ ...appointmentData, dateTime: undefined });
-    router.push("../..");
+    clearAppointmentData();
+    router.push("/(tabs)/home/search");
   }
+
   return (
     <>
       <Stack.Screen
@@ -21,10 +20,10 @@ export default function error() {
         }}
       />
       <View style={styles.container}>
-        <FontAwesome name="window-close-o" size={100} color={"red"} />
+        <FontAwesome name="check-circle-o" size={100} color={"green"} />
         <Text style={styles.title}>RENDEZ-VOUS CONFIRME</Text>
         <Button size="large" styleType="primary" onPress={() => handlePress()}>
-          <Text>Changer de plage horaire</Text>
+          <Text>Nouvelle recherche</Text>
         </Button>
       </View>
     </>

@@ -21,7 +21,9 @@ export default function Appointment() {
         motive: item,
         caregiverId: caregiverData.id,
       } as AppointmentData);
-    router.push("./appointment/date");
+    router.push("/(tabs)/home/search/caregiver/date", {
+      relativeToDirectory: true,
+    });
   }
   return (
     <>

@@ -119,10 +119,10 @@ export default function Summary() {
 
       await userRef.update({ history });
 
-      router.push("./summary/confirmed");
+      router.push("/(tabs)/home/search/caregiver/confirmed");
     } catch (e) {
       console.error("Erreur Firestore:", e);
-      router.push("./summary/error");
+      router.push("/(tabs)/home/search/caregiver/error");
     }
   }
 
