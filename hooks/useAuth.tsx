@@ -3,6 +3,12 @@ import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "@/types/user";
+import {
+  AuthError,
+  ContextError,
+  ERROR_MESSAGES,
+  ValidationError,
+} from "@/utils/errors";
 
 interface AuthContextType {
   user: User | null;
@@ -33,7 +39,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new ContextError(ERROR_MESSAGES.CONTEXT_PROVIDER_ERROR);
   }
   return context;
 };
@@ -80,28 +86,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     phone: string
   ): Promise<void> => {
     if (!password || !email || !gender || !lastName || !firstName || !phone)
-      throw new Error("Something is empty");
-    if (password.length < 8) throw new Error("Password too small !");
+      throw new ValidationError(ERROR_MESSAGES.EMPTY_FIELDS);
+    if (password.length < 8)
+      throw new ValidationError(ERROR_MESSAGES.PASSWORD_TOO_SHORT);
 
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
       .get();
-    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
+    if (!querySnapshot.empty)
+      throw new ValidationError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 
     try {
       const hash = await hashPassword(password);
-      const userRef = await firestore()
-        .collection("Users")
-        .add({
-          email,
-          password: hash,
-          isCaregiver: false,
-          firstname: firstName,
-          lastname: lastName,
-          phone: phone,
-          gender: gender,
-        });
+      const userRef = await firestore().collection("Users").add({
+        email,
+        password: hash,
+        isCaregiver: false,
+        firstname: firstName,
+        lastname: lastName,
+        phone: phone,
+        gender: gender,
+      });
       await saveUser({
         id: userRef.id,
         email,
@@ -134,14 +140,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       !phone ||
       !licenseNumber
     )
-      throw new Error("Something is empty");
-    if (password.length < 8) throw new Error("Password too small !");
+      throw new ValidationError(ERROR_MESSAGES.EMPTY_FIELDS);
+    if (password.length < 8)
+      throw new ValidationError(ERROR_MESSAGES.PASSWORD_TOO_SHORT);
 
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
       .get();
-    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
+    if (!querySnapshot.empty)
+      throw new ValidationError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 
     try {
       const hash = await hashPassword(password);
@@ -180,7 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .where("email", "==", email)
       .get();
     if (querySnapshot.empty) {
-      throw new Error("Utilisateur non trouvé");
+      throw new AuthError(ERROR_MESSAGES.INCORRECT_PASSWORD);
     }
 
     let userData: User = querySnapshot.docs[0].data() as User;
@@ -195,7 +203,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const saveUser = async (user: User): Promise<boolean> => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
-      console.log("user = ", user);
       setUser(user);
       return true;
     } catch (error) {

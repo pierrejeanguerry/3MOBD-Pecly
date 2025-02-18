@@ -36,12 +36,12 @@ export default function DateSelect() {
       caregiverData?.caregiverDetails.mustBeReferred
     )
       setToggleModal((prev) => !prev);
-    else router.push("./date/summary");
+    else router.push("/(tabs)/home/search/caregiver/summary");
   }
 
   function handlePressModal() {
     setToggleModal(false);
-    router.push("./date/summary");
+    router.push("/(tabs)/home/search/caregiver/summary");
   }
 
   return (

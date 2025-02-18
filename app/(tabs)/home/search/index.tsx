@@ -13,22 +13,6 @@ export default function SearchScreen() {
   const [caregiversList, setCaregiversList] = useState<User[]>([]);
 
   type Speciality = { speciality: string };
-  type Specialist = {
-    id: string;
-    firstname: string;
-    lastname: string;
-    name: string;
-    caregiverDetails: {
-      speciality: string;
-    };
-    address: {
-      city: string;
-      street: string;
-      postalCode: string;
-      country: string;
-    };
-    icon: string;
-  };
 
   const getCargivers = async () => {
     if (!search) {
@@ -93,7 +77,6 @@ export default function SearchScreen() {
         )}
         {caregiversList.length != 0 && (
           <FlatList
-            // style={styles.containerItem}
             data={caregiversList}
             keyExtractor={(_, index) => index.toString()}
             ItemSeparatorComponent={() => <View style={styles.separator} />}

@@ -17,20 +17,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="home"
         options={{
-          href: null,
-          // title: "Rechercher",
-          // tabBarIcon: ({ color }) => (
-          //   <FontAwesome size={28} name="search" color={color} />
-          // ),
+          title: "Accueil",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="home" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
