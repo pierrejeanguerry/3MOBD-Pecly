@@ -1,13 +1,14 @@
 import MotivesPicker from "@/components/MotivesPicker";
-import { AppointmentData, useAppointment } from "@/contexts/appointmentContext";
+import { useAppointment } from "@/contexts/appointmentContext";
 import { useCaregiver } from "@/contexts/caregiverContext";
+import { AppointmentData } from "@/types/appointment";
 import { Stack, useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Appointment() {
   const { caregiverData } = useCaregiver();
   const { appointmentData, setAppointmentData } = useAppointment();
-  const motives = caregiverData?.caregiverDetails.motives ?? [];
+  const motives = caregiverData?.caregiverDetails?.motives ?? [];
   const router = useRouter();
   // useEffect(() => {
   //   if (caregiverData)
@@ -20,7 +21,9 @@ export default function Appointment() {
         motive: item,
         caregiverId: caregiverData.id,
       } as AppointmentData);
-    router.push("./appointment/date");
+    router.push("/(tabs)/home/search/caregiver/date", {
+      relativeToDirectory: true,
+    });
   }
   return (
     <>
@@ -38,7 +41,7 @@ export default function Appointment() {
           </Text>
           {motives.length !== 0 && (
             <FlatList
-              data={caregiverData?.caregiverDetails.motives}
+              data={caregiverData?.caregiverDetails?.motives}
               keyExtractor={(_, index) => index.toString()}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
               renderItem={({ item, index }) => {

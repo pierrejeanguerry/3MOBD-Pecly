@@ -1,20 +1,5 @@
-import {Text} from "react-native";
-import {useAuth} from "@/hooks/useAuth";
-import {useEffect} from "react";
+import { Redirect } from "expo-router";
 
-export default function Tab() {
-
-  const {checkIsLogged} = useAuth();
-  useEffect(() => {
-    const check = async () => {
-      await checkIsLogged();
-    }
-    check().then(null);
-  }, []);
-
-  return (
-      <Text>salut</Text>
-  )
+export default function Index() {
+  return <Redirect href="/home" />;
 }
-
-

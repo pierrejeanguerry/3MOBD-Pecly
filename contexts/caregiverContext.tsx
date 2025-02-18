@@ -1,31 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import firestore from "@react-native-firebase/firestore";
-
-type CareData = {
-  id: string;
-  firstname: string;
-  lastname: string;
-  name: string;
-  icon?: string;
-  address?: {
-    street?: string;
-    postalCode?: string;
-    city?: string;
-  };
-  contact?: {
-    phone?: string;
-    email?: string;
-  };
-  caregiverDetails: {
-    speciality: string;
-    presentation: string;
-    motives: string[];
-    mustBeReferred: boolean;
-  };
-};
+import { User } from "@/types/user";
 
 type CaregiverContextType = {
-  caregiverData?: CareData;
+  caregiverData?: User;
   loading: boolean;
   error: string;
   fetchCaregiver: (id: string) => Promise<void>;
@@ -36,7 +14,7 @@ const CaregiverContext = createContext<CaregiverContextType | undefined>(
 );
 
 export function CaregiverProvider({ children }: { children: ReactNode }) {
-  const [caregiverData, setCaregiverData] = useState<CareData | undefined>(
+  const [caregiverData, setCaregiverData] = useState<User | undefined>(
     undefined
   );
   const [loading, setLoading] = useState(false);
@@ -54,7 +32,7 @@ export function CaregiverProvider({ children }: { children: ReactNode }) {
             ...data,
             id,
             name: `${data.firstname} ${data.lastname}`,
-          } as CareData);
+          } as User);
         } else {
           setError("Données du soignant non disponibles.");
         }

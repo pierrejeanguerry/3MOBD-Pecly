@@ -3,47 +3,22 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LabelType } from "./Specialist.types";
 import { useRouter } from "expo-router";
 import { useNextAvailability } from "@/hooks/useNextAvailability";
+import { User } from "@/types/user";
 
 interface SpecialistLabelProps {
-  item: {
-    id: string;
-    name: string;
-    address: {
-      city: string;
-      street: string;
-      postalCode: string;
-      country: string;
-    };
-    caregiverDetails: {
-      speciality: string;
-    };
-    icon: string;
-  };
+  item: User;
   type: LabelType;
 }
 
 interface SpecialistLabelChildProps {
-  item: {
-    id: string;
-    name: string;
-    address: {
-      city: string;
-      street: string;
-      postalCode: string;
-      country: string;
-    };
-    caregiverDetails: {
-      speciality: string;
-    };
-    icon: string;
-  };
+  item: User;
   onPress: () => void;
 }
 
 const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
   const router = useRouter();
   const onPress = () => {
-    router.navigate(`/(tabs)/search/caregiver/${item.id}`);
+    router.push(`./search/caregiver/${item.id}`);
   };
 
   return (
@@ -63,17 +38,22 @@ const SpecialistLabelSummarized: React.FC<SpecialistLabelChildProps> = ({
   onPress,
 }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.container, styles.summarized]}
+      onPress={onPress}
+    >
       <>
-        {item.icon ? (
-          <Image source={{ uri: item.icon }} style={styles.icon} />
-        ) : (
-          <FontAwesome size={45} name="user" style={styles.icon} />
-        )}
+        <FontAwesome size={45} name="user" style={styles.icon} />
         <View>
-          <Text style={styles.text}>{item.name}</Text>
-          <Text style={styles.text}>{item.caregiverDetails.speciality}</Text>
-          <Text style={styles.text}>{item.address.city}</Text>
+          {item.name ? (
+            <Text style={styles.text}>{item.name}</Text>
+          ) : (
+            <Text style={styles.text}>
+              {item.firstname} {item.lastname}
+            </Text>
+          )}
+          <Text style={styles.text}>{item.caregiverDetails?.speciality}</Text>
+          <Text style={styles.text}>{item.address?.city}</Text>
         </View>
       </>
     </TouchableOpacity>
@@ -91,19 +71,22 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
         <TouchableOpacity style={styles.container} onPress={onPress}>
           <View style={styles.list}>
             <>
-              {item.icon ? (
-                <Image source={{ uri: item.icon }} style={styles.icon} />
-              ) : (
-                <FontAwesome size={45} name="user" style={styles.icon} />
-              )}
+              <FontAwesome size={45} name="user" style={styles.icon} />
+
               <View>
-                <Text style={styles.text}>{item.name}</Text>
+                {item.name ? (
+                  <Text style={styles.text}>{item.name}</Text>
+                ) : (
+                  <Text style={styles.text}>
+                    {item.firstname} {item.lastname}
+                  </Text>
+                )}
                 <Text style={styles.text}>
-                  {item.caregiverDetails.speciality}
+                  {item.caregiverDetails?.speciality}
                 </Text>
-                <Text style={styles.text}>{item.address.street},</Text>
+                <Text style={styles.text}>{item.address?.street},</Text>
                 <Text style={styles.text}>
-                  {item.address.postalCode} {item.address.city}
+                  {item.address?.postalCode} {item.address?.city}
                 </Text>
               </View>
             </>
@@ -143,6 +126,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 25,
+  },
+  summarized: {
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 5,
   },
   text: {
     fontSize: 15,

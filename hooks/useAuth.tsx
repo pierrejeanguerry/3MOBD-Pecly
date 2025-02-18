@@ -2,47 +2,13 @@ import { useState, createContext, useContext, ReactNode } from "react";
 import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-interface User {
-  id: string;
-  address?: {
-    city?: string;
-    country?: string;
-    postalCode?: string;
-    street?: string;
-  };
-  caregiverDetails?: {
-    instruction?: string;
-    licenseNumber?: string;
-    motives?: string[];
-    paymentMeans?: {
-      card: boolean;
-      cash: boolean;
-      check: boolean;
-    };
-    presentation?: string;
-    price?: {
-      convention?: number;
-      prices?: {
-        price?: number;
-        title?: string;
-      }[];
-      thirdParty?: string;
-      vitalCard?: boolean;
-    };
-    speciality?: string;
-  };
-  contact?: {
-    email?: string;
-    phone?: string;
-  };
-  email: string;
-  isCaregiver: boolean;
-  lastname?: string;
-  firstname?: string;
-  password: string;
-  gender: string;
-}
+import { User } from "@/types/user";
+import {
+  AuthError,
+  ContextError,
+  ERROR_MESSAGES,
+  ValidationError,
+} from "@/utils/errors";
 
 interface AuthContextType {
   user: User | null;
@@ -55,13 +21,13 @@ interface AuthContextType {
     phone: string
   ) => Promise<void>;
   registerCaregiver: (
-      email: string,
-      password: string,
-      lastName: string,
-      firstName: string,
-      phone: string,
-      licenseNumber: string,
-      gender: string,
+    email: string,
+    password: string,
+    lastName: string,
+    firstName: string,
+    phone: string,
+    licenseNumber: string,
+    gender: string
   ) => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<boolean>;
@@ -73,7 +39,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new ContextError(ERROR_MESSAGES.CONTEXT_PROVIDER_ERROR);
   }
   return context;
 };
@@ -119,73 +85,83 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     firstName: string,
     phone: string
   ): Promise<void> => {
-    if (
-      !password ||
-      !email ||
-      !gender ||
-      !lastName ||
-      !firstName ||
-      !phone
-    )
-      throw new Error("Something is empty");
-    if (password.length < 8) throw new Error("Password too small !");
+    if (!password || !email || !gender || !lastName || !firstName || !phone)
+      throw new ValidationError(ERROR_MESSAGES.EMPTY_FIELDS);
+    if (password.length < 8)
+      throw new ValidationError(ERROR_MESSAGES.PASSWORD_TOO_SHORT);
 
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
       .get();
-    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
+    if (!querySnapshot.empty)
+      throw new ValidationError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 
     try {
       const hash = await hashPassword(password);
-      const userRef = await firestore()
-        .collection("Users")
-        .add({ email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, phone : phone, gender: gender });
-      await saveUser({ id: userRef.id, email, password: hash, isCaregiver: false, firstname : firstName, lastname : lastName, contact : {phone}, gender: gender });
+      const userRef = await firestore().collection("Users").add({
+        email,
+        password: hash,
+        isCaregiver: false,
+        firstname: firstName,
+        lastname: lastName,
+        phone: phone,
+        gender: gender,
+      });
+      await saveUser({
+        id: userRef.id,
+        email,
+        password: hash,
+        isCaregiver: false,
+        firstname: firstName,
+        lastname: lastName,
+        contact: { phone },
+        gender: gender,
+      });
     } catch (error) {
       console.error("Erreur lors de l'enregistrement :", error);
     }
   };
 
   const registerCaregiver = async (
-      email: string,
-      password: string,
-      lastName: string,
-      firstName: string,
-      phone: string,
-      licenseNumber: string,
-      gender: string,
+    email: string,
+    password: string,
+    lastName: string,
+    firstName: string,
+    phone: string,
+    licenseNumber: string,
+    gender: string
   ): Promise<void> => {
     if (
-        !password ||
-        !email ||
-        !lastName ||
-        !firstName ||
-        !phone ||
-        !licenseNumber
+      !password ||
+      !email ||
+      !lastName ||
+      !firstName ||
+      !phone ||
+      !licenseNumber
     )
-      throw new Error("Something is empty");
-    if (password.length < 8) throw new Error("Password too small !");
+      throw new ValidationError(ERROR_MESSAGES.EMPTY_FIELDS);
+    if (password.length < 8)
+      throw new ValidationError(ERROR_MESSAGES.PASSWORD_TOO_SHORT);
 
     const querySnapshot = await firestore()
-        .collection("Users")
-        .where("email", "==", email)
-        .get();
-    if (!querySnapshot.empty) throw new Error("L'utilisateur existe déjà");
+      .collection("Users")
+      .where("email", "==", email)
+      .get();
+    if (!querySnapshot.empty)
+      throw new ValidationError(ERROR_MESSAGES.USER_ALREADY_EXISTS);
 
     try {
       const hash = await hashPassword(password);
-      const userRef = await firestore()
-          .collection("Users")
-          .add({
-            email,
-            password: hash,
-            isCaregiver: true,
-            lastname: lastName,
-            firstname: firstName,
-            contact: {phone},
-            caregiverDetails: {licenseNumber}
-          });
+      const userRef = await firestore().collection("Users").add({
+        email,
+        password: hash,
+        isCaregiver: true,
+        lastname: lastName,
+        firstname: firstName,
+        contact: { phone },
+        caregiverDetails: { licenseNumber },
+      });
 
       await saveUser({
         id: userRef.id,
@@ -194,8 +170,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: true,
         lastname: lastName,
         firstname: firstName,
-        contact: {phone},
-        caregiverDetails: {licenseNumber},
+        contact: { phone },
+        caregiverDetails: { licenseNumber },
         gender: gender,
       });
     } catch (error) {
@@ -212,22 +188,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .where("email", "==", email)
       .get();
     if (querySnapshot.empty) {
-      throw new Error("Utilisateur non trouvé");
+      throw new AuthError(ERROR_MESSAGES.INCORRECT_PASSWORD);
     }
 
     let userData: User = querySnapshot.docs[0].data() as User;
     userData.id = querySnapshot.docs[0].ref.id;
 
-    if (await comparePassword(password, userData.password)){
+    if (await comparePassword(password, userData.password)) {
       await saveUser(userData);
       return true;
-    }else return false;
+    } else return false;
   };
 
   const saveUser = async (user: User): Promise<boolean> => {
     try {
       await AsyncStorage.setItem("user", JSON.stringify(user));
-      console.log("user = ", user);
       setUser(user);
       return true;
     } catch (error) {
@@ -236,7 +211,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const checkIsLogged = async ():Promise<boolean> => {
+  const checkIsLogged = async (): Promise<boolean> => {
     try {
       const user = await AsyncStorage.getItem("user");
       if (user !== null) {
@@ -258,12 +233,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       return false;
     }
-
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, register, registerCaregiver, login, logout, checkIsLogged }}
+      value={{
+        user,
+        register,
+        registerCaregiver,
+        login,
+        logout,
+        checkIsLogged,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,8 +1,8 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableHighlight, View } from "react-native";
 import HighlightedWord from "./HighlightedWord";
 import styles from "./styles";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 interface SpecialityLabelProps {
   name: string;
@@ -13,19 +13,20 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
   name,
   emphasis,
 }) => {
+  const router = useRouter();
   const lowercaseName = name.toLowerCase();
   const lowercaseEmphasis = emphasis.toLocaleLowerCase();
   const words = lowercaseName.split(" ");
   const emphasisList = lowercaseEmphasis.split(" ");
   const param: string = name;
+
+  function onPress() {
+    router.push(`./search/${param}`);
+  }
+
   return (
     <View style={styles.container}>
-      <Link
-        href={{
-          pathname: "/(tabs)/search/[speciality]",
-          params: { speciality: param },
-        }}
-      >
+      <TouchableHighlight onPress={onPress}>
         <>
           {words.map((word, index) => (
             <View key={index} style={styles.wordContainer}>
@@ -34,7 +35,7 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
             </View>
           ))}
         </>
-      </Link>
+      </TouchableHighlight>
     </View>
   );
 };

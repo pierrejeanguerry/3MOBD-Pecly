@@ -26,6 +26,7 @@
     "date-fns": "^4.1.0",
     "expo": "~52.0.25",
     "expo-blur": "~14.0.2",
+    "expo-checkbox": "~4.0.1",
     "expo-constants": "~17.0.4",
     "expo-font": "~13.0.3",
     "expo-haptics": "~14.0.1",
@@ -47,8 +48,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "styled-components": "^6.1.14",
-    "expo-checkbox": "~4.0.1"
+    "styled-components": "^6.1.14"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
