@@ -3,8 +3,11 @@ import Button from "../../../../components/Button/Button";
 import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
+import {usePreferences} from "@/hooks/usePreferences";
+
 
 export default function Payment() {
+    const {payments} = usePreferences();
     const [paymentMeans, setPaymentMeans] = useState({
         card: false,
         cash: false,
@@ -18,6 +21,15 @@ export default function Payment() {
         }));
     };
 
+    const handlePayments = async (
+        presentation: string,
+    ) => {
+        try {
+            await payments(paymentMeans);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -51,6 +63,9 @@ export default function Payment() {
             <Button
                 size={"medium"}
                 styleType={"primary"}
+                onPress={() =>
+                    handlePayments(paymentMeans)
+                }
             >
                 Appliquer </Button>
 

@@ -59,9 +59,9 @@ interface AuthContextType {
     presentations: (
         presentation: string,
     ) => Promise<void>;
-   /* payments: (
+    payments: (
         paymentMeans: string,
-    ) => Promise<void>;*/
+    ) => Promise<void>;
 }
 
 
@@ -145,7 +145,32 @@ export const usePreferences = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const payments = async (
+        paymentMeans: string,
+    ): Promise<void> => {
+        try {
+            const userRef = await firestore()
+                .collection("users")
+                .add({paymentMeans: paymentMeans});
+            await savePayments({id: userRef.id, payementMeans: paymentMeans});
+            console.log("Payment enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement", error);
+        }
+    };
 
-    return { adresse, instructions, presentations }
+
+    const savePayments = async (adresse: { id: string; payementMeans: string}): Promise<void> => {
+        try {
+            await AsyncStorage.setItem("presentation", JSON.stringify(presentations));
+            console.log("Instruction enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement de l'adresse", error);
+        }
+    };
+
+
+
+    return { adresse, instructions, presentations, payments }
 
 };
