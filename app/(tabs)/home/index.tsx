@@ -5,7 +5,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 
 export default function Tab() {
   return (
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 20,
     marginBottom: 10,
+    marginTop: Platform.OS === 'ios' ? 30: 0
   },
   itemWrapper: {
     marginBottom: 10,

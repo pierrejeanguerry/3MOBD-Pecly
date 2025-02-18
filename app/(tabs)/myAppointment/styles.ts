@@ -1,4 +1,5 @@
-import {StyleSheet} from "react-native";
+import {Platform, StyleSheet} from "react-native";
+
 
 export default StyleSheet.create({
     pageContainer: {
@@ -6,7 +7,7 @@ export default StyleSheet.create({
         width: "100%",
     },
     headerTitle: {
-        height: 100,
+        height: Platform.OS === "ios" ? 100 : 50,
         backgroundColor: 'rgb(46,116,191)',
         display: 'flex',
         justifyContent: 'flex-end',
@@ -37,6 +38,6 @@ export default StyleSheet.create({
         position: 'absolute',
         width: '50%',
         height: 2,
-        backgroundColor: '\'rgb(46,116,191)\'',
+        backgroundColor: 'rgb(46,116,191)',
     },
 });

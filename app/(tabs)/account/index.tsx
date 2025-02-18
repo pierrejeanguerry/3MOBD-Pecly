@@ -8,12 +8,12 @@ import { useRouter } from "expo-router";
 function onPress(): void {}
 
 export default function Tab() {
-    const {checkIsLogged} = useAuth();
+    const {user} = useAuth();
     const router = useRouter();
 
     useEffect(()=>{
         const check = async () => {
-            if (await checkIsLogged()) {
+            if (user) {
                 router.replace("../account/myAccount");
             }
         }
