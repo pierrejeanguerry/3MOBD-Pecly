@@ -4,8 +4,6 @@ import Button from "../../../components/Button/Button";
 import {useAuth} from "@/hooks/useAuth";
 import {useRouter} from "expo-router";
 
-function onPress(): void {
-}
 
 export default function Login() {
     const {login, checkIsLogged} = useAuth();

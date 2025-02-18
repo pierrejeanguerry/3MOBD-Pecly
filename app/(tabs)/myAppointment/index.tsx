@@ -52,34 +52,23 @@ export default function MyAppointmentScreen() {
                     ]}
                 />
             </View>
-            {passed ? (
-                <NotPassedAppointment/>
-            ) : (
-                <FutureAppointment/>
-            )}
+            <Appointment isPassed={passed} />
         </View>
     );
 }
 
-function FutureAppointment() {
-    const [appointments, setAppointments] = useState([]);
-
-    useEffect(() => {
-
-    }, [])
-
-    return <Text>Future</Text>
-}
-
-function NotPassedAppointment() {
+function Appointment({isPassed}: {isPassed: boolean}) {
     const [appointments, setAppointments] = useState<any[]>([]);
     const { user } = useAuth();
+
+    console.log(isPassed);
 
     useEffect(() => {
         const getAppointments = async () => {
             const querySnapshot = await firestore()
                 .collection("Appointments")
                 .where("patientId", "==", user?.id)
+                .where("isPassed", '==', isPassed)
                 .get();
 
             let tempAppointment: any[] = [];
