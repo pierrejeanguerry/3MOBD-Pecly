@@ -6,7 +6,7 @@ import React, {useEffect, useState} from "react";
 
 
 export default function Adresse() {
-    const { adresse } = usePreferences();
+    const {adresse} = usePreferences();
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [postalCode, setPostalCode] = useState("");
@@ -72,7 +72,7 @@ export default function Adresse() {
                 styleType={"primary"}
                 onPress={() =>
                     handleAdresse(country, city, postalCode, street)
-                }            >
+                }>
                 Appliquer </Button>
 
         </View>

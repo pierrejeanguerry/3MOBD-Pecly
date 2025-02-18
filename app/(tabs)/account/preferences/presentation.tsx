@@ -3,9 +3,22 @@ import Button from "../../../../components/Button/Button";
 import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
+import {usePreferences} from "@/hooks/usePreferences";
+
 
 export default function Presentation() {
+    const {presentations} = usePreferences();
     const [presentation, setPresentation] = useState("");
+
+    const handlePresentations = async (
+        presentation: string,
+    ) => {
+        try {
+            await presentations(presentation);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -26,6 +39,9 @@ export default function Presentation() {
             <Button
                 size={"medium"}
                 styleType={"primary"}
+                onPress={() =>
+                    handlePresentations(presentation)
+                }
             >
                 Appliquer </Button>
 

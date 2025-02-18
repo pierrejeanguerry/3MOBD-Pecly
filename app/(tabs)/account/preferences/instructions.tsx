@@ -3,10 +3,23 @@ import Button from "../../../../components/Button/Button";
 import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
+import {usePreferences} from "@/hooks/usePreferences";
 
 export default function Instructions() {
+    const {instructions} = usePreferences();
     const [instruction, setInstruction] = useState("");
     const [motives, setMotives] = useState("");
+
+    const handleInstructions = async (
+        instruction: string,
+        motives: string,
+    ) => {
+        try {
+            await instructions(instruction, motives);
+        } catch (e) {
+            console.error(e);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -45,6 +58,9 @@ export default function Instructions() {
             <Button
                 size={"medium"}
                 styleType={"primary"}
+                onPress={() =>
+                    handleInstructions(instruction, motives)
+                }
             >
                 Appliquer </Button>
 

@@ -52,14 +52,14 @@ interface AuthContextType {
         postalCode: string,
         street: string,
     ) => Promise<void>;
-    instruction: (
+    instructions: (
         instruction: string,
         motives: string,
     ) => Promise<void>;
-   /* presentation: (
+    presentations: (
         presentation: string,
     ) => Promise<void>;
-    payments: (
+   /* payments: (
         paymentMeans: string,
     ) => Promise<void>;*/
 }
@@ -95,7 +95,7 @@ export const usePreferences = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const instruction = async (
+    const instructions = async (
         instruction: string,
         motives: string,
     ): Promise<void> => {
@@ -103,7 +103,7 @@ export const usePreferences = ({ children }: { children: ReactNode }) => {
             const userRef = await firestore()
                 .collection("users")
                 .add({instruction: instruction, motives: motives});
-            await saveInstruction({id: userRef.id, instruction: instruction, motives: motives});
+            await saveInstructions({id: userRef.id, instruction: instruction, motives: motives});
             console.log("Instruction enregistrée");
         } catch (error) {
             console.error("Erreur lors de l'enregistrement", error);
@@ -111,15 +111,41 @@ export const usePreferences = ({ children }: { children: ReactNode }) => {
     };
 
 
-    const saveInstruction = async (adresse: { id: string; instruction: string; motives: string }): Promise<void> => {
+    const saveInstructions = async (adresse: { id: string; instruction: string; motives: string }): Promise<void> => {
         try {
-            await AsyncStorage.setItem("instruction", JSON.stringify(instruction));
-            console.log("Adresse enregistrée");
+            await AsyncStorage.setItem("instruction", JSON.stringify(instructions));
+            console.log("Instruction enregistrée");
         } catch (error) {
             console.error("Erreur lors de l'enregistrement de l'adresse", error);
         }
     };
 
-    return { adresse, instruction }
+
+    const presentations = async (
+        presentation: string,
+    ): Promise<void> => {
+        try {
+            const userRef = await firestore()
+                .collection("users")
+                .add({presentation: presentation});
+            await savePresentations({id: userRef.id, presentation: presentation});
+            console.log("Presentation enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement", error);
+        }
+    };
+
+
+    const savePresentations = async (adresse: { id: string; presentation: string}): Promise<void> => {
+        try {
+            await AsyncStorage.setItem("presentation", JSON.stringify(presentations));
+            console.log("Instruction enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement de l'adresse", error);
+        }
+    };
+
+
+    return { adresse, instructions, presentations }
 
 };
