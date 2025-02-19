@@ -1,5 +1,5 @@
 import Searchbar from "@/components/SearchBar";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   View,
@@ -25,7 +25,7 @@ type City = {
   _score: number;
 };
 
-export default function SpecialityScreen(searchString: string, position?: number) {
+export default function SpecialityScreen() {
   const [search, setSearch] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [getLoc, setGetLoc] = useState(false);
@@ -59,14 +59,14 @@ export default function SpecialityScreen(searchString: string, position?: number
 
   const fetchSearch = async (search: string) => {
     const cityRequest: AxiosResponse<City[]> = await axios.get(
-        "https://geo.api.gouv.fr/communes",
-        {
-          params: {
-            limit: 5,
-            boost: "population",
-            nom: search,
-          },
-        }
+      "https://geo.api.gouv.fr/communes",
+      {
+        params: {
+          limit: 5,
+          boost: "population",
+          nom: search,
+        },
+      }
     );
 
     const cities: City[] = cityRequest.data;
@@ -94,41 +94,52 @@ export default function SpecialityScreen(searchString: string, position?: number
     if (index === -1) return <Text>{cityName}</Text>;
 
     return (
-        <Text>
-          {cityName.substring(0, index)}
-          <Text style={styles.highlight}>
-            {cityName.substring(index, index + search.length)}
-          </Text>
-          {cityName.substring(index + search.length)}
+      <Text>
+        {cityName.substring(0, index)}
+        <Text style={styles.highlight}>
+          {cityName.substring(index, index + search.length)}
         </Text>
+        {cityName.substring(index + search.length)}
+      </Text>
     );
   }
 
   if (errorMsg !== "") alert(errorMsg);
 
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View>
         <View>
-          <View>
-            <Text>{speciality}</Text>
-            <Text style={styles.title}>Où ? (adresse, ville, ...)</Text>
-            <Searchbar search={search} setSearch={setSearch} onSubmit={onSubmit} />
-            <TouchableHighlight onPress={() => setGetLoc((prev) => !prev)}>
-              <View style={styles.location}>
-                <FontAwesome size={28} name="location-arrow" />
-                <Text>Autour de moi</Text>
-              </View>
-            </TouchableHighlight>
-            <View style={styles.locationPurposes}>
-              {cities.map((city: City) => (
-                  <Text key={city.siren} style={styles.cityName} onPress={()=> router.push(`./${speciality}/${city.nom.toLowerCase()}`)}>
-                    {highlightMatch(city.nom, search)} ({city.codesPostaux[0].substring(0,2)})
-                  </Text>
-              ))}
+          <Text>{speciality}</Text>
+          <Text style={styles.title}>Où ? (adresse, ville, ...)</Text>
+          <Searchbar
+            search={search}
+            setSearch={setSearch}
+            onSubmit={onSubmit}
+          />
+          <TouchableHighlight onPress={() => setGetLoc((prev) => !prev)}>
+            <View style={styles.location}>
+              <FontAwesome size={28} name="location-arrow" />
+              <Text>Autour de moi</Text>
             </View>
+          </TouchableHighlight>
+          <View style={styles.locationPurposes}>
+            {cities.map((city: City) => (
+              <Text
+                key={city.siren}
+                style={styles.cityName}
+                onPress={() =>
+                  router.push(`./${speciality}/${city.nom.toLowerCase()}`)
+                }
+              >
+                {highlightMatch(city.nom, search)} (
+                {city.codesPostaux[0].substring(0, 2)})
+              </Text>
+            ))}
           </View>
         </View>
       </View>
+    </View>
   );
 }
 

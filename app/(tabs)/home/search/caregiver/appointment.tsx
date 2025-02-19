@@ -7,13 +7,9 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function Appointment() {
   const { caregiverData } = useCaregiver();
-  const { appointmentData, setAppointmentData } = useAppointment();
+  const { setAppointmentData } = useAppointment();
   const motives = caregiverData?.caregiverDetails?.motives ?? [];
   const router = useRouter();
-  // useEffect(() => {
-  //   if (caregiverData)
-  //     setAppointmentData({ caregiverId: caregiverData.id } as AppointmentData);
-  // }, []);
 
   function onPress(item: string) {
     if (caregiverData)

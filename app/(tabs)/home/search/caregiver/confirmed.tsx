@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { Link, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Button from "@/components/Button";
 import { useAppointment } from "@/contexts/appointmentContext";

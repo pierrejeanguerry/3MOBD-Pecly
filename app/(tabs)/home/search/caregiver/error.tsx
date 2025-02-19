@@ -1,5 +1,4 @@
 import { View, Text } from "react-native";
-import React from "react";
 import { Stack, useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";

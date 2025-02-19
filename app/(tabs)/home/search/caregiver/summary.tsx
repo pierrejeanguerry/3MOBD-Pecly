@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { format } from "date-fns";
@@ -9,7 +9,6 @@ import { useCaregiver } from "@/contexts/caregiverContext";
 import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
-import Login from "@/app/(tabs)/account/login";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
 
 export default function Summary() {
@@ -19,7 +18,6 @@ export default function Summary() {
   const [isDisabled, setIsDisabled] = useState(true);
   const router = useRouter();
 
-  // Liste des conditions disponibles (uniquement celles qui ont une valeur)
   const conditions = [
     {
       title: "Soignant",
