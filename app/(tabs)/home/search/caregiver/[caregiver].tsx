@@ -14,6 +14,7 @@ import { useCaregiver } from "@/contexts/caregiverContext";
 import { useAppointment } from "@/contexts/appointmentContext";
 import CustomModal from "@/components/CustomModal";
 import { User } from "@/types/user";
+import { theme } from "@/styles/theme";
 
 export default function CaregiverScreen() {
   const { caregiver } = useLocalSearchParams();
@@ -250,13 +251,13 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "#34659A",
+    backgroundColor: theme.colors.backgroundPrimary,
     height: 250,
     zIndex: 20,
   },
   body: {
     flex: 1,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     padding: 10,
   },
   icon: {
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderStyle: "solid",
     borderRadius: 20,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
   },
   prices: {
     display: "flex",
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
     paddingRight: 50,
   },
   seeMore: {
-    color: "#34659A",
+    color: theme.colors.backgroundPrimary,
     fontWeight: "bold",
   },
   top: {

@@ -4,58 +4,62 @@ import { Link } from "expo-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
+import { theme } from "@/styles/theme";
 
 function onPress(): void {}
 
 export default function Tab() {
-    const {user} = useAuth();
-    const router = useRouter();
+  const { user } = useAuth();
+  const router = useRouter();
 
-    useEffect(()=>{
-        const check = async () => {
-            if (user) {
-                router.replace("../account/myAccount");
-            }
-        }
-        check().then(null);
-    },[])
+  useEffect(() => {
+    const check = async () => {
+      if (user) {
+        router.replace("../account/myAccount");
+      }
+    };
+    check().then(null);
+  }, []);
 
-    return (
-        <View style={styles.container}>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.titre}>Mon compte</Text>
+      <Text style={styles.description}>
+        Pecly est au service de votre santé et celle de vos proches
+      </Text>
 
-            <Text style={styles.titre}>Mon compte</Text>
-            <Text style={styles.description}>
-                Pecly est au service de votre santé et celle de vos proches
-            </Text>
+      <Button size={"medium"} styleType={"primary"} onPress={() => onPress}>
+        <Link href={"/(tabs)/account/login"}>Se connecter</Link>
+      </Button>
+      <Text style={styles.signupText}>
+        Vous n’avez pas de compte ?{" "}
+        <Link href={"/(tabs)/account/signup"} style={styles.signupLink}>
+          S’inscrire
+        </Link>
+      </Text>
+      <Text style={styles.signupText}>
+        Vous êtes soignant ?{" "}
+        <Link
+          href={"/(tabs)/account/signupCaregiver"}
+          style={styles.signupLink}
+        >
+          S’inscrire
+        </Link>
+      </Text>
 
+      <View style={styles.privacySection}>
+        <TouchableOpacity style={styles.privacyOption}>
+          <Text style={styles.privacyOptionText}>Mes préférences</Text>
+        </TouchableOpacity>
 
-            <Button size={"medium"} styleType={"primary"} onPress={() => onPress}><Link href={"/(tabs)/account/login"}>Se
-                connecter</Link></Button>
-            <Text style={styles.signupText}>
-                Vous n’avez pas de compte ? <Link href={"/(tabs)/account/signup"}
-                                                  style={styles.signupLink}>S’inscrire</Link>
-            </Text>
-            <Text style={styles.signupText}>
-                Vous êtes soignant ? <Link href={"/(tabs)/account/signupCaregiver"}
-                                                  style={styles.signupLink}>S’inscrire</Link>
-            </Text>
-
-
-            <View style={styles.privacySection}>
-                <TouchableOpacity style={styles.privacyOption}>
-                    <Text style={styles.privacyOptionText}>Mes préférences</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.privacyOption}>
-                    <Text style={styles.privacyOptionText}>
-                        <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-
-        </View>
-    );
+        <TouchableOpacity style={styles.privacyOption}>
+          <Text style={styles.privacyOptionText}>
+            <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   titre: {
     fontSize: 28,
@@ -84,14 +88,14 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   signupLink: {
-    color: "#0A85EB",
+    color: theme.colors.textEmphasis,
     fontWeight: "bold",
   },
   privacySection: {
     marginTop: 30,
   },
   privacyOption: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,

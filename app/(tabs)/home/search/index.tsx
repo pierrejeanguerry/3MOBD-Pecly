@@ -6,6 +6,7 @@ import { View, Text, StyleSheet, FlatList, Platform } from "react-native";
 import { useDebounce } from "@/hooks/useDebounce";
 import SpecialityLabel from "@/components/SpecialityLabel";
 import { User } from "@/types/user";
+import { theme } from "@/styles/theme";
 
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: Platform.OS === "ios" ? 100 : 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
 
   containerItem: {

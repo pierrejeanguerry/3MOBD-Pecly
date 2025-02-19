@@ -56,6 +56,6 @@ export const ButtonText = styled.Text<{
     styleType === "empty"
       ? "#0a85eb"
       : styleType === "default"
-      ? theme.colors.primary
+      ? theme.colors.backgroundPrimary
       : "#FFFFFF"};
 `;

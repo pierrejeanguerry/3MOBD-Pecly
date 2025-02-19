@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,

@@ -10,6 +10,7 @@ import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
+import { theme } from "@/styles/theme";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -129,7 +130,7 @@ export default function Summary() {
       <Stack.Screen
         options={{
           title: ``,
-          headerStyle: { backgroundColor: "#34659A" },
+          headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}
       />
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     alignItems: "center",
     gap: 10,
   },
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     width: "100%",
     borderRadius: 10,
     padding: 20,

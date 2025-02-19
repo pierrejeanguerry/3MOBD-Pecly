@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     borderRadius: 10,
     gap: 10,
   },

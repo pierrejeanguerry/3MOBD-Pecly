@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { theme } from "@/styles/theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -13,7 +14,12 @@ export default function TabLayout() {
     checkIsLogged();
   }, []);
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue", headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.backgroundPrimary,
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

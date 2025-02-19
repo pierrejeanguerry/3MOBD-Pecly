@@ -11,6 +11,7 @@ import Button from "@/components/Button";
 import { Timestamp } from "@react-native-firebase/firestore";
 import { addHours, addMinutes } from "date-fns";
 import { Availability } from "@/types/availability";
+import { theme } from "@/styles/theme";
 
 export default function DateSelect() {
   const { caregiverData } = useCaregiver();
@@ -96,7 +97,7 @@ export default function DateSelect() {
       <Stack.Screen
         options={{
           title: `Dr ${caregiverData?.name}`,
-          headerStyle: { backgroundColor: "#34659A" },
+          headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}
       />
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     alignItems: "center",
   },
   separator: {
