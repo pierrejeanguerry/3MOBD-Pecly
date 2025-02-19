@@ -3,14 +3,9 @@ import SpecialistLabel from "@/components/SpecialistLabel";
 import { useAuth } from "@/hooks/useAuth";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
-<<<<<<< Updated upstream
-import { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-=======
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 import firestore from "@react-native-firebase/firestore";
->>>>>>> Stashed changes
 
 export default function Tab() {
   return (
@@ -185,10 +180,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 20,
     marginBottom: 10,
-<<<<<<< Updated upstream
-=======
     marginTop: Platform.OS === "ios" ? 30 : 0,
->>>>>>> Stashed changes
   },
   itemWrapper: {
     marginBottom: 10,
