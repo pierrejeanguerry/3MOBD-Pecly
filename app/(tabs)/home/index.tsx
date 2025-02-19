@@ -8,7 +8,7 @@ import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
 
-export default function Tab() {
+export default function TabScreen() {
   return (
     <ScrollView style={styles.container}>
       <Header />

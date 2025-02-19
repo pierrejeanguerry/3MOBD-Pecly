@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import { useAppointment } from "@/contexts/appointmentContext";
 import { theme } from "@/styles/theme";
 
-export default function error() {
+export default function Error() {
   const router = useRouter();
   const { setAppointmentData, appointmentData } = useAppointment();
   function handlePress() {

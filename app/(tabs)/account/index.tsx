@@ -8,7 +8,7 @@ import { theme } from "@/styles/theme";
 
 function onPress(): void {}
 
-export default function Tab() {
+export default function Account() {
   const { user } = useAuth();
   const router = useRouter();
 

@@ -10,6 +10,7 @@ import {
   Text,
 } from "react-native";
 import { ModalSize } from "./CustomModal.types";
+import { theme } from "@/styles/theme";
 
 interface CustomModalProps {
   visible: boolean;

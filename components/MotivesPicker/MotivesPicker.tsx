@@ -1,3 +1,4 @@
+import { theme } from "@/styles/theme";
 import { Text, StyleSheet, TouchableHighlight } from "react-native";
 
 type PickerPos = "begin" | "middle" | "end";

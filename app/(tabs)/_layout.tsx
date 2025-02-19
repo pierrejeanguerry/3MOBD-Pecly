@@ -7,7 +7,7 @@ import { LogBox } from "react-native";
 
 export default function TabLayout() {
   const router = useRouter();
-  const { checkIsLogged } = useAuth();
+  const { checkIsLogged, user } = useAuth();
 
   useEffect(() => {
     LogBox.ignoreAllLogs(true);
@@ -42,6 +42,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="calendar" color={color} />
           ),
+          tabBarItemStyle: { display: `${user ? "flex" : "none"}` },
         }}
       />
       <Tabs.Screen

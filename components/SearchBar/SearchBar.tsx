@@ -1,3 +1,4 @@
+import { theme } from "@/styles/theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";

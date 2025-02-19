@@ -6,6 +6,7 @@ import { User } from "@/types/user";
 import { useCallback, useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { format } from "date-fns";
+import { theme } from "@/styles/theme";
 
 interface SpecialistLabelProps {
   item: User;

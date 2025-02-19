@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Availability } from "@/types/availability";
+import { theme } from "@/styles/theme";
 
 export default function AppointmentPicker({
   data,
