@@ -1,11 +1,16 @@
 import Button from "@/components/Button";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import { useAuth } from "@/hooks/useAuth";
-import { useHistory } from "@/hooks/useHistory";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
+<<<<<<< Updated upstream
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+=======
+import { useEffect, useMemo, useState } from "react";
+import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
+import firestore from "@react-native-firebase/firestore";
+>>>>>>> Stashed changes
 
 export default function Tab() {
   return (
@@ -61,9 +66,71 @@ function Informations() {
 
 function MyCaregivers() {
   const { user } = useAuth();
-  const { history } = useHistory(user?.id);
-
+  const [history, setHistory] = useState<User[]>([]);
   const [itemsToShowCount, setItemsToShowCount] = useState(5);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const userRef = firestore().doc(`Users/${user?.id}`);
+
+    const unsubscribe = userRef.onSnapshot(
+      async (snapshot) => {
+        if (!snapshot.exists) {
+          setHistory([]);
+          return;
+        }
+
+        const userData = snapshot.data();
+        if (!userData?.history || !Array.isArray(userData.history)) {
+          setHistory([]);
+          return;
+        }
+
+        try {
+          const caregivers = await fetchAllCaregivers(
+            user?.id,
+            userData.history
+          );
+          setHistory(caregivers);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des caregivers :",
+            error
+          );
+        }
+      },
+      (error) =>
+        console.error("Erreur lors de la récupération de l'historique :", error)
+    );
+
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  const fetchAllCaregivers = async (
+    userId: string,
+    historyArray: string[]
+  ): Promise<User[]> => {
+    const caregivers = await Promise.all(
+      historyArray.map(async (element) => {
+        const elementRef = await firestore().doc(`Users/${element}`).get();
+
+        if (!elementRef.exists) {
+          await firestore()
+            .doc(`Users/${userId}`)
+            .update({
+              history: firestore.FieldValue.arrayRemove(element),
+            });
+          return null;
+        }
+
+        const caregiverData = elementRef.data();
+        return caregiverData ? { id: element, ...caregiverData } : null;
+      })
+    );
+
+    return caregivers.filter((c): c is User => c !== null);
+  };
 
   if (!history) {
     return <Text>Chargement...</Text>;
@@ -118,6 +185,10 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 20,
     marginBottom: 10,
+<<<<<<< Updated upstream
+=======
+    marginTop: Platform.OS === "ios" ? 30 : 0,
+>>>>>>> Stashed changes
   },
   itemWrapper: {
     marginBottom: 10,
