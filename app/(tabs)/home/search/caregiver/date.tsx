@@ -12,6 +12,7 @@ import { Timestamp } from "@react-native-firebase/firestore";
 import { addHours, addMinutes } from "date-fns";
 import { Availability } from "@/types/availability";
 import { theme } from "@/styles/theme";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function DateSelect() {
   const { caregiverData } = useCaregiver();
@@ -134,6 +135,12 @@ export default function DateSelect() {
           </Button>
         </View>
       </CustomModal>
+      <Spinner
+        visible={loading}
+        textContent={"Connexion..."}
+        textStyle={{ color: "#FFF" }}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { format } from "date-fns";
@@ -11,6 +11,12 @@ import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
 import { theme } from "@/styles/theme";
+import Spinner from "react-native-loading-spinner-overlay";
+import {
+  formatCaregiver,
+  formatMotive,
+  formatName,
+} from "@/utils/formatString";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -18,11 +24,12 @@ export default function Summary() {
   const { caregiverData } = useCaregiver();
   const [isDisabled, setIsDisabled] = useState(true);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const conditions = [
     {
       title: "Soignant",
-      value: caregiverData?.name ? `Dr. ${caregiverData.name}` : null,
+      value: caregiverData?.name ? formatCaregiver(caregiverData?.name) : null,
     },
     {
       title: "Date du rendez-vous",
@@ -32,11 +39,13 @@ export default function Summary() {
           })
         : null,
     },
-    { title: "Raison", value: appointmentData?.motive || null },
+    { title: "Raison", value: formatMotive(appointmentData?.motive) || null },
     {
       title: "Adresse",
       value: caregiverData?.address
-        ? `${caregiverData.address.street}\n${caregiverData.address.postalCode}, ${caregiverData.address.city}`
+        ? `${formatName(caregiverData.address.street)}\n${
+            caregiverData.address.postalCode
+          }, ${formatName(caregiverData.address.city)}`
         : null,
     },
   ].filter((condition) => condition.value !== null);
@@ -63,6 +72,7 @@ export default function Summary() {
       router.push("/account/login");
       return;
     }
+    setLoading(true);
     if (!appointmentData) throw new DatabaseError(ERROR_MESSAGES.FETCH_ERROR);
     if (!appointmentData.dateTime) return;
     const date = appointmentData.dateTime?.toDate();
@@ -117,9 +127,11 @@ export default function Summary() {
       history.push(appointmentData.caregiverId);
 
       await userRef.update({ history });
+      setLoading(false);
 
       router.push("/(tabs)/home/search/caregiver/confirmed");
     } catch (e) {
+      setLoading(false);
       console.error("Erreur Firestore:", e);
       router.push("/(tabs)/home/search/caregiver/error");
     }
@@ -153,6 +165,12 @@ export default function Summary() {
           <Text>JE CONFIRME MON RENDEZ-VOUS</Text>
         </Button>
       </View>
+      <Spinner
+        visible={loading}
+        textContent={"Prise de rendez-vous en cours..."}
+        textStyle={{ color: "#FFF" }}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </>
   );
 }
@@ -163,12 +181,13 @@ function Condition({
   onCheckedChange,
 }: {
   title: string;
-  value: string | null;
+  value: string | null | undefined;
   onCheckedChange: (title: string, isChecked: boolean) => void;
 }) {
   const [isChecked, setIsChecked] = useState(false);
 
-  function handleCheckChange(newValue: boolean) {
+  function handleCheckChange() {
+    const newValue = !isChecked;
     setIsChecked(newValue);
     onCheckedChange(title, newValue);
   }
@@ -179,11 +198,13 @@ function Condition({
         <Text style={styles.conditionTitle}>{title}</Text>
         <Text style={styles.conditionValue}>{value}</Text>
       </View>
-      <Checkbox
-        style={styles.checkbox}
-        value={isChecked}
-        onValueChange={handleCheckChange}
-      />
+      <TouchableOpacity
+        onPress={handleCheckChange}
+        activeOpacity={0.7}
+        style={styles.touchableArea}
+      >
+        <Checkbox style={styles.checkbox} value={isChecked} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -207,6 +228,11 @@ const styles = StyleSheet.create({
   },
   conditionValue: {
     fontSize: 18,
+  },
+  touchableArea: {
+    borderWidth: 15,
+    minWidth: 50,
+    borderColor: "transparent",
   },
   checkbox: {
     alignSelf: "center",

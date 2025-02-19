@@ -3,7 +3,7 @@ import React from "react";
 import {
   Modal,
   View,
-  TouchableOpacity,
+  TouchableNativeFeedback,
   StyleSheet,
   TouchableWithoutFeedback,
   Dimensions,
@@ -41,17 +41,20 @@ const CustomModal: React.FC<CustomModalProps> = ({
               {title ? (
                 <View style={styles.header}>
                   <Text style={styles.title}>{title}</Text>
-                  <TouchableOpacity
+                  <TouchableNativeFeedback
                     style={styles.closeButton}
                     onPress={onClose}
                   >
                     <FontAwesome size={25} name="close" />
-                  </TouchableOpacity>
+                  </TouchableNativeFeedback>
                 </View>
               ) : (
-                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                <TouchableNativeFeedback
+                  style={styles.closeButton}
+                  onPress={onClose}
+                >
                   <FontAwesome size={25} name="close" />
-                </TouchableOpacity>
+                </TouchableNativeFeedback>
               )}
               {children}
             </View>

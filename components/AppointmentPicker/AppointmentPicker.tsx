@@ -13,6 +13,7 @@ export default function AppointmentPicker({
 }) {
   const [toggle, setToggle] = useState<Boolean>(false);
 
+  if (data.slots.length == 0) return <></>;
   return (
     <View style={styles.container}>
       {!toggle && (

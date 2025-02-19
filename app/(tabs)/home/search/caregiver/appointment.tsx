@@ -3,6 +3,7 @@ import { useAppointment } from "@/contexts/appointmentContext";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { theme } from "@/styles/theme";
 import { AppointmentData } from "@/types/appointment";
+import { formatCaregiver } from "@/utils/formatString";
 import { Stack, useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -26,7 +27,9 @@ export default function Appointment() {
     <>
       <Stack.Screen
         options={{
-          title: `Dr ${caregiverData?.name}`,
+          title: caregiverData?.name
+            ? formatCaregiver(caregiverData?.name)
+            : "",
           headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}

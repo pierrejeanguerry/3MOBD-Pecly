@@ -4,11 +4,12 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    // flexWrap: "wrap",
   },
   wordContainer: {
     flexDirection: "row",
     flexWrap: "nowrap",
+    minWidth: "88%",
   },
   normal: {
     color: theme.colors.textPrimary,

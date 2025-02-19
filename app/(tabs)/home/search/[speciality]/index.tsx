@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import * as Location from "expo-location";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -118,12 +119,12 @@ export default function SpecialityScreen() {
             setSearch={setSearch}
             onSubmit={onSubmit}
           />
-          <TouchableHighlight onPress={() => setGetLoc((prev) => !prev)}>
+          <TouchableOpacity onPress={() => setGetLoc((prev) => !prev)}>
             <View style={styles.location}>
               <FontAwesome size={28} name="location-arrow" />
               <Text>Autour de moi</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={styles.locationPurposes}>
             {cities.map((city: City) => (
               <Text

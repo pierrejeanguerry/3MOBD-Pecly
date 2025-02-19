@@ -50,7 +50,7 @@ export const ButtonText = styled.Text<{
   size: ButtonSize;
 }>`
   font-size: ${({ size }: { size: ButtonSize }) =>
-    size === "small" ? "20px" : size === "long" ? "14px" : "24px"};
+    size === "small" ? "20px" : size === "long" ? "14px" : "22px"};
   font-weight: bold;
   color: ${({ styleType }: { styleType: ButtonStyleType }) =>
     styleType === "empty"

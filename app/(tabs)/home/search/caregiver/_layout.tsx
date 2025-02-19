@@ -7,49 +7,18 @@ export default function CaregiverLayout() {
   return (
     <CaregiverProvider>
       <AppointmentProvider>
-        <Stack>
-          <Stack.Screen
-            name="[caregiver]"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
-          <Stack.Screen
-            name="appointment"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
-          <Stack.Screen
-            name="confirmed"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
-          <Stack.Screen
-            name="date"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
-          <Stack.Screen
-            name="error"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
-          <Stack.Screen
-            name="summary"
-            options={{
-              title: "",
-              headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
-            }}
-          />
+        <Stack
+          screenOptions={{
+            title: "",
+            headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
+          }}
+        >
+          {/* <Stack.Screen name="[caregiver]" />
+          <Stack.Screen name="appointment" />
+          <Stack.Screen name="confirmed" />
+          <Stack.Screen name="date" />
+          <Stack.Screen name="error" />
+          <Stack.Screen name="summary" /> */}
         </Stack>
       </AppointmentProvider>
     </CaregiverProvider>

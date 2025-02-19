@@ -1,8 +1,8 @@
 import React from "react";
-import { Text, TouchableHighlight, View } from "react-native";
+import { Text, TouchableNativeFeedback, View } from "react-native";
 import HighlightedWord from "./HighlightedWord";
 import styles from "./styles";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface SpecialityLabelProps {
   name: string;
@@ -26,16 +26,16 @@ const SpecialityLabel: React.FC<SpecialityLabelProps> = ({
 
   return (
     <View style={styles.container}>
-      <TouchableHighlight onPress={onPress}>
-        <>
+      <TouchableNativeFeedback onPress={onPress}>
+        <View>
           {words.map((word, index) => (
             <View key={index} style={styles.wordContainer}>
               <HighlightedWord word={word} emphasis={emphasisList} />
               {index < words.length - 1 && <Text style={styles.normal}> </Text>}
             </View>
           ))}
-        </>
-      </TouchableHighlight>
+        </View>
+      </TouchableNativeFeedback>
     </View>
   );
 };
