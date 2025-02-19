@@ -1,8 +1,9 @@
 import styled, { css } from "styled-components/native";
 import { ButtonSize, ButtonStyleType } from "./Button.types";
+import { theme } from "@/styles/theme";
 
 const sizes: Record<ButtonSize, string> = {
-  long: "width: 355px; height: 43px;", // modifier les valeurs pour être plus responsive
+  long: "width: 355px; height: 43px;",
   large: "width: 284px; height: 56px;",
   medium: "width: 200px; height: 50px;",
   small: "width: 129px; height: 58px;",
@@ -34,25 +35,27 @@ export const StyledButton = styled.TouchableOpacity<{
   styleType: ButtonStyleType;
   disabled?: boolean;
 }>`
-  ${({ size }) => sizes[size] || sizes.medium}
+  ${({ size }: { size: ButtonSize }) => sizes[size] || sizes.medium}
   border-radius: 8px;
   align-items: center;
   justify-content: center;
-  ${({ styleType }) => types[styleType] || types.default}
-  ${({ disabled }) => disabled && "opacity: 0.5; pointer-events: none;"}
+  ${({ styleType }: { styleType: ButtonStyleType }) =>
+    types[styleType] || types.default}
+  ${({ disabled }: { disabled?: boolean }) =>
+    disabled && "opacity: 0.5; pointer-events: none;"}
 `;
 
 export const ButtonText = styled.Text<{
   styleType: ButtonStyleType;
   size: ButtonSize;
 }>`
-  font-size: ${({ size }) =>
+  font-size: ${({ size }: { size: ButtonSize }) =>
     size === "small" ? "20px" : size === "long" ? "14px" : "24px"};
   font-weight: bold;
-  color: ${({ styleType }) =>
+  color: ${({ styleType }: { styleType: ButtonStyleType }) =>
     styleType === "empty"
       ? "#0a85eb"
       : styleType === "default"
-      ? "#34659A"
+      ? theme.colors.primary
       : "#FFFFFF"};
 `;
