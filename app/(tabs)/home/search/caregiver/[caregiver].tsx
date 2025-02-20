@@ -1,7 +1,6 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,8 +20,6 @@ export default function CaregiverScreen() {
   const caregiverId = Array.isArray(caregiver) ? caregiver[0] : caregiver;
   const { caregiverData, loading, error, fetchCaregiver } = useCaregiver();
   const { clearAppointmentData } = useAppointment();
-  const [togglePriceModal, setTogglePriceModal] = useState(false);
-
   const router = useRouter();
 
   useFocusEffect(

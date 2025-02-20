@@ -1,9 +1,11 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LabelType } from "./Specialist.types";
 import { useRouter } from "expo-router";
-import { useNextAvailability } from "@/hooks/useNextAvailability";
 import { User } from "@/types/user";
+import { useCallback, useEffect, useState } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { format } from "date-fns";
 
 interface SpecialistLabelProps {
   item: User;
@@ -64,7 +66,43 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
   item,
   onPress,
 }) => {
-  const { availability, loading, error } = useNextAvailability(item.id);
+  const [availability, setAvailability] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getNextAvailability = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0];
+
+    try {
+      const availabilities = await firestore()
+        .collection(`Users/${item.id}/Availabilities`)
+        .where("date", ">=", todayString)
+        .orderBy("date", "asc")
+        .limit(1)
+        .get();
+
+      if (!availabilities.empty) {
+        const nextAvailability = availabilities.docs[0].data();
+        const date = nextAvailability.date;
+        const formattedDate = format(date, "dd/MM/yyyy");
+        setAvailability(formattedDate);
+      } else {
+        setAvailability(null);
+      }
+    } catch (e) {
+      setError("Erreur lors de la récupération des disponibilités.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [item.id]);
+
+  useEffect(() => {
+    getNextAvailability();
+  }, [getNextAvailability]);
   return (
     <View style={styles.list}>
       <View style={styles.left}>
