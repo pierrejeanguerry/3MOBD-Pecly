@@ -1,12 +1,39 @@
 import {View, Text, StyleSheet, TextInput} from "react-native";
 import Button from "../../../../components/Button/Button";
 import {Link, useRouter} from "expo-router";
-import {usePreferences} from "@/hooks/usePreferences";
 import React, {useEffect, useState} from "react";
+import firestore from "@react-native-firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useAuth} from "@/hooks/useAuth";
+import {User} from "@/types/user";
 
 
 export default function Adresse() {
-    const {adresse} = usePreferences();
+    const {user, saveUser} = useAuth()
+
+    const adresse = async (
+        country: string,
+        city: string,
+        postalCode: string,
+        street: string,
+    ): Promise<void> => {
+        if (!user) {
+            return;
+        }
+        try {
+            const userRef = await firestore()
+                .collection("Users")
+                .doc(user.id)
+                .update({address :{country: country, city: city, postalCode: postalCode, street: street}});
+            /*await saveAdresse({id: userRef.id, country: country, city: city, postalCode: postalCode, street: street});
+            console.log("adresse enregistrée");*/
+            await saveUser({...user, address :{country: country, city: city, postalCode: postalCode, street: street}});
+            console.log("adresse enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement", error);
+        }
+    };
+
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [postalCode, setPostalCode] = useState("");

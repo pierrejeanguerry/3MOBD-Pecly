@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, ReactNode } from "react";
+import {useState, createContext, useContext, ReactNode, Dispatch, SetStateAction} from "react";
 import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,6 +12,8 @@ import {
 
 interface AuthContextType {
   user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>
+  saveUser: (user:User) => Promise<boolean>
   register: (
     email: string,
     password: string,
@@ -244,6 +246,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         checkIsLogged,
+        setUser,
+        saveUser
       }}
     >
       {children}
