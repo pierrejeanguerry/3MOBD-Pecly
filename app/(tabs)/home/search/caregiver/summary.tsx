@@ -12,11 +12,14 @@ import firestore from "@react-native-firebase/firestore";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
 import { theme } from "@/styles/theme";
 import Spinner from "react-native-loading-spinner-overlay";
+import * as Notifications from "expo-notifications";
 import {
   formatCaregiver,
   formatMotive,
   formatName,
 } from "@/utils/formatString";
+import { AppointmentData } from "@/types/appointment";
+import { User } from "@/types/user";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -127,6 +130,8 @@ export default function Summary() {
       history.push(appointmentData.caregiverId);
 
       await userRef.update({ history });
+
+      scheduleReminder(appointmentData, caregiverData);
       setLoading(false);
 
       router.push("/(tabs)/home/search/caregiver/confirmed");
@@ -135,6 +140,54 @@ export default function Summary() {
       console.error("Erreur Firestore:", e);
       router.push("/(tabs)/home/search/caregiver/error");
     }
+  }
+
+  async function getNotificationPermission() {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    return finalStatus;
+  }
+
+  async function scheduleReminder(
+    appointment: AppointmentData,
+    caregiver: User | undefined
+  ) {
+    if (!caregiver) return;
+    const permission = await getNotificationPermission();
+    if (permission !== "granted" || !appointment) return;
+
+    const date = appointment.dateTime?.toDate();
+    if (!date) return;
+
+    const reminderDate = new Date(date);
+    reminderDate.setDate(reminderDate.getDate() - 1);
+    reminderDate.setHours(9, 0, 0, 0);
+
+    console.log("Notification programmée pour :", reminderDate);
+
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Rappel de Rendez-vous",
+        body: `Rendez-vous le ${format(
+          new Date(date),
+          "dd/MM/yyyy"
+        )} à avec ${formatCaregiver(caregiver.lastname)} pour ${
+          appointment.motive
+        }`,
+        sound: true,
+      },
+      trigger: {
+        date: reminderDate,
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+    });
+
+    console.log("Notification programmée avec ID :", notificationId);
   }
 
   return (
