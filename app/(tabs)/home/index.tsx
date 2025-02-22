@@ -7,8 +7,70 @@ import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
+import * as Notifications from "expo-notifications";
+import { getNotificationPermission } from "@/utils/scheduleNotification";
 
 export default function TabScreen() {
+  useEffect(() => {
+    getGeneralNotifications();
+  }, []);
+
+  async function getGeneralNotifications() {
+    const allNotifs = await Notifications.getAllScheduledNotificationsAsync();
+    console.log("allNotifs", allNotifs);
+
+    const notifSnapshot = await firestore()
+      .collection("Notifications")
+      .where("timestamp", ">=", new Date())
+      .get();
+    console.log(notifSnapshot.docs[0].data());
+
+    if (!notifSnapshot.empty) {
+      notifSnapshot.docs.forEach(async (notifDoc) => {
+        const notifData = notifDoc.data();
+        const notifDate: Date = notifData.timestamp.toDate();
+
+        const existingNotif = allNotifs.find(
+          (scheduledNotif) =>
+            scheduledNotif.content.body === notifData.body &&
+            scheduledNotif.content.title === notifData.title
+        );
+
+        if (!existingNotif) {
+          await scheduleNotification(
+            notifData.title,
+            notifData.body,
+            notifDate
+          );
+          console.log("Nouvelle notification enregistrée");
+        } else {
+          console.log("Notification déjà programmée :", notifData.title);
+        }
+      });
+    }
+  }
+
+  async function scheduleNotification(
+    title: string,
+    body: string,
+    timestamp: Date
+  ) {
+    const permission = await getNotificationPermission();
+    if (permission !== "granted") return;
+
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        sound: true,
+      },
+      trigger: {
+        date: timestamp,
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+    });
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Header />

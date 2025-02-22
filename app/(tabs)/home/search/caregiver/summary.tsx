@@ -20,6 +20,7 @@ import {
 } from "@/utils/formatString";
 import { AppointmentData } from "@/types/appointment";
 import { User } from "@/types/user";
+import { getNotificationPermission } from "@/utils/scheduleNotification";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -140,17 +141,6 @@ export default function Summary() {
       console.error("Erreur Firestore:", e);
       router.push("/(tabs)/home/search/caregiver/error");
     }
-  }
-
-  async function getNotificationPermission() {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    return finalStatus;
   }
 
   async function scheduleReminder(
