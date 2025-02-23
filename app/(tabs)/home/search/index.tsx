@@ -10,10 +10,56 @@ import { theme } from "@/styles/theme";
 
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
-  const [specialitiesList, setSpecialitiesList] = useState<Speciality[]>([]);
+  const [specialitiesList, setSpecialitiesList] = useState<string[]>([]);
   const [caregiversList, setCaregiversList] = useState<User[]>([]);
 
-  type Speciality = { speciality: string };
+  const specialties = [
+    "allergologue",
+    "anesthesiste",
+    "andrologue",
+    "cardiologue",
+    "chirurgien",
+    "chirurgien cardiaque",
+    "chirurgien esthetique",
+    "chirurgien general",
+    "chirurgien maxillo-facial",
+    "chirurgien pediatrique",
+    "chirurgien thoracique",
+    "chirurgien vasculaire",
+    "neurochirurgien",
+    "dermatologue",
+    "endocrinologue",
+    "gastro-enterologue",
+    "geriatre",
+    "gynecologue",
+    "hematologue",
+    "hepatologue",
+    "infectiologue",
+    "medecin en medecine aiguë",
+    "medecin du travail",
+    "medecin generaliste",
+    "medecin interniste",
+    "medecin nucleaire",
+    "medecin en soins palliatifs",
+    "medecin en medecine physique",
+    "medecin en medecine preventive",
+    "neonatologue",
+    "nephrologue",
+    "neurologue",
+    "odontologiste",
+    "oncologue",
+    "obstetricien",
+    "ophtalmologue",
+    "orthopediste",
+    "oto-rhino-laryngologue",
+    "pediatre",
+    "pneumologue",
+    "psychiatre",
+    "radiologue",
+    "radiotherapeute",
+    "rhumatologue",
+    "urologue",
+  ];
 
   const getCargivers = async () => {
     if (!search) {
@@ -23,19 +69,12 @@ export default function SearchScreen() {
     }
     const slug = search.toLowerCase();
     try {
-      const [caregivers, specialities] = await Promise.all([
-        firestore()
-          .collection("Users")
-          .where("isCaregiver", "==", true)
-          .where("lastname", ">=", slug)
-          .where("lastname", "<=", slug + "\uf8ff")
-          .get(),
-        firestore()
-          .collection("Specialities")
-          .where("speciality", ">=", slug)
-          .where("speciality", "<=", slug + "\uf8ff")
-          .get(),
-      ]);
+      const caregivers = await firestore()
+        .collection("Users")
+        .where("isCaregiver", "==", true)
+        .where("lastname", ">=", slug)
+        .where("lastname", "<=", slug + "\uf8ff")
+        .get();
       const datas = caregivers.docs.map((doc) => {
         const docData = doc.data() as User;
         return {
@@ -46,7 +85,9 @@ export default function SearchScreen() {
       });
       setCaregiversList(datas);
       setSpecialitiesList(
-        specialities.docs.map((doc) => doc.data() as Speciality)
+        specialties.filter((speciality) =>
+          speciality.toLowerCase().includes(slug)
+        )
       );
     } catch (e) {
       console.error(e);
@@ -63,7 +104,7 @@ export default function SearchScreen() {
   return (
     <View style={styles.container}>
       <View>
-        <Text style={styles.title}>Nom, spécialité, établissement, ... </Text>
+        <Text style={styles.title}>Nom, specialite, etablissement, ... </Text>
         <Searchbar search={search} setSearch={setSearch} onSubmit={onSubmit} />
         {specialitiesList.length != 0 && (
           <FlatList
@@ -72,7 +113,7 @@ export default function SearchScreen() {
             keyExtractor={(_, index) => index.toString()}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             renderItem={({ item }) => (
-              <SpecialityLabel name={item.speciality} emphasis={search} />
+              <SpecialityLabel name={item} emphasis={search} />
             )}
           />
         )}
