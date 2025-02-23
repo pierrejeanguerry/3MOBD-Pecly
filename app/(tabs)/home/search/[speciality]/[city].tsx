@@ -4,6 +4,7 @@ import { FlatList, Platform, StyleSheet, View } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import { User } from "@/types/user";
+import { theme } from "@/styles/theme";
 
 export default function LocationScreen() {
   const { speciality, city } = useLocalSearchParams();
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: Platform.OS === "ios" ? 100 : 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   separator: {
     height: 10,

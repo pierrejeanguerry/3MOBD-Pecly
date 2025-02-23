@@ -7,11 +7,13 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import * as Location from "expo-location";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useDebounce } from "@/hooks/useDebounce";
 import axios, { AxiosResponse } from "axios";
+import { theme } from "@/styles/theme";
 
 type City = {
   nom: string;
@@ -117,12 +119,12 @@ export default function SpecialityScreen() {
             setSearch={setSearch}
             onSubmit={onSubmit}
           />
-          <TouchableHighlight onPress={() => setGetLoc((prev) => !prev)}>
+          <TouchableOpacity onPress={() => setGetLoc((prev) => !prev)}>
             <View style={styles.location}>
               <FontAwesome size={28} name="location-arrow" />
               <Text>Autour de moi</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
           <View style={styles.locationPurposes}>
             {cities.map((city: City) => (
               <Text
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     paddingTop: Platform.OS === "ios" ? 50 : 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     flex: 1,
   },
   title: {

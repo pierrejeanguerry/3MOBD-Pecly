@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Availability } from "@/types/availability";
+import { theme } from "@/styles/theme";
 
 export default function AppointmentPicker({
   data,
@@ -12,6 +13,7 @@ export default function AppointmentPicker({
 }) {
   const [toggle, setToggle] = useState<Boolean>(false);
 
+  if (data.slots.length == 0) return <></>;
   return (
     <View style={styles.container}>
       {!toggle && (
@@ -63,7 +65,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     height: 50,
     width: 350,
     paddingHorizontal: 20,
@@ -74,7 +76,7 @@ let styles = StyleSheet.create({
     justifyContent: "space-between",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     height: 50,
     width: 350,
     paddingHorizontal: 20,
@@ -89,7 +91,7 @@ let styles = StyleSheet.create({
     gap: 10,
     width: 350,
 
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 20,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,

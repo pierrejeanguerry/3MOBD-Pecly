@@ -2,20 +2,22 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
 import { Link, useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
+import { theme } from "@/styles/theme";
 
 export default function MyAccount() {
   const { logout, user } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
-    if (await logout())
-    router.replace("../account/");
+    if (await logout()) router.replace("../account/");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileSection}>
-        <Text style={styles.name}>{user?.firstname} {user?.lastname}</Text>
+        <Text style={styles.name}>
+          {user?.firstname} {user?.lastname}
+        </Text>
       </View>
 
       <View style={styles.privacySection}>
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   profileSection: {
     backgroundColor: "#3B74F2",
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     margin: 30,
   },
   privacyOption: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,

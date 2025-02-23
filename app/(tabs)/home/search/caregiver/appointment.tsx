@@ -1,7 +1,9 @@
 import MotivesPicker from "@/components/MotivesPicker";
 import { useAppointment } from "@/contexts/appointmentContext";
 import { useCaregiver } from "@/contexts/caregiverContext";
+import { theme } from "@/styles/theme";
 import { AppointmentData } from "@/types/appointment";
+import { formatCaregiver } from "@/utils/formatString";
 import { Stack, useRouter } from "expo-router";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
@@ -25,8 +27,10 @@ export default function Appointment() {
     <>
       <Stack.Screen
         options={{
-          title: `Dr ${caregiverData?.name}`,
-          headerStyle: { backgroundColor: "#34659A" },
+          title: caregiverData?.name
+            ? formatCaregiver(caregiverData?.name)
+            : "",
+          headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}
       />
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     alignItems: "center",
   },
   separator: {
