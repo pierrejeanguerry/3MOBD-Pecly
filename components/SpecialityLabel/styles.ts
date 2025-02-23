@@ -10,8 +10,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "nowrap",
     minWidth: 362,
-    borderColor: "black",
-    borderWidth: 0.25,
   },
   normal: {
     color: theme.colors.textPrimary,

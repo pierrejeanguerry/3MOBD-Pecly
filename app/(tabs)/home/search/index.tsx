@@ -85,9 +85,9 @@ export default function SearchScreen() {
       });
       setCaregiversList(datas);
       setSpecialitiesList(
-        specialties.filter((speciality) =>
-          speciality.toLowerCase().includes(slug)
-        )
+        specialties
+          .filter((speciality) => speciality.toLowerCase().includes(slug))
+          .slice(0, 8)
       );
     } catch (e) {
       console.error(e);
