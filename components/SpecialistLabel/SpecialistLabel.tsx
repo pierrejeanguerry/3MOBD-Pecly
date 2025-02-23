@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     gap: 25,
     paddingVertical: 10,
     paddingHorizontal: 5,
+    marginTop: 10,
   },
   summarized: {
     borderWidth: 0.5,

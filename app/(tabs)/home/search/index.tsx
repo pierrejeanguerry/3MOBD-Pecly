@@ -1,7 +1,7 @@
 import Searchbar from "@/components/SearchBar";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import { useEffect, useState } from "react";
-import firestore from "@react-native-firebase/firestore";
+import firestore, { limit } from "@react-native-firebase/firestore";
 import { View, Text, StyleSheet, FlatList, Platform } from "react-native";
 import { useDebounce } from "@/hooks/useDebounce";
 import SpecialityLabel from "@/components/SpecialityLabel";
@@ -69,21 +69,24 @@ export default function SearchScreen() {
     }
     const slug = search.toLowerCase();
     try {
-      const caregivers = await firestore()
-        .collection("Users")
-        .where("isCaregiver", "==", true)
-        .where("lastname", ">=", slug)
-        .where("lastname", "<=", slug + "\uf8ff")
-        .get();
-      const datas = caregivers.docs.map((doc) => {
-        const docData = doc.data() as User;
-        return {
-          ...docData,
-          id: doc.ref.id,
-          name: `${docData.firstname} ${docData.lastname}`,
-        };
-      });
-      setCaregiversList(datas);
+      if (slug.length > 2) {
+        const caregivers = await firestore()
+          .collection("Users")
+          .where("isCaregiver", "==", true)
+          .where("lastname", ">=", slug)
+          .where("lastname", "<=", slug + "\uf8ff")
+          .limit(10)
+          .get();
+        const datas = caregivers.docs.map((doc) => {
+          const docData = doc.data() as User;
+          return {
+            ...docData,
+            id: doc.ref.id,
+            name: `${docData.firstname} ${docData.lastname}`,
+          };
+        });
+        setCaregiversList(datas);
+      } else setCaregiversList([]);
       setSpecialitiesList(
         specialties
           .filter((speciality) => speciality.toLowerCase().includes(slug))
