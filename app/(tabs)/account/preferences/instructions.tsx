@@ -4,15 +4,37 @@ import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
 import {usePreferences} from "@/hooks/usePreferences";
+import firestore from "@react-native-firebase/firestore";
 
 export default function Instructions() {
-    const {instructions} = usePreferences();
+
+    const {user, saveUser} = useAuth()
+
+    const instructions = async (
+        instruction: string,
+        motives: string[],
+    ): Promise<void> => {
+        if (!user) {
+            return;
+        }
+        try {
+            const userRef = await firestore()
+                .collection("Users")
+                .doc(user.id)
+                .update({instructions :{instruction: instruction, motives: motives}});
+            await saveUser({...user, caregiverDetails :{instruction: instruction, motives: motives}});
+            console.log("adresse enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement", error);
+        }
+    };
+
     const [instruction, setInstruction] = useState("");
     const [motives, setMotives] = useState("");
 
     const handleInstructions = async (
         instruction: string,
-        motives: string,
+        motives: string[],
     ) => {
         try {
             await instructions(instruction, motives);

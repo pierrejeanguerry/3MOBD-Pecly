@@ -4,10 +4,31 @@ import {Link, useRouter} from "expo-router";
 import {useAuth} from "@/hooks/useAuth";
 import React, {useEffect, useState} from "react";
 import {usePreferences} from "@/hooks/usePreferences";
+import firestore from "@react-native-firebase/firestore";
 
 
 export default function Presentation() {
-    const {presentations} = usePreferences();
+
+    const {user, saveUser} = useAuth()
+
+    const presentations = async (
+        presentation: string,
+    ): Promise<void> => {
+        if (!user) {
+            return;
+        }
+        try {
+            const userRef = await firestore()
+                .collection("Users")
+                .doc(user.id)
+                .update({presentation :{presentation: presentation}});
+            await saveUser({...user, presentation :{presentation: presentation}});
+            console.log("adresse enregistrée");
+        } catch (error) {
+            console.error("Erreur lors de l'enregistrement", error);
+        }
+    };
+
     const [presentation, setPresentation] = useState("");
 
     const handlePresentations = async (

@@ -25,8 +25,6 @@ export default function Adresse() {
                 .collection("Users")
                 .doc(user.id)
                 .update({address :{country: country, city: city, postalCode: postalCode, street: street}});
-            /*await saveAdresse({id: userRef.id, country: country, city: city, postalCode: postalCode, street: street});
-            console.log("adresse enregistrée");*/
             await saveUser({...user, address :{country: country, city: city, postalCode: postalCode, street: street}});
             console.log("adresse enregistrée");
         } catch (error) {
