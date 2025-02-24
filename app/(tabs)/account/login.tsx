@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { theme } from "@/styles/theme";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { ScrollView } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 
 function onPress(): void {}
 
@@ -72,7 +73,12 @@ export default function Login() {
           >
             Se connecter
           </Button>
-          {loading && <Text style={{ color: "green" }}>Connexion...</Text>}
+            <Spinner
+                visible={loading}
+                textContent={"Connexion..."}
+                textStyle={{ color: "#FFF" }}
+                overlayColor="rgba(0, 0, 0, 0.75)"
+            />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

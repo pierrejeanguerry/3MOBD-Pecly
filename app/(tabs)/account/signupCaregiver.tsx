@@ -10,10 +10,13 @@ import {
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
+import { useRouter } from "expo-router";
+import Spinner from "react-native-loading-spinner-overlay";
+
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function SignupCaregiver() {
-  const { registerCaregiver } = useAuth();
+  const { registerCaregiver, login } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,6 +24,9 @@ export default function SignupCaregiver() {
   const [phone, setPhone] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
   const [gender, setGender] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
 
   const handleRegisterCaregiver = async (
     email: string,
@@ -32,6 +38,8 @@ export default function SignupCaregiver() {
     gender: string
   ) => {
     try {
+      setLoading(true);
+      console.log("true")
       await registerCaregiver(
         email,
         pass,
@@ -41,6 +49,11 @@ export default function SignupCaregiver() {
         licenseNumber,
         gender
       );
+      if (await login(email, pass)) {
+        console.log("redirection")
+        setLoading(false);
+        router.push("../account/myAccount");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -124,12 +137,12 @@ export default function SignupCaregiver() {
             onChangeText={setPhone}
           />
 
+
           <Text style={styles.label}>Saisissez votre numéro de CPS</Text>
           <TextInput
             style={styles.input}
-            placeholder="adresse e-mail"
+            placeholder="cps..."
             placeholderTextColor="#A9A9A9"
-            keyboardType="email-address"
             value={licenseNumber}
             onChangeText={setLicenseNumber}
           />
@@ -151,6 +164,12 @@ export default function SignupCaregiver() {
             >
               Créer un compte
             </Button>
+              <Spinner
+                  visible={loading}
+                  textContent={"Création du compte..."}
+                  textStyle={{ color: "#FFF" }}
+                  overlayColor="rgba(0, 0, 0, 0.75)"
+              />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -188,7 +207,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 2,
-    minWidth: 200,
   },
   nameContainer: {
     flexDirection: "row",
