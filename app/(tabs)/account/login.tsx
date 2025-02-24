@@ -8,10 +8,8 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { ScrollView } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 
-function onPress(): void {}
-
 export default function Login() {
-  const { login, checkIsLogged } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,21 +20,12 @@ export default function Login() {
       setLoading(true);
       if (await login(email, pass)) {
         setLoading(false);
-        router.push("../account/myAccount");
+        router.navigate("../account");
       }
     } catch (e) {
       console.error(e);
     }
   };
-
-  useEffect(() => {
-    const check = async () => {
-      if (await checkIsLogged()) {
-        router.replace("../account/myAccount");
-      }
-    };
-    check().then(null);
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -73,12 +62,12 @@ export default function Login() {
           >
             Se connecter
           </Button>
-            <Spinner
-                visible={loading}
-                textContent={"Connexion..."}
-                textStyle={{ color: "#FFF" }}
-                overlayColor="rgba(0, 0, 0, 0.75)"
-            />
+          <Spinner
+            visible={loading}
+            textContent={"Connexion..."}
+            textStyle={{ color: "#FFF" }}
+            overlayColor="rgba(0, 0, 0, 0.75)"
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

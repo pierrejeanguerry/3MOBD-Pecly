@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -26,7 +26,6 @@ export default function Signup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-
   const handleRegister = async (
     email: string,
     pass: string,
@@ -37,19 +36,17 @@ export default function Signup() {
   ) => {
     try {
       setLoading(true);
-      console.log("true")
+      console.log("true");
       await register(email, pass, gender, lastName, firstName, phone);
       if (await login(email, pass)) {
-        console.log("redirection")
+        console.log("redirection");
         setLoading(false);
-        router.push("../account/myAccount");
+        router.push("../account");
       }
     } catch (e) {
       console.error(e);
     }
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -137,12 +134,12 @@ export default function Signup() {
           >
             Créer un compte
           </Button>
-            <Spinner
-                visible={loading}
-                textContent={"Création du compte..."}
-                textStyle={{ color: "#FFF" }}
-                overlayColor="rgba(0, 0, 0, 0.75)"
-            />
+          <Spinner
+            visible={loading}
+            textContent={"Création du compte..."}
+            textStyle={{ color: "#FFF" }}
+            overlayColor="rgba(0, 0, 0, 0.75)"
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
