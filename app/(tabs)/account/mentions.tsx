@@ -1,11 +1,11 @@
 import { theme } from "@/styles/theme";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {View, Text, StyleSheet, ScrollView} from "react-native";
 
 function onPress(): void {}
 
 export default function Mentions() {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.titre}>Mentions légales</Text>
 
       <Text style={styles.paragraphe}>
@@ -35,15 +35,13 @@ export default function Mentions() {
         Pecly a recours à Devoteam G Cloud, dont le siège social est situé 11
         bis, Quai Perrache, 69002 Lyon.
       </Text>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: theme.colors.backgroundSecondary,
   },
   titre: {
