@@ -78,12 +78,11 @@ export default function Account() {
             </View>
 
             <View style={styles.privacySection}>
-              <TouchableOpacity
-                style={styles.privacyOption}
-                onPress={handlePressPreferences}
-              >
-                <Text style={styles.privacyOptionText}>Mes préférences</Text>
-              </TouchableOpacity>
+              {user?.isCaregiver && (
+                  <TouchableOpacity style={styles.privacyOption} onPress={handlePressPreferences}>
+                    <Text style={styles.privacyOptionText}>Mes préférences</Text>
+                  </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={styles.privacyOption}
                 onPress={handlePressInfos}
