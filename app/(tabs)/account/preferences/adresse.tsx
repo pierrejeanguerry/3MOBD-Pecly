@@ -1,15 +1,11 @@
-import {View, Text, StyleSheet, TextInput} from "react-native";
+import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
 import Button from "../../../../components/Button/Button";
-import {Link, useRouter} from "expo-router";
-import React, {useEffect, useState} from "react";
+import { useAuth } from "@/hooks/useAuth";
+import React, { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useAuth} from "@/hooks/useAuth";
-import {User} from "@/types/user";
-
 
 export default function Adresse() {
-    const {user, saveUser} = useAuth()
+    const { user, saveUser } = useAuth();
 
     const adresse = async (
         country: string,
@@ -24,9 +20,23 @@ export default function Adresse() {
             const userRef = await firestore()
                 .collection("Users")
                 .doc(user.id)
-                .update({address :{country: country, city: city, postalCode: postalCode, street: street}});
-            await saveUser({...user, address :{country: country, city: city, postalCode: postalCode, street: street}});
-            console.log("adresse enregistrée");
+                .update({
+                    address: { country: country, city: city, postalCode: postalCode, street: street },
+                });
+            await saveUser({ ...user, address: { country, city, postalCode, street } });
+            console.log("Adresse enregistrée");
+
+            setSuccessMessage(true);
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start();
+
+            setTimeout(() => {
+                setSuccessMessage(false);
+                fadeAnim.setValue(0);
+            }, 3000);
         } catch (error) {
             console.error("Erreur lors de l'enregistrement", error);
         }
@@ -36,6 +46,8 @@ export default function Adresse() {
     const [city, setCity] = useState("");
     const [postalCode, setPostalCode] = useState("");
     const [street, setStreet] = useState("");
+    const [fadeAnim] = useState(new Animated.Value(0));
+    const [successMessage, setSuccessMessage] = useState(false);
 
     const handleAdresse = async (
         country: string,
@@ -50,16 +62,24 @@ export default function Adresse() {
         }
     };
 
+    useEffect(() => {
+        if (user?.address) {
+            setCountry(user.address.country || "");
+            setCity(user.address.city || "");
+            setPostalCode(user.address.postalCode || "");
+            setStreet(user.address.street || "");
+        }
+    }, [user]);
+
     return (
         <View style={styles.container}>
 
             <Text style={styles.titre}>Adresse</Text>
 
-
             <View style={styles.adresseContainer}>
                 <TextInput
                     style={[styles.input, styles.adresseInput]}
-                    placeholder="Pays..."
+                    placeholder={country || "Pays..."}
                     placeholderTextColor="#A9A9A9"
                     value={country}
                     onChangeText={setCountry}
@@ -67,7 +87,7 @@ export default function Adresse() {
 
                 <TextInput
                     style={[styles.input, styles.adresseInput]}
-                    placeholder="Ville..."
+                    placeholder={city || "Ville..."}
                     placeholderTextColor="#A9A9A9"
                     value={city}
                     onChangeText={setCity}
@@ -77,15 +97,16 @@ export default function Adresse() {
             <View style={styles.adresseContainer}>
                 <TextInput
                     style={[styles.input, styles.adresseInput]}
-                    placeholder="Code postal..."
+                    placeholder={postalCode || "Code postal..."}
                     placeholderTextColor="#A9A9A9"
+                    keyboardType="numeric"
                     value={postalCode}
                     onChangeText={setPostalCode}
                 />
 
                 <TextInput
                     style={[styles.input, styles.adresseInput]}
-                    placeholder="Rue..."
+                    placeholder={street || "Rue..."}
                     placeholderTextColor="#A9A9A9"
                     value={street}
                     onChangeText={setStreet}
@@ -97,8 +118,18 @@ export default function Adresse() {
                 styleType={"primary"}
                 onPress={() =>
                     handleAdresse(country, city, postalCode, street)
-                }>
-                Appliquer </Button>
+                }
+            >
+                Appliquer
+            </Button>
+
+            {successMessage && (
+                <Animated.View
+                    style={[styles.successMessage, { opacity: fadeAnim }]}
+                >
+                    <Text style={styles.successText}>Adresse enregistrée avec succès !</Text>
+                </Animated.View>
+            )}
 
         </View>
     );
@@ -107,9 +138,10 @@ export default function Adresse() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#DFF3FF",
+        padding: 20,
     },
     titre: {
         fontSize: 28,
@@ -125,7 +157,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         shadowColor: "#000",
         shadowOpacity: 0.1,
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowRadius: 5,
         elevation: 2,
     },
@@ -133,9 +165,24 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         margin: 15,
+        width: "100%",
     },
     adresseInput: {
         flex: 1,
         marginHorizontal: 5,
+    },
+    successMessage: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: "#28a745",
+        borderRadius: 5,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    successText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 });

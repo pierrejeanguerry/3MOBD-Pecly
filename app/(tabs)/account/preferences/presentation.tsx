@@ -1,70 +1,88 @@
-import {View, Text, StyleSheet, TextInput} from "react-native";
+import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
 import Button from "../../../../components/Button/Button";
-import {Link, useRouter} from "expo-router";
-import {useAuth} from "@/hooks/useAuth";
-import React, {useEffect, useState} from "react";
-import {usePreferences} from "@/hooks/usePreferences";
+import { useAuth } from "@/hooks/useAuth";
+import React, { useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
-
 
 export default function Presentation() {
 
-    const {user, saveUser} = useAuth()
+    const { user, saveUser } = useAuth();
 
-    const presentations = async (
-        presentation: string,
-    ): Promise<void> => {
+    const presentations = async (presentation: string): Promise<void> => {
         if (!user) {
             return;
         }
         try {
-            const userRef = await firestore()
+            await firestore()
                 .collection("Users")
                 .doc(user.id)
-                .update({presentation :{presentation: presentation}});
-            await saveUser({...user, presentation :{presentation: presentation}});
-            console.log("adresse enregistrée");
+                .update({ "caregiverDetails.presentation": presentation });
+            await saveUser({ ...user, caregiverDetails: { presentation: presentation } });
+            console.log("Présentation enregistrée");
         } catch (error) {
             console.error("Erreur lors de l'enregistrement", error);
         }
     };
 
     const [presentation, setPresentation] = useState("");
+    const [fadeAnim] = useState(new Animated.Value(0));
+    const [successMessage, setSuccessMessage] = useState(false);
 
-    const handlePresentations = async (
-        presentation: string,
-    ) => {
+    const handlePresentations = async (presentation: string) => {
         try {
             await presentations(presentation);
+
+            setSuccessMessage(true);
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start();
+
+            setTimeout(() => {
+                setSuccessMessage(false);
+                fadeAnim.setValue(0);
+            }, 3000);
         } catch (e) {
             console.error(e);
         }
     };
+
+    useEffect(() => {
+        if (user?.caregiverDetails?.presentation) {
+            setPresentation(user.caregiverDetails.presentation);
+        }
+    }, [user]);
 
     return (
         <View style={styles.container}>
 
             <Text style={styles.titre}>Présentation</Text>
 
-
-            <Text style={styles.label}>Saissisez votre présentation</Text>
+            <Text style={styles.label}>Saisissez votre présentation</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Bonjour, je suis médecin généraliste à ..."
+                placeholder={presentation || "Bonjour, je suis médecin généraliste à ..."}
                 placeholderTextColor="#A9A9A9"
                 value={presentation}
                 onChangeText={setPresentation}
             />
 
-
             <Button
                 size={"medium"}
                 styleType={"primary"}
-                onPress={() =>
-                    handlePresentations(presentation)
-                }
+                onPress={() => handlePresentations(presentation)}
             >
-                Appliquer </Button>
+                Appliquer
+            </Button>
+
+            {successMessage && (
+                <Animated.View
+                    style={[styles.successMessage, { opacity: fadeAnim }]}
+                >
+                    <Text style={styles.successText}>Présentation enregistrée avec succès !</Text>
+                </Animated.View>
+            )}
 
         </View>
     );
@@ -73,14 +91,16 @@ export default function Presentation() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#DFF3FF",
+        padding: 20,
     },
     titre: {
         fontSize: 28,
         fontWeight: "bold",
         color: "#43193B",
+        marginTop: 30,
     },
     label: {
         fontSize: 16,
@@ -99,8 +119,23 @@ const styles = StyleSheet.create({
         fontSize: 14,
         shadowColor: "#000",
         shadowOpacity: 0.1,
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowRadius: 5,
         elevation: 2,
+        width: "100%",
+    },
+    successMessage: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: "#28a745",
+        borderRadius: 5,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    successText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 });

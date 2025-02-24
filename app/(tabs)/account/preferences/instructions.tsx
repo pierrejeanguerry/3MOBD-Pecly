@@ -1,91 +1,116 @@
-import {View, Text, StyleSheet, TextInput} from "react-native";
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Animated } from "react-native";
 import Button from "../../../../components/Button/Button";
-import {Link, useRouter} from "expo-router";
-import {useAuth} from "@/hooks/useAuth";
-import React, {useEffect, useState} from "react";
-import {usePreferences} from "@/hooks/usePreferences";
+import { useAuth } from "@/hooks/useAuth";
+import React, { useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
 
 export default function Instructions() {
+    const { user, saveUser } = useAuth();
+    const [instruction, setInstruction] = useState("");
+    const [motives, setMotives] = useState<string[]>([]);
+    const [newMotive, setNewMotive] = useState("");
+    const [fadeAnim] = useState(new Animated.Value(0));
+    const [successMessage, setSuccessMessage] = useState(false);
 
-    const {user, saveUser} = useAuth()
-
-    const instructions = async (
-        instruction: string,
-        motives: string[],
-    ): Promise<void> => {
-        if (!user) {
-            return;
+    useEffect(() => {
+        if (user?.caregiverDetails) {
+            setInstruction(user.caregiverDetails.instruction || "");
+            setMotives(user.caregiverDetails.motives || []);
         }
+    }, [user]);
+
+    const updateInstructions = async () => {
+        if (!user)
+            return;
         try {
-            const userRef = await firestore()
+            await firestore()
                 .collection("Users")
                 .doc(user.id)
-                .update({instructions :{instruction: instruction, motives: motives}});
-            await saveUser({...user, caregiverDetails :{instruction: instruction, motives: motives}});
-            console.log("adresse enregistrée");
+                .update({
+                    "caregiverDetails.instruction": instruction,
+                    "caregiverDetails.motives": motives,
+                });
+            await saveUser({ ...user, caregiverDetails: { ...user.caregiverDetails, instruction, motives } });
+            console.log("Instructions enregistrées");
+
+            setSuccessMessage(true);
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }).start();
+
+            setTimeout(() => {
+                setSuccessMessage(false);
+                fadeAnim.setValue(0);
+            }, 3000);
         } catch (error) {
             console.error("Erreur lors de l'enregistrement", error);
         }
     };
 
-    const [instruction, setInstruction] = useState("");
-    const [motives, setMotives] = useState("");
-
-    const handleInstructions = async (
-        instruction: string,
-        motives: string[],
-    ) => {
-        try {
-            await instructions(instruction, motives);
-        } catch (e) {
-            console.error(e);
+    const addMotive = () => {
+        if (newMotive.trim() !== "") {
+            setMotives([...motives, newMotive.trim()]);
+            setNewMotive("");
         }
+    };
+
+    const removeMotive = (index: number) => {
+        setMotives(motives.filter((_, i) => i !== index));
     };
 
     return (
         <View style={styles.container}>
-
             <Text style={styles.titre}>Instructions et motivations</Text>
 
-
-            <Text style={styles.label}>Saissisez vos instructions</Text>
+            <Text style={styles.label}>Saisissez vos instructions</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Les instructions seront visibles par vos patients..."
+                placeholder={instruction || "Les instructions seront visibles par vos patients..."}
                 placeholderTextColor="#A9A9A9"
                 value={instruction}
                 onChangeText={setInstruction}
             />
 
-            <Text style={styles.label}>Saissisez vos motivations</Text>
+            <Text style={styles.label}>Saisissez vos motivations</Text>
             <View style={styles.motivesContainer}>
                 <TextInput
                     style={[styles.input, styles.motivesInput]}
-                    placeholder="Première consultation..."
+                    placeholder="Ex: Première consultation..."
                     placeholderTextColor="#A9A9A9"
-                    value={motives}
-                    onChangeText={setMotives}
+                    value={newMotive}
+                    onChangeText={setNewMotive}
                 />
-
-                <TextInput
-                    style={[styles.input, styles.motivesInput]}
-                    placeholder="Vaccin..."
-                    placeholderTextColor="#A9A9A9"
-                    value={motives}
-                    onChangeText={setMotives}
-                />
+                <TouchableOpacity style={styles.addButton} onPress={addMotive}>
+                    <Text style={styles.addButtonText}>+</Text>
+                </TouchableOpacity>
             </View>
 
-            <Button
-                size={"medium"}
-                styleType={"primary"}
-                onPress={() =>
-                    handleInstructions(instruction, motives)
-                }
-            >
-                Appliquer </Button>
+            <FlatList
+                data={motives}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }) => (
+                    <View style={styles.motiveItem}>
+                        <Text style={styles.motiveText}>{item}</Text>
+                        <TouchableOpacity onPress={() => removeMotive(index)}>
+                            <Text style={styles.removeButton}>✖</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
 
+            <Button size="medium" styleType="primary" onPress={updateInstructions}>
+                Appliquer
+            </Button>
+
+            {successMessage && (
+                <Animated.View
+                    style={[styles.successMessage, { opacity: fadeAnim }]}
+                >
+                    <Text style={styles.successText}>Instructions enregistrées avec succès !</Text>
+                </Animated.View>
+            )}
         </View>
     );
 }
@@ -96,11 +121,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#DFF3FF",
+        padding: 20,
     },
     titre: {
         fontSize: 28,
         fontWeight: "bold",
         color: "#43193B",
+        marginBottom: 20,
     },
     label: {
         fontSize: 16,
@@ -113,25 +140,67 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFF",
         padding: 15,
         borderRadius: 10,
-        marginHorizontal: 5,
-        marginBottom: 10,
         fontSize: 14,
         shadowColor: "#000",
         shadowOpacity: 0.1,
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowRadius: 5,
         elevation: 2,
+        width: "100%",
     },
     motivesContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 15,
-
+        alignItems: "center",
+        marginBottom: 10,
+        width: "100%",
     },
     motivesInput: {
         flex: 1,
-        marginHorizontal: 5,
+        marginRight: 10,
+    },
+    addButton: {
+        backgroundColor: "#4CAF50",
+        width: 40,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10,
+    },
+    addButtonText: {
+        fontSize: 20,
+        color: "#FFF",
+        fontWeight: "bold",
+    },
+    motiveItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#FFF",
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 5,
+        width: "100%",
+    },
+    motiveText: {
+        fontSize: 14,
+        color: "#333",
+    },
+    removeButton: {
+        fontSize: 18,
+        color: "red",
+    },
+    successMessage: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: "#28a745",
+        borderRadius: 5,
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    successText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 });
