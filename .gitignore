@@ -35,7 +35,9 @@ yarn-error.*
 
 app-example
 
+#IDE
 .idea
+.vscode
 
 pnpm-lock.yaml
 

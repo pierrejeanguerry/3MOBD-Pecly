@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   wordContainer: {
     flexDirection: "row",
     flexWrap: "nowrap",
-    minWidth: "88%",
+    minWidth: 362,
   },
   normal: {
     color: theme.colors.textPrimary,
