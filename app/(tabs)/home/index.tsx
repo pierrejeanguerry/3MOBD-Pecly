@@ -17,7 +17,6 @@ export default function TabScreen() {
 
   async function getGeneralNotifications() {
     const allNotifs = await Notifications.getAllScheduledNotificationsAsync();
-    console.log("allNotifs", allNotifs);
 
     const notifSnapshot = await firestore()
       .collection("Notifications")

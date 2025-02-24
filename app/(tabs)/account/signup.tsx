@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -27,7 +27,6 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
   const handleRegister = async (
     email: string,
     pass: string,
@@ -37,8 +36,7 @@ export default function Signup() {
     phone: string
   ) => {
     try {
-      if (!email.match(emailRegex))
-      {
+      if (!email.match(emailRegex)) {
         alert("Veuillez renseigner un email valide");
         return;
       }
@@ -46,14 +44,12 @@ export default function Signup() {
       await register(email, pass, gender, lastName, firstName, phone);
       if (await login(email, pass)) {
         setLoading(false);
-        router.push("../account/myAccount");
+        router.push("../account");
       }
     } catch (e) {
       console.error(e);
     }
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -141,12 +137,12 @@ export default function Signup() {
           >
             Créer un compte
           </Button>
-            <Spinner
-                visible={loading}
-                textContent={"Création du compte..."}
-                textStyle={{ color: "#FFF" }}
-                overlayColor="rgba(0, 0, 0, 0.75)"
-            />
+          <Spinner
+            visible={loading}
+            textContent={"Création du compte..."}
+            textStyle={{ color: "#FFF" }}
+            overlayColor="rgba(0, 0, 0, 0.75)"
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

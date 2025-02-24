@@ -8,7 +8,7 @@ import { theme } from "@/styles/theme";
 function onPress(): void {}
 
 export default function Login() {
-  const { login, checkIsLogged } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,21 +19,12 @@ export default function Login() {
       setLoading(true);
       if (await login(email, pass)) {
         setLoading(false);
-        router.push("../account/myAccount");
+        router.navigate("../account");
       }
     } catch (e) {
       console.error(e);
     }
   };
-
-  useEffect(() => {
-    const check = async () => {
-      if (await checkIsLogged()) {
-        router.replace("../account/myAccount");
-      }
-    };
-    check().then(null);
-  }, []);
 
   return (
     <View style={styles.container}>

@@ -28,7 +28,6 @@ export default function SignupCaregiver() {
   const [loading, setLoading] = useState(false);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-
   const handleRegisterCaregiver = async (
     email: string,
     pass: string,
@@ -39,8 +38,7 @@ export default function SignupCaregiver() {
     gender: string
   ) => {
     try {
-      if (!email.match(emailRegex))
-      {
+      if (!email.match(emailRegex)) {
         alert("Veuillez renseigner un email valide");
         return;
       }
@@ -56,7 +54,7 @@ export default function SignupCaregiver() {
       );
       if (await login(email, pass)) {
         setLoading(false);
-        router.push("../account/myAccount");
+        router.push("../account");
       }
     } catch (e) {
       console.error(e);
@@ -141,7 +139,6 @@ export default function SignupCaregiver() {
             onChangeText={setPhone}
           />
 
-
           <Text style={styles.label}>Saisissez votre numéro de CPS</Text>
           <TextInput
             style={styles.input}
@@ -168,12 +165,12 @@ export default function SignupCaregiver() {
             >
               Créer un compte
             </Button>
-              <Spinner
-                  visible={loading}
-                  textContent={"Création du compte..."}
-                  textStyle={{ color: "#FFF" }}
-                  overlayColor="rgba(0, 0, 0, 0.75)"
-              />
+            <Spinner
+              visible={loading}
+              textContent={"Création du compte..."}
+              textStyle={{ color: "#FFF" }}
+              overlayColor="rgba(0, 0, 0, 0.75)"
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
