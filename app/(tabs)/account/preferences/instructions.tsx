@@ -27,10 +27,10 @@ export default function Instructions() {
                 .collection("Users")
                 .doc(user.id)
                 .update({
-                    "caregiverDetails.instruction": instruction,
-                    "caregiverDetails.motives": motives,
+                    "caregiverDetails.instruction": instruction.toLowerCase(),
+                    "caregiverDetails.motives": motives.map((motive) => motive.toLowerCase()),
                 });
-            await saveUser({ ...user, caregiverDetails: { ...user.caregiverDetails, instruction, motives } });
+            await saveUser({ ...user, caregiverDetails: { ...user.caregiverDetails, instruction: instruction.toLowerCase(), motives: motives.map((motive) => motive.toLowerCase()) } });
             console.log("Instructions enregistrées");
 
             setSuccessMessage(true);
@@ -108,7 +108,7 @@ export default function Instructions() {
                 <Animated.View
                     style={[styles.successMessage, { opacity: fadeAnim }]}
                 >
-                    <Text style={styles.successText}>Instructions enregistrées avec succès !</Text>
+                    <Text style={styles.successText}>Instructions enregistrées !</Text>
                 </Animated.View>
             )}
         </View>

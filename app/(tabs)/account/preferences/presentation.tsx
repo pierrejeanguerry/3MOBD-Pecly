@@ -16,8 +16,8 @@ export default function Presentation() {
             await firestore()
                 .collection("Users")
                 .doc(user.id)
-                .update({ "caregiverDetails.presentation": presentation });
-            await saveUser({ ...user, caregiverDetails: { presentation: presentation } });
+                .update({ "caregiverDetails.presentation": presentation.toLowerCase() });
+            await saveUser({ ...user, caregiverDetails: { presentation: presentation.toLowerCase() } });
             console.log("Présentation enregistrée");
         } catch (error) {
             console.error("Erreur lors de l'enregistrement", error);
@@ -80,7 +80,7 @@ export default function Presentation() {
                 <Animated.View
                     style={[styles.successMessage, { opacity: fadeAnim }]}
                 >
-                    <Text style={styles.successText}>Présentation enregistrée avec succès !</Text>
+                    <Text style={styles.successText}>Présentation enregistrée !</Text>
                 </Animated.View>
             )}
 

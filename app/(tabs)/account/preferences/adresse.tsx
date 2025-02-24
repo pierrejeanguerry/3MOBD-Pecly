@@ -21,9 +21,9 @@ export default function Adresse() {
                 .collection("Users")
                 .doc(user.id)
                 .update({
-                    address: { country: country, city: city, postalCode: postalCode, street: street },
+                    address: { country: country.toLowerCase(), city: city.toLowerCase(), postalCode: postalCode, street: street.toLowerCase() },
                 });
-            await saveUser({ ...user, address: { country, city, postalCode, street } });
+            await saveUser({ ...user, address: {   country: country.toLowerCase(), city: city.toLowerCase(), postalCode: postalCode.toLowerCase(), street: street.toLowerCase(),} });
             console.log("Adresse enregistrée");
 
             setSuccessMessage(true);
@@ -127,7 +127,7 @@ export default function Adresse() {
                 <Animated.View
                     style={[styles.successMessage, { opacity: fadeAnim }]}
                 >
-                    <Text style={styles.successText}>Adresse enregistrée avec succès !</Text>
+                    <Text style={styles.successText}>Adresse enregistrée !</Text>
                 </Animated.View>
             )}
 
