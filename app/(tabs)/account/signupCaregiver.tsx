@@ -26,6 +26,7 @@ export default function SignupCaregiver() {
   const [gender, setGender] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
   const handleRegisterCaregiver = async (
@@ -38,8 +39,12 @@ export default function SignupCaregiver() {
     gender: string
   ) => {
     try {
+      if (!email.match(emailRegex))
+      {
+        alert("Veuillez renseigner un email valide");
+        return;
+      }
       setLoading(true);
-      console.log("true")
       await registerCaregiver(
         email,
         pass,
@@ -50,7 +55,6 @@ export default function SignupCaregiver() {
         gender
       );
       if (await login(email, pass)) {
-        console.log("redirection")
         setLoading(false);
         router.push("../account/myAccount");
       }

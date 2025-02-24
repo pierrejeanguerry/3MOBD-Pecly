@@ -25,6 +25,7 @@ export default function Signup() {
   const [phone, setPhone] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
   const handleRegister = async (
@@ -36,11 +37,14 @@ export default function Signup() {
     phone: string
   ) => {
     try {
+      if (!email.match(emailRegex))
+      {
+        alert("Veuillez renseigner un email valide");
+        return;
+      }
       setLoading(true);
-      console.log("true")
       await register(email, pass, gender, lastName, firstName, phone);
       if (await login(email, pass)) {
-        console.log("redirection")
         setLoading(false);
         router.push("../account/myAccount");
       }
