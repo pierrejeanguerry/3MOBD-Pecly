@@ -5,6 +5,7 @@ import {
   Animated,
   FlatList,
   StyleSheet,
+  Button,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import styles from "./styles";
@@ -23,12 +24,14 @@ export default function MyAppointmentScreen() {
   }
 
   const handleSwitch = (isPassed: boolean) => {
-    setPassed(isPassed);
     Animated.timing(underlinePosition, {
       toValue: isPassed ? 1 : 0,
       duration: 200,
       useNativeDriver: false,
     }).start();
+    setTimeout(() => {
+      setPassed(isPassed);
+    }, 300)
   };
 
   return (
@@ -60,44 +63,44 @@ export default function MyAppointmentScreen() {
           ]}
         />
       </View>
-      {passed ? <NotPassedAppointment /> : <FutureAppointment />}
+      <NotPassedAppointment passed={passed} />
     </View>
   );
 }
 
-function FutureAppointment() {
-  const [appointments, setAppointments] = useState([]);
-
-  useEffect(() => {}, []);
-
-  return <Text>Future</Text>;
-}
-
-function NotPassedAppointment() {
+function NotPassedAppointment({passed} : any) {
   const [appointments, setAppointments] = useState<any[]>([]);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const getAppointments = async () => {
-      const querySnapshot = await firestore()
+  const getAppointments = async () => {
+    const querySnapshot = await firestore()
         .collection("Appointments")
         .where("patientId", "==", user?.id)
+        .where("isPassed", '==', passed)
         .get();
 
-      let tempAppointment: any[] = [];
 
-      for (const element of querySnapshot.docs) {
-        const data = element.data();
-        const caregiverSnap = await firestore()
+    let tempAppointment: any[] = [];
+
+    for (const element of querySnapshot.docs) {
+      const data = element.data();
+      const caregiverSnap = await firestore()
           .doc(`Users/${data.caregiverId}`)
           .get();
-        const caregiver = caregiverSnap.data();
-        tempAppointment.push({ appointment: data, caregiver: caregiver });
-      }
-      setAppointments(tempAppointment);
-    };
+      const caregiver = caregiverSnap.data();
+      tempAppointment.push({ id: element.id , appointment: data, caregiver: caregiver });
+    }
+    setAppointments(tempAppointment);
+  };
+
+  useEffect(() => {
     getAppointments().then(null);
-  }, []);
+  }, [passed]);
+
+  const handleCancel = async (id: string) => {
+    await firestore().collection("Appointments").doc(id).delete();
+    await getAppointments();
+  }
 
   const formatDate = (timestamp: any) => {
     const date = timestamp.toDate();
@@ -125,6 +128,7 @@ function NotPassedAppointment() {
             <Text style={unique.date}>
               Date: {formatDate(item.appointment.dateTime)}
             </Text>
+            {!passed ? <Button title={'Annuler'} onPress={()=>{handleCancel(item.id)}}></Button> : null}
           </View>
         )}
       />
