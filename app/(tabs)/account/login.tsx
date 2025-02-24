@@ -4,6 +4,8 @@ import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
 import { theme } from "@/styles/theme";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { ScrollView } from "react-native";
 
 function onPress(): void {}
 
@@ -37,36 +39,42 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titre}>Se connecter</Text>
+      <KeyboardAvoidingView behavior={"padding"} style={styles.container}>
+        <ScrollView style={styles.scroll}>
+          <Text style={styles.titre}>Se connecter</Text>
 
-      <Text style={styles.label}>Adresse e-mail</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Adresse e-mail"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+          <Text style={styles.label}>Adresse e-mail</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            placeholder="Adresse e-mail"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-      <Text style={styles.label}>Mot de passe</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Mot de passe..."
-        placeholderTextColor="#A9A9A9"
-        secureTextEntry={true}
-        value={pass}
-        onChangeText={setPass}
-      />
+          <Text style={styles.label}>Mot de passe</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            placeholder="Mot de passe..."
+            placeholderTextColor="#A9A9A9"
+            secureTextEntry={true}
+            value={pass}
+            onChangeText={setPass}
+          />
 
-      <Button
-        size={"large"}
-        styleType={"primary"}
-        onPress={() => handleLogin(email, pass)}
-      >
-        Se connecter
-      </Button>
-      {loading && <Text style={{ color: "green" }}>Connexion...</Text>}
+          <Button
+            size={"large"}
+            styleType={"primary"}
+            onPress={() => handleLogin(email, pass)}
+          >
+            Se connecter
+          </Button>
+          {loading && <Text style={{ color: "green" }}>Connexion...</Text>}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -102,5 +110,9 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 2,
     width: 200,
+  },
+  scroll: {
+    flexGrow: 1,
+    marginBottom: 20,
   },
 });
