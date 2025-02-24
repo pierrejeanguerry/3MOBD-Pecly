@@ -112,6 +112,7 @@ export default function Summary() {
       if (!oldAvailabilityRef.empty) {
         await oldAvailabilityRef.docs[0].ref.update({
           slots: firestore.FieldValue.arrayRemove(slot),
+          slotsCount: firestore.FieldValue.increment(-1),
         });
       }
 
@@ -241,13 +242,11 @@ function Condition({
         <Text style={styles.conditionTitle}>{title}</Text>
         <Text style={styles.conditionValue}>{value}</Text>
       </View>
-      <TouchableOpacity
-        onPress={handleCheckChange}
-        activeOpacity={0.7}
-        style={styles.touchableArea}
-      >
-        <Checkbox style={styles.checkbox} value={isChecked} />
-      </TouchableOpacity>
+      <Checkbox
+        style={styles.checkbox}
+        value={isChecked}
+        onTouchEnd={handleCheckChange}
+      />
     </View>
   );
 }
@@ -272,13 +271,10 @@ const styles = StyleSheet.create({
   conditionValue: {
     fontSize: 18,
   },
-  touchableArea: {
-    borderWidth: 15,
-    minWidth: 50,
-    borderColor: "transparent",
-  },
   checkbox: {
     alignSelf: "center",
+    width: 25,
+    height: 25,
   },
   conditionContainer: {
     display: "flex",
