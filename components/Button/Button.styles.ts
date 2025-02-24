@@ -15,7 +15,7 @@ const types: Record<ButtonStyleType, any> = {
     box-shadow: 0 4px #000000;
   `,
   primary: css`
-    background-color: #0a85eb;
+    background-color: #1E6F5C;
     box-shadow: 0 4px #000000;
   `,
   danger: css`
@@ -25,8 +25,8 @@ const types: Record<ButtonStyleType, any> = {
   empty: css`
     background-color: transparent;
     box-shadow: 0 4px #000000;
-    border: 1px solid #0a85eb;
-    color: #0a85eb;
+    border: 1px solid #1E6F5C;
+    color: #1E6F5C;
   `,
 };
 
