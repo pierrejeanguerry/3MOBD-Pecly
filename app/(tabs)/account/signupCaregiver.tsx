@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function SignupCaregiver() {
-  const { user, registerCaregiver, checkIsLogged } = useAuth();
+  const { registerCaregiver } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [lastName, setLastName] = useState("");
@@ -46,105 +48,112 @@ export default function SignupCaregiver() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titre}>Créer un compte soignant</Text>
+      <KeyboardAvoidingView behavior={"padding"} style={styles.container}>
+        <ScrollView style={styles.scroll}>
+          <Text style={styles.titre}>Créer un compte soignant</Text>
 
-      <Text style={styles.label}>Saisissez votre adresse e-mail</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="adresse e-mail"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+          <Text style={styles.label}>Saisissez votre adresse e-mail</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            placeholder="adresse e-mail"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-      <Text style={styles.label}>Mot de passe</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="mot de passe..."
-        placeholderTextColor="#A9A9A9"
-        secureTextEntry={true}
-        value={pass}
-        onChangeText={setPass}
-      />
+          <Text style={styles.label}>Mot de passe</Text>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            placeholder="mot de passe..."
+            placeholderTextColor="#A9A9A9"
+            secureTextEntry={true}
+            value={pass}
+            onChangeText={setPass}
+          />
 
-      <Text style={styles.label}>Nom et Prénom</Text>
-      <View style={styles.nameContainer}>
-        <TextInput
-          style={[styles.input, styles.nameInput]}
-          placeholder="Nom..."
-          placeholderTextColor="#A9A9A9"
-          value={lastName}
-          onChangeText={setLastName}
-        />
+          <Text style={styles.label}>Nom et Prénom</Text>
+          <View style={styles.nameContainer}>
+            <TextInput
+              style={[styles.input, styles.nameInput]}
+              placeholder="Nom..."
+              placeholderTextColor="#A9A9A9"
+              value={lastName}
+              onChangeText={setLastName}
+            />
 
-        <TextInput
-          style={[styles.input, styles.nameInput]}
-          placeholder="Prénom..."
-          placeholderTextColor="#A9A9A9"
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-      </View>
+            <TextInput
+              style={[styles.input, styles.nameInput]}
+              placeholder="Prénom..."
+              placeholderTextColor="#A9A9A9"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+          </View>
 
-      <View style={styles.genderContainer}>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "Féminin" && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender("Féminin")}
-        >
-          <Text style={styles.genderText}>Féminin</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "Masculin" && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender("Masculin")}
-        >
-          <Text style={styles.genderText}>Masculin</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.genderContainer}>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "Féminin" && styles.genderButtonSelected,
+              ]}
+              onPress={() => setGender("Féminin")}
+            >
+              <Text style={styles.genderText}>Féminin</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "Masculin" && styles.genderButtonSelected,
+              ]}
+              onPress={() => setGender("Masculin")}
+            >
+              <Text style={styles.genderText}>Masculin</Text>
+            </TouchableOpacity>
+          </View>
 
-      <Text style={styles.label}>Numéro de téléphone</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="06 00 00 00 00"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="phone-pad"
-        value={phone}
-        onChangeText={setPhone}
-      />
+          <Text style={styles.label}>Numéro de téléphone</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="06 00 00 00 00"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
+          />
 
-      <Text style={styles.label}>Saisissez votre numéro de CPS</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="adresse e-mail"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="email-address"
-        value={licenseNumber}
-        onChangeText={setLicenseNumber}
-      />
-
-      <Button
-        size={"large"}
-        styleType={"primary"}
-        onPress={() =>
-          handleRegisterCaregiver(
-            email,
-            pass,
-            lastName,
-            firstName,
-            phone,
-            licenseNumber,
-            gender
-          )
-        }
-      >
-        Créer un compte
-      </Button>
+          <Text style={styles.label}>Saisissez votre numéro de CPS</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="adresse e-mail"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="email-address"
+            value={licenseNumber}
+            onChangeText={setLicenseNumber}
+          />
+          <View style={{ alignSelf: "center" }}>
+            <Button
+              size={"large"}
+              styleType={"primary"}
+              onPress={() =>
+                handleRegisterCaregiver(
+                  email,
+                  pass,
+                  lastName,
+                  firstName,
+                  phone,
+                  licenseNumber,
+                  gender
+                )
+              }
+            >
+              Créer un compte
+            </Button>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -179,6 +188,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 2,
+    minWidth: 200,
   },
   nameContainer: {
     flexDirection: "row",
@@ -213,5 +223,9 @@ const styles = StyleSheet.create({
   genderText: {
     fontSize: 14,
     color: "#333",
+  },
+  scroll: {
+    flexGrow: 1,
+    marginBottom: 20,
   },
 });

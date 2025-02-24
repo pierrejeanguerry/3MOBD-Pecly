@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 export default function Signup() {
   const { register } = useAuth();
@@ -36,88 +38,92 @@ export default function Signup() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titre}>Créer un compte</Text>
+      <KeyboardAvoidingView behavior={"padding"} style={styles.container}>
+        <ScrollView style={styles.scroll}>
+          <Text style={styles.titre}>Créer un compte</Text>
 
-      <Text style={styles.label}>Saisissez votre adresse e-mail</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="adresse e-mail"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+          <Text style={styles.label}>Saisissez votre adresse e-mail</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="adresse e-mail"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-      <Text style={styles.label}>Mot de passe</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="mot de passe..."
-        placeholderTextColor="#A9A9A9"
-        secureTextEntry={true}
-        value={pass}
-        onChangeText={setPass}
-      />
+          <Text style={styles.label}>Mot de passe</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="mot de passe..."
+            placeholderTextColor="#A9A9A9"
+            secureTextEntry={true}
+            value={pass}
+            onChangeText={setPass}
+          />
 
-      <Text style={styles.label}>Sexe à l’état civil</Text>
-      <View style={styles.genderContainer}>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "Féminin" && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender("Féminin")}
-        >
-          <Text style={styles.genderText}>Féminin</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === "Masculin" && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender("Masculin")}
-        >
-          <Text style={styles.genderText}>Masculin</Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.label}>Sexe à l’état civil</Text>
+          <View style={styles.genderContainer}>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "Féminin" && styles.genderButtonSelected,
+              ]}
+              onPress={() => setGender("Féminin")}
+            >
+              <Text style={styles.genderText}>Féminin</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.genderButton,
+                gender === "Masculin" && styles.genderButtonSelected,
+              ]}
+              onPress={() => setGender("Masculin")}
+            >
+              <Text style={styles.genderText}>Masculin</Text>
+            </TouchableOpacity>
+          </View>
 
-      <Text style={styles.label}>Nom et Prénom</Text>
-      <View style={styles.nameContainer}>
-        <TextInput
-          style={[styles.input, styles.nameInput]}
-          placeholder="Nom..."
-          placeholderTextColor="#A9A9A9"
-          value={lastName}
-          onChangeText={setLastName}
-        />
+          <Text style={styles.label}>Nom et Prénom</Text>
+          <View style={styles.nameContainer}>
+            <TextInput
+              style={[styles.input, styles.nameInput]}
+              placeholder="Nom..."
+              placeholderTextColor="#A9A9A9"
+              value={lastName}
+              onChangeText={setLastName}
+            />
 
-        <TextInput
-          style={[styles.input, styles.nameInput]}
-          placeholder="Prénom..."
-          placeholderTextColor="#A9A9A9"
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-      </View>
+            <TextInput
+              style={[styles.input, styles.nameInput]}
+              placeholder="Prénom..."
+              placeholderTextColor="#A9A9A9"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+          </View>
 
-      <Text style={styles.label}>Numéro de téléphone</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="06 00 00 00 00"
-        placeholderTextColor="#A9A9A9"
-        keyboardType="phone-pad"
-        value={phone}
-        onChangeText={setPhone}
-      />
+          <Text style={styles.label}>Numéro de téléphone</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="06 00 00 00 00"
+            placeholderTextColor="#A9A9A9"
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
+          />
 
-      <Button
-        size={"large"}
-        styleType={"primary"}
-        onPress={() =>
-          handleRegister(email, pass, gender, lastName, firstName, phone)
-        }
-      >
-        Créer un compte
-      </Button>
+          <Button
+            size={"large"}
+            styleType={"primary"}
+            onPress={() =>
+              handleRegister(email, pass, gender, lastName, firstName, phone)
+            }
+          >
+            Créer un compte
+          </Button>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -186,5 +192,9 @@ const styles = StyleSheet.create({
   nameInput: {
     flex: 1,
     marginHorizontal: 5,
+  },
+  scroll: {
+    flexGrow: 1,
+    marginBottom: 20,
   },
 });
