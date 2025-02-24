@@ -2,22 +2,71 @@ import AppointmentPicker from "@/components/AppointmentPicker";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import { Stack, useRouter } from "expo-router";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { useAvailabilities } from "@/hooks/useAvailabilities";
-
+import firestore from "@react-native-firebase/firestore";
+import { format } from "date-fns";
 import { useAppointment } from "@/contexts/appointmentContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomModal from "@/components/CustomModal";
 import Button from "@/components/Button";
 import { Timestamp } from "@react-native-firebase/firestore";
 import { addHours, addMinutes } from "date-fns";
+import { Availability } from "@/types/availability";
+import { theme } from "@/styles/theme";
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function DateSelect() {
   const { caregiverData } = useCaregiver();
-  const { availabilities } = useAvailabilities(caregiverData?.id);
   const { setAppointmentData, appointmentData } = useAppointment();
   const [toogleModal, setToggleModal] = useState(false);
   const router = useRouter();
+  const [availabilities, setAvailabilities] = useState<Availability[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!caregiverData?.id) return;
+
+    setLoading(true);
+    setError(null);
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const unsubscribe = firestore()
+      .collection(`Users/${caregiverData?.id}/Availabilities`)
+      .where("date", ">=", today)
+      .orderBy("date", "asc")
+      .onSnapshot(
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const formattedData: Availability[] = snapshot.docs
+              .map((doc) => {
+                const docData = doc.data() as Partial<Availability>;
+
+                if (!docData.date || !docData.slots) return null;
+
+                return {
+                  slots: docData.slots.sort(),
+                  date: format(new Date(docData.date), "dd/MM/yyyy"),
+                  value: new Date(docData.date),
+                };
+              })
+              .filter((data): data is Availability => data !== null);
+
+            setAvailabilities(formattedData);
+          } else {
+            setAvailabilities([]);
+          }
+          setLoading(false);
+        },
+        (err) => {
+          setError("Erreur lors de la récupération des disponibilités.");
+          console.error(err);
+          setLoading(false);
+        }
+      );
+
+    return () => unsubscribe();
+  }, [caregiverData?.id]);
   function calculateTimeStamp(date: Date, slot: string) {
     const [hours, minutes] = slot.split(":").map(Number);
     const dateTime = new Timestamp(
@@ -49,7 +98,7 @@ export default function DateSelect() {
       <Stack.Screen
         options={{
           title: `Dr ${caregiverData?.name}`,
-          headerStyle: { backgroundColor: "#34659A" },
+          headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}
       />
@@ -86,6 +135,12 @@ export default function DateSelect() {
           </Button>
         </View>
       </CustomModal>
+      <Spinner
+        visible={loading}
+        textContent={"Connexion..."}
+        textStyle={{ color: "#FFF" }}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </>
   );
 }
@@ -94,7 +149,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     alignItems: "center",
   },
   separator: {

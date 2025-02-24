@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { theme } from "@/styles/theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -6,14 +7,19 @@ import { LogBox } from "react-native";
 
 export default function TabLayout() {
   const router = useRouter();
-  const { checkIsLogged } = useAuth();
+  const { checkIsLogged, user } = useAuth();
 
   useEffect(() => {
     LogBox.ignoreAllLogs(true);
     checkIsLogged();
   }, []);
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue", headerShown: false }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.backgroundPrimary,
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -36,6 +42,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="calendar" color={color} />
           ),
+          tabBarItemStyle: { display: `${user ? "flex" : "none"}` },
         }}
       />
       <Tabs.Screen

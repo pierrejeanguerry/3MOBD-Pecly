@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
+import { theme } from "@/styles/theme";
 
 export default function Signup() {
   const { register } = useAuth();
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   titre: {
     fontSize: 28,
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   input: {
-    backgroundColor: "#FFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     borderRadius: 10,
     marginHorizontal: 5,
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   genderButton: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     borderRadius: 10,
     marginHorizontal: 5,

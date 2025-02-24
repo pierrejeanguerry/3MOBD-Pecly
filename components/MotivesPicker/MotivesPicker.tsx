@@ -1,4 +1,11 @@
-import { Text, StyleSheet, TouchableHighlight } from "react-native";
+import { theme } from "@/styles/theme";
+import { formatMotive } from "@/utils/formatString";
+import {
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  TouchableOpacity,
+} from "react-native";
 
 type PickerPos = "begin" | "middle" | "end";
 
@@ -18,9 +25,9 @@ export default function MotivesPicker({
   };
 
   return (
-    <TouchableHighlight style={getContainerStyle()} onPress={onPress}>
-      <Text>{data}</Text>
-    </TouchableHighlight>
+    <TouchableOpacity style={getContainerStyle()} onPress={onPress}>
+      <Text>{formatMotive(data)}</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -30,14 +37,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     height: 50,
     width: 350,
   },
   containerMiddle: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     height: 50,
     width: 350,
   },
@@ -46,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     height: 50,
     width: 350,
   },

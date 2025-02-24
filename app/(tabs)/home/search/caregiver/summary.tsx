@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { format } from "date-fns";
@@ -9,8 +9,18 @@ import { useCaregiver } from "@/contexts/caregiverContext";
 import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
 import firestore from "@react-native-firebase/firestore";
-import Login from "@/app/(tabs)/account/login";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
+import { theme } from "@/styles/theme";
+import Spinner from "react-native-loading-spinner-overlay";
+import * as Notifications from "expo-notifications";
+import {
+  formatCaregiver,
+  formatMotive,
+  formatName,
+} from "@/utils/formatString";
+import { AppointmentData } from "@/types/appointment";
+import { User } from "@/types/user";
+import { getNotificationPermission } from "@/utils/scheduleNotification";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -18,12 +28,12 @@ export default function Summary() {
   const { caregiverData } = useCaregiver();
   const [isDisabled, setIsDisabled] = useState(true);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  // Liste des conditions disponibles (uniquement celles qui ont une valeur)
   const conditions = [
     {
       title: "Soignant",
-      value: caregiverData?.name ? `Dr. ${caregiverData.name}` : null,
+      value: caregiverData?.name ? formatCaregiver(caregiverData?.name) : null,
     },
     {
       title: "Date du rendez-vous",
@@ -33,11 +43,13 @@ export default function Summary() {
           })
         : null,
     },
-    { title: "Raison", value: appointmentData?.motive || null },
+    { title: "Raison", value: formatMotive(appointmentData?.motive) || null },
     {
       title: "Adresse",
       value: caregiverData?.address
-        ? `${caregiverData.address.street}\n${caregiverData.address.postalCode}, ${caregiverData.address.city}`
+        ? `${formatName(caregiverData.address.street)}\n${
+            caregiverData.address.postalCode
+          }, ${formatName(caregiverData.address.city)}`
         : null,
     },
   ].filter((condition) => condition.value !== null);
@@ -64,6 +76,7 @@ export default function Summary() {
       router.push("/account/login");
       return;
     }
+    setLoading(true);
     if (!appointmentData) throw new DatabaseError(ERROR_MESSAGES.FETCH_ERROR);
     if (!appointmentData.dateTime) return;
     const date = appointmentData.dateTime?.toDate();
@@ -119,11 +132,52 @@ export default function Summary() {
 
       await userRef.update({ history });
 
+      scheduleReminder(appointmentData, caregiverData);
+      setLoading(false);
+
       router.push("/(tabs)/home/search/caregiver/confirmed");
     } catch (e) {
+      setLoading(false);
       console.error("Erreur Firestore:", e);
       router.push("/(tabs)/home/search/caregiver/error");
     }
+  }
+
+  async function scheduleReminder(
+    appointment: AppointmentData,
+    caregiver: User | undefined
+  ) {
+    if (!caregiver) return;
+    const permission = await getNotificationPermission();
+    if (permission !== "granted" || !appointment) return;
+
+    const date = appointment.dateTime?.toDate();
+    if (!date) return;
+
+    const reminderDate = new Date(date);
+    reminderDate.setDate(reminderDate.getDate() - 1);
+    reminderDate.setHours(9, 0, 0, 0);
+
+    console.log("Notification programmée pour :", reminderDate);
+
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Rappel de Rendez-vous",
+        body: `Rendez-vous le ${format(
+          new Date(date),
+          "dd/MM/yyyy"
+        )} à avec ${formatCaregiver(caregiver.lastname)} pour ${
+          appointment.motive
+        }`,
+        sound: true,
+      },
+      trigger: {
+        date: reminderDate,
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+    });
+
+    console.log("Notification programmée avec ID :", notificationId);
   }
 
   return (
@@ -131,7 +185,7 @@ export default function Summary() {
       <Stack.Screen
         options={{
           title: ``,
-          headerStyle: { backgroundColor: "#34659A" },
+          headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           headerTintColor: "white",
         }}
       />
@@ -154,6 +208,12 @@ export default function Summary() {
           <Text>JE CONFIRME MON RENDEZ-VOUS</Text>
         </Button>
       </View>
+      <Spinner
+        visible={loading}
+        textContent={"Prise de rendez-vous en cours..."}
+        textStyle={{ color: "#FFF" }}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </>
   );
 }
@@ -164,12 +224,13 @@ function Condition({
   onCheckedChange,
 }: {
   title: string;
-  value: string | null;
+  value: string | null | undefined;
   onCheckedChange: (title: string, isChecked: boolean) => void;
 }) {
   const [isChecked, setIsChecked] = useState(false);
 
-  function handleCheckChange(newValue: boolean) {
+  function handleCheckChange() {
+    const newValue = !isChecked;
     setIsChecked(newValue);
     onCheckedChange(title, newValue);
   }
@@ -180,11 +241,13 @@ function Condition({
         <Text style={styles.conditionTitle}>{title}</Text>
         <Text style={styles.conditionValue}>{value}</Text>
       </View>
-      <Checkbox
-        style={styles.checkbox}
-        value={isChecked}
-        onValueChange={handleCheckChange}
-      />
+      <TouchableOpacity
+        onPress={handleCheckChange}
+        activeOpacity={0.7}
+        style={styles.touchableArea}
+      >
+        <Checkbox style={styles.checkbox} value={isChecked} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -198,7 +261,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     alignItems: "center",
     gap: 10,
   },
@@ -209,6 +272,11 @@ const styles = StyleSheet.create({
   conditionValue: {
     fontSize: 18,
   },
+  touchableArea: {
+    borderWidth: 15,
+    minWidth: 50,
+    borderColor: "transparent",
+  },
   checkbox: {
     alignSelf: "center",
   },
@@ -216,7 +284,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: theme.colors.backgroundTertiary,
     width: "100%",
     borderRadius: 10,
     padding: 20,

@@ -25,7 +25,7 @@ export class ContextError extends Error {
     this.name = "ContextError";
   }
 }
-// Liste des erreurs réutilisables
+
 export const ERROR_MESSAGES = {
   EMPTY_FIELDS: "Un ou plusieurs champs sont vides.",
   PASSWORD_TOO_SHORT: "Le mot de passe doit contenir au moins 8 caractères.",

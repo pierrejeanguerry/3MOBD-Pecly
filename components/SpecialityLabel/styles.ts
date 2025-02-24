@@ -1,23 +1,25 @@
+import { theme } from "@/styles/theme";
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    // flexWrap: "wrap",
   },
   wordContainer: {
     flexDirection: "row",
     flexWrap: "nowrap",
+    minWidth: 362,
   },
   normal: {
-    color: "black",
+    color: theme.colors.textPrimary,
     fontSize: 16,
   },
   emphasis: {
-    color: "#4B94D8",
+    color: theme.colors.textEmphasis,
     fontSize: 16,
     textDecorationLine: "underline",
-    textDecorationColor: "#4B94D8",
+    textDecorationColor: theme.colors.textEmphasis,
     textDecorationStyle: "solid",
   },
 });

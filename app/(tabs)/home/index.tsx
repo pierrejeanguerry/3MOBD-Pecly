@@ -1,13 +1,76 @@
 import Button from "@/components/Button";
 import SpecialistLabel from "@/components/SpecialistLabel";
 import { useAuth } from "@/hooks/useAuth";
-import { useHistory } from "@/hooks/useHistory";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
+import firestore from "@react-native-firebase/firestore";
+import { theme } from "@/styles/theme";
+import * as Notifications from "expo-notifications";
+import { getNotificationPermission } from "@/utils/scheduleNotification";
 
-export default function Tab() {
+export default function TabScreen() {
+  useEffect(() => {
+    getGeneralNotifications();
+  }, []);
+
+  async function getGeneralNotifications() {
+    const allNotifs = await Notifications.getAllScheduledNotificationsAsync();
+    console.log("allNotifs", allNotifs);
+
+    const notifSnapshot = await firestore()
+      .collection("Notifications")
+      .where("timestamp", ">=", new Date())
+      .get();
+    console.log(notifSnapshot.docs[0].data());
+
+    if (!notifSnapshot.empty) {
+      notifSnapshot.docs.forEach(async (notifDoc) => {
+        const notifData = notifDoc.data();
+        const notifDate: Date = notifData.timestamp.toDate();
+
+        const existingNotif = allNotifs.find(
+          (scheduledNotif) =>
+            scheduledNotif.content.body === notifData.body &&
+            scheduledNotif.content.title === notifData.title
+        );
+
+        if (!existingNotif) {
+          await scheduleNotification(
+            notifData.title,
+            notifData.body,
+            notifDate
+          );
+          console.log("Nouvelle notification enregistrée");
+        } else {
+          console.log("Notification déjà programmée :", notifData.title);
+        }
+      });
+    }
+  }
+
+  async function scheduleNotification(
+    title: string,
+    body: string,
+    timestamp: Date
+  ) {
+    const permission = await getNotificationPermission();
+    if (permission !== "granted") return;
+
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        sound: true,
+      },
+      trigger: {
+        date: timestamp,
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+      },
+    });
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Header />
@@ -61,13 +124,72 @@ function Informations() {
 
 function MyCaregivers() {
   const { user } = useAuth();
-  const { history } = useHistory(user?.id);
-
+  const [history, setHistory] = useState<User[]>([]);
   const [itemsToShowCount, setItemsToShowCount] = useState(5);
 
-  if (!history) {
-    return <Text>Chargement...</Text>;
-  }
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const userRef = firestore().doc(`Users/${user?.id}`);
+
+    const unsubscribe = userRef.onSnapshot(
+      async (snapshot) => {
+        if (!snapshot.exists) {
+          setHistory([]);
+          return;
+        }
+
+        const userData = snapshot.data();
+        if (!userData?.history || !Array.isArray(userData.history)) {
+          setHistory([]);
+          return;
+        }
+
+        try {
+          const caregivers = await fetchAllCaregivers(
+            user?.id,
+            userData.history
+          );
+          setHistory(caregivers);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des caregivers :",
+            error
+          );
+        }
+      },
+      (error) =>
+        console.error("Erreur lors de la récupération de l'historique :", error)
+    );
+
+    return () => unsubscribe();
+  }, [user?.id]);
+
+  const fetchAllCaregivers = async (
+    userId: string,
+    historyArray: string[]
+  ): Promise<User[]> => {
+    const caregivers = await Promise.all(
+      historyArray.map(async (element) => {
+        const elementRef = await firestore().doc(`Users/${element}`).get();
+
+        if (!elementRef.exists) {
+          await firestore()
+            .doc(`Users/${userId}`)
+            .update({
+              history: firestore.FieldValue.arrayRemove(element),
+            });
+          return null;
+        }
+
+        const caregiverData = elementRef.data();
+        return caregiverData ? { id: element, ...caregiverData } : null;
+      })
+    );
+
+    return caregivers.filter((c): c is User => c !== null);
+  };
+
   const visibleCaregivers = useMemo(() => {
     return history
       .filter((item) => item !== undefined)
@@ -77,6 +199,10 @@ function MyCaregivers() {
   const handleShowMore = () => {
     setItemsToShowCount(itemsToShowCount + 5);
   };
+
+  if (history.length == 0) {
+    return <></>;
+  }
 
   return (
     <View style={styles.myCaregivers}>
@@ -108,7 +234,7 @@ function Footer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
   },
   button: {
     alignItems: "center",
@@ -118,7 +244,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontSize: 20,
     marginBottom: 10,
-    marginTop: Platform.OS === 'ios' ? 30: 0
+    marginTop: Platform.OS === "ios" ? 30 : 0,
   },
   itemWrapper: {
     marginBottom: 10,
@@ -126,7 +252,7 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#34659A",
+    backgroundColor: theme.colors.backgroundPrimary,
     height: 250,
     zIndex: 20,
     marginBottom: 10,
@@ -139,7 +265,7 @@ const styles = StyleSheet.create({
   catchPhrase2: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "#DFF3FF",
+    color: theme.colors.backgroundSecondary,
   },
   informations: {
     alignSelf: "center",
@@ -149,14 +275,14 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "#f1f1f1",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 10,
     gap: 3,
   },
   infoTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333333",
+    color: theme.colors.textSecondary,
   },
   listItem: {
     flexDirection: "row",
@@ -166,11 +292,11 @@ const styles = StyleSheet.create({
   bullet: {
     fontSize: 20,
     marginRight: 10,
-    color: "black",
+    color: theme.colors.textPrimary,
   },
   text: {
     fontSize: 16,
-    color: "#333333",
+    color: theme.colors.textSecondary,
   },
   myCaregivers: {
     alignSelf: "center",

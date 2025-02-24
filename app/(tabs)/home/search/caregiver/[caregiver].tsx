@@ -1,11 +1,10 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  TouchableOpacity,
   View,
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -15,14 +14,19 @@ import { useCaregiver } from "@/contexts/caregiverContext";
 import { useAppointment } from "@/contexts/appointmentContext";
 import CustomModal from "@/components/CustomModal";
 import { User } from "@/types/user";
+import { theme } from "@/styles/theme";
+import Spinner from "react-native-loading-spinner-overlay";
+import {
+  formatCaregiver,
+  formatName,
+  formatSpeciality,
+} from "@/utils/formatString";
 
 export default function CaregiverScreen() {
   const { caregiver } = useLocalSearchParams();
   const caregiverId = Array.isArray(caregiver) ? caregiver[0] : caregiver;
   const { caregiverData, loading, error, fetchCaregiver } = useCaregiver();
   const { clearAppointmentData } = useAppointment();
-  const [togglePriceModal, setTogglePriceModal] = useState(false);
-
   const router = useRouter();
 
   useFocusEffect(
@@ -37,7 +41,6 @@ export default function CaregiverScreen() {
     fetchCaregiver(caregiverId);
   }, [caregiverId]);
 
-  if (loading) return <Loader />;
   if (error) return <ErrorMessage error={error} />;
   if (!caregiverData) return <EmptyMessage />;
 
@@ -48,16 +51,15 @@ export default function CaregiverScreen() {
         onPress={() => router.push("./appointment")}
       />
       <Body caregiver={caregiverData} />
+      <Spinner
+        visible={loading}
+        textContent={"Récupération des données..."}
+        textStyle={{ color: "#FFF" }}
+        overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </ScrollView>
   );
 }
-
-const Loader = () => (
-  <View style={styles.container}>
-    <ActivityIndicator size="large" />
-    <Text>Chargement...</Text>
-  </View>
-);
 
 const ErrorMessage = ({ error }: { error: string }) => (
   <View style={styles.container}>
@@ -80,9 +82,9 @@ const Header = ({
 }) => (
   <View style={styles.header}>
     <FontAwesome size={100} name="user" style={styles.icon} />
-    <Text style={styles.textHeader}>Dr. {caregiver.name}</Text>
+    <Text style={styles.textHeader}>{formatCaregiver(caregiver.name)}</Text>
     <Text style={styles.textHeader}>
-      {caregiver.caregiverDetails?.speciality}
+      {formatSpeciality(caregiver.caregiverDetails?.speciality)}
     </Text>
     <View style={styles.button}>
       <Button size="long" styleType="primary" onPress={onPress}>
@@ -99,8 +101,10 @@ const Body = ({ caregiver }: { caregiver: User }) => (
         title="Adresse"
         icon="address-book"
         lines={[
-          `${caregiver.address.street},`,
-          `${caregiver.address.postalCode} ${caregiver.address.city}`,
+          `${formatName(caregiver.address.street)},`,
+          `${caregiver.address.postalCode} ${formatName(
+            caregiver.address.city
+          )}`,
         ]}
       />
     )}
@@ -138,9 +142,9 @@ const InfoBlock = ({
         <FontAwesome name={icon} size={18} /> {title}
       </Text>
       {onPress && (
-        <TouchableHighlight onPress={onPress}>
+        <TouchableOpacity onPress={onPress}>
           <Text style={styles.seeMore}>Voir plus</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       )}
     </View>
     {lines.map((line, index) => (
@@ -253,13 +257,13 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "#34659A",
+    backgroundColor: theme.colors.backgroundPrimary,
     height: 250,
     zIndex: 20,
   },
   body: {
     flex: 1,
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     padding: 10,
   },
   icon: {
@@ -287,7 +291,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderStyle: "solid",
     borderRadius: 20,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
   },
   prices: {
     display: "flex",
@@ -296,7 +300,7 @@ const styles = StyleSheet.create({
     paddingRight: 50,
   },
   seeMore: {
-    color: "#34659A",
+    color: theme.colors.backgroundPrimary,
     fontWeight: "bold",
   },
   top: {

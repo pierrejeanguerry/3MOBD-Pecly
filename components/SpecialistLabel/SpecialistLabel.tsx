@@ -1,9 +1,17 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LabelType } from "./Specialist.types";
 import { useRouter } from "expo-router";
-import { useNextAvailability } from "@/hooks/useNextAvailability";
 import { User } from "@/types/user";
+import { useCallback, useEffect, useState } from "react";
+import firestore from "@react-native-firebase/firestore";
+import { format } from "date-fns";
+import { theme } from "@/styles/theme";
+import {
+  formatCaregiver,
+  formatName,
+  formatSpeciality,
+} from "@/utils/formatString";
 
 interface SpecialistLabelProps {
   item: User;
@@ -18,7 +26,7 @@ interface SpecialistLabelChildProps {
 const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
   const router = useRouter();
   const onPress = () => {
-    router.push(`./search/caregiver/${item.id}`);
+    router.push(`/(tabs)/home/search/caregiver/${item.id}`);
   };
 
   return (
@@ -46,14 +54,16 @@ const SpecialistLabelSummarized: React.FC<SpecialistLabelChildProps> = ({
         <FontAwesome size={45} name="user" style={styles.icon} />
         <View>
           {item.name ? (
-            <Text style={styles.text}>{item.name}</Text>
+            <Text style={styles.text}>{formatCaregiver(item.name)}</Text>
           ) : (
             <Text style={styles.text}>
-              {item.firstname} {item.lastname}
+              {formatCaregiver(`${item.firstname} ${item.lastname}`)}
             </Text>
           )}
-          <Text style={styles.text}>{item.caregiverDetails?.speciality}</Text>
-          <Text style={styles.text}>{item.address?.city}</Text>
+          <Text style={styles.text}>
+            {formatSpeciality(item.caregiverDetails?.speciality)}
+          </Text>
+          <Text style={styles.text}>{formatName(item.address?.city)}</Text>
         </View>
       </>
     </TouchableOpacity>
@@ -64,49 +74,88 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
   item,
   onPress,
 }) => {
-  const { availability, loading, error } = useNextAvailability(item.id);
+  const [availability, setAvailability] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getNextAvailability = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0];
+
+    try {
+      const availabilities = await firestore()
+        .collection(`Users/${item.id}/Availabilities`)
+        .where("date", ">=", todayString)
+        .orderBy("date", "asc")
+        .where("slotsCount", "!=", 0)
+        .limit(1)
+        .get();
+
+      if (!availabilities.empty) {
+        const nextAvailability = availabilities.docs[0].data();
+        const date = nextAvailability.date;
+        const formattedDate = format(date, "dd/MM/yyyy");
+        setAvailability(formattedDate);
+      } else {
+        setAvailability(null);
+      }
+    } catch (e) {
+      setError("Erreur lors de la récupération des disponibilités.");
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [item.id]);
+
+  useEffect(() => {
+    getNextAvailability();
+  }, [getNextAvailability]);
   return (
     <View style={styles.list}>
-      <View style={styles.left}>
-        <TouchableOpacity style={styles.container} onPress={onPress}>
+      <TouchableOpacity style={styles.container} onPress={onPress}>
+        <View style={styles.left}>
           <View style={styles.list}>
             <>
               <FontAwesome size={45} name="user" style={styles.icon} />
 
               <View>
                 {item.name ? (
-                  <Text style={styles.text}>{item.name}</Text>
+                  <Text style={styles.text}>{formatCaregiver(item.name)}</Text>
                 ) : (
                   <Text style={styles.text}>
-                    {item.firstname} {item.lastname}
+                    {formatCaregiver(`${item.firstname} ${item.lastname}`)}
                   </Text>
                 )}
                 <Text style={styles.text}>
-                  {item.caregiverDetails?.speciality}
+                  {formatName(item.caregiverDetails?.speciality)}
                 </Text>
-                <Text style={styles.text}>{item.address?.street},</Text>
                 <Text style={styles.text}>
-                  {item.address?.postalCode} {item.address?.city}
+                  {formatName(item.address?.street)},
+                </Text>
+                <Text style={styles.text}>
+                  {item.address?.postalCode} {formatName(item.address?.city)}
                 </Text>
               </View>
             </>
           </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.right}>
-        {loading ? (
-          <Text>Chargement...</Text>
-        ) : error ? (
-          <Text>{error}</Text>
-        ) : availability ? (
-          <>
-            <Text>Prochaine disponibilité :</Text>
-            <Text style={styles.date}>{availability}</Text>
-          </>
-        ) : (
-          <Text>Aucune disponibilité trouvée.</Text>
-        )}
-      </View>
+        </View>
+        <View style={styles.right}>
+          {loading ? (
+            <Text>Récupération des données...</Text>
+          ) : error ? (
+            <Text>{error}</Text>
+          ) : availability ? (
+            <>
+              <Text>Prochaine disponibilité :</Text>
+              <Text style={styles.date}>{availability}</Text>
+            </>
+          ) : (
+            <Text>Aucune disponibilité trouvée.</Text>
+          )}
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -126,6 +175,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    marginTop: 10,
   },
   summarized: {
     borderWidth: 0.5,
@@ -141,7 +193,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: theme.colors.backgroundTertiary,
     borderRadius: 10,
     gap: 10,
   },
