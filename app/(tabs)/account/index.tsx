@@ -49,7 +49,9 @@ export default function Account() {
 
       <View style={styles.privacySection}>
         <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>Mes préférences</Text>
+          <Text style={styles.privacyOptionText}>
+            <Link href={"/(tabs)/account/preferences/index"}>Mes préférences</Link>
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.privacyOption}>
