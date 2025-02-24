@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -9,15 +9,21 @@ import {
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
+import { useRouter } from "expo-router";
+import Spinner from "react-native-loading-spinner-overlay";
+
 
 export default function Signup() {
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [gender, setGender] = useState("");
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
 
   const handleRegister = async (
     email: string,
@@ -28,11 +34,20 @@ export default function Signup() {
     phone: string
   ) => {
     try {
+      setLoading(true);
+      console.log("true")
       await register(email, pass, gender, lastName, firstName, phone);
+      if (await login(email, pass)) {
+        console.log("redirection")
+        setLoading(false);
+        router.push("../account/myAccount");
+      }
     } catch (e) {
       console.error(e);
     }
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -118,6 +133,12 @@ export default function Signup() {
       >
         Créer un compte
       </Button>
+      <Spinner
+          visible={loading}
+          textContent={"Création du compte..."}
+          textStyle={{ color: "#FFF" }}
+          overlayColor="rgba(0, 0, 0, 0.75)"
+      />
     </View>
   );
 }
