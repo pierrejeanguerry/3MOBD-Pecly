@@ -58,7 +58,7 @@ export default function TabScreen() {
     const permission = await getNotificationPermission();
     if (permission !== "granted") return;
 
-    const notificationId = await Notifications.scheduleNotificationAsync({
+    await Notifications.scheduleNotificationAsync({
       content: {
         title: title,
         body: body,
