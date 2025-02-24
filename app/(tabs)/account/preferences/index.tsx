@@ -1,11 +1,25 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Button from "../../../../components/Button/Button";
-import { Link, useRouter } from "expo-router";
-import { useAuth } from "@/hooks/useAuth";
-import React, { useEffect } from "react";
+import { useRouter } from "expo-router";
 
 export default function Tab() {
 
+    const router = useRouter();
+
+    const handlePressAdresse = () => {
+        router.push("/(tabs)/account/preferences/adresse");
+    };
+
+    const handlePressInstruction = () => {
+        router.push("/(tabs)/account/preferences/instructions");
+    };
+
+    const handlePressPresentation = () => {
+        router.push("/(tabs)/account/preferences/presentation");
+    };
+
+    const handlePressPayment = () => {
+        router.push("/(tabs)/account/preferences/payments");
+    };
 
     return (
         <View style={styles.container}>
@@ -14,27 +28,27 @@ export default function Tab() {
 
 
             <View style={styles.privacySection}>
-                <TouchableOpacity style={styles.privacyOption}>
+                <TouchableOpacity style={styles.privacyOption} onPress={handlePressAdresse}>
                     <Text style={styles.privacyOptionText}>
-                        <Link href={"/(tabs)/account/preferences/adresse"}>Modifier mon adresse</Link>
+                        Modifier mon adresse
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.privacyOption}>
+                <TouchableOpacity style={styles.privacyOption} onPress={handlePressInstruction}>
                     <Text style={styles.privacyOptionText}>
-                        <Link href={"/(tabs)/account/preferences/instructions"}>Instructions et motivations</Link>
+                        Instructions et motivations
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.privacyOption}>
+                <TouchableOpacity style={styles.privacyOption} onPress={handlePressPresentation}>
                     <Text style={styles.privacyOptionText}>
-                        <Link href={"/(tabs)/account/preferences/presentation"}>Présentation</Link>
+                       Présentation
                     </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.privacyOption}>
+                <TouchableOpacity style={styles.privacyOption} onPress={handlePressPayment}>
                     <Text style={styles.privacyOptionText}>
-                        <Link href={"/(tabs)/account/preferences/payments"}>Moyens de payments</Link>
+                       Moyens de payments
                     </Text>
                 </TouchableOpacity>
             </View>

@@ -1,26 +1,35 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { theme } from "@/styles/theme";
 
-function onPress(): void {}
 
 export default function Infos() {
+
+  const router = useRouter();
+
+
+  const handlePressCgu = () => {
+    router.push("/(tabs)/account/cgu");
+  };
+
+  const handlePressMentions = () => {
+    router.push("/(tabs)/account/mentions");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Informations légales</Text>
 
       <View style={styles.privacySection}>
-        <TouchableOpacity style={styles.privacyOption}>
+        <TouchableOpacity style={styles.privacyOption} onPress={handlePressCgu}>
           <Text style={styles.privacyOptionText}>
-            <Link href={"/(tabs)/account/cgu"}>
               Conditions générales d'utilisation
-            </Link>
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.privacyOption}>
+        <TouchableOpacity style={styles.privacyOption} onPress={handlePressMentions}>
           <Text style={styles.privacyOptionText}>
-            <Link href={"/(tabs)/account/mentions"}>Mentions légales</Link>
+            Mentions légales
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Button from "../../../components/Button/Button";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
 
@@ -12,6 +12,13 @@ export default function MyAccount() {
     if (await logout()) router.replace("../account/");
   };
 
+  const handlePressPreferences = () => {
+    router.push("../account/preferences/");
+  };
+  const handlePressInfos = () => {
+    router.push("/(tabs)/account/infos");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileSection}>
@@ -21,16 +28,12 @@ export default function MyAccount() {
       </View>
 
       <View style={styles.privacySection}>
-        <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>
-            {" "}
-            <Link href={"../account/preferences/"}> Mes préférences</Link>
-            </Text>
+        <TouchableOpacity style={styles.privacyOption} onPress={handlePressPreferences}>
+          <Text style={styles.privacyOptionText}>Mes préférences</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.privacyOption}>
+        <TouchableOpacity style={styles.privacyOption} onPress={handlePressInfos}>
           <Text style={styles.privacyOptionText}>
-            {" "}
-            <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
+            Informations légales
           </Text>
         </TouchableOpacity>
       </View>

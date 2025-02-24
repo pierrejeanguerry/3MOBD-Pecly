@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
 import { theme } from "@/styles/theme";
 
+
 function onPress(): void {}
 
 export default function Account() {
@@ -20,6 +21,10 @@ export default function Account() {
     };
     check().then(null);
   }, []);
+
+  const handlePressInfos = () => {
+    router.push("/(tabs)/account/infos");
+  };
 
   return (
     <View style={styles.container}>
@@ -48,15 +53,9 @@ export default function Account() {
       </Text>
 
       <View style={styles.privacySection}>
-        <TouchableOpacity style={styles.privacyOption}>
+        <TouchableOpacity style={styles.privacyOption} onPress={handlePressInfos}>
           <Text style={styles.privacyOptionText}>
-            <Link href={"/(tabs)/account/preferences/index"}>Mes préférences</Link>
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.privacyOption}>
-          <Text style={styles.privacyOptionText}>
-            <Link href={"/(tabs)/account/infos"}>Informations légales </Link>
+            Informations légales
           </Text>
         </TouchableOpacity>
       </View>
