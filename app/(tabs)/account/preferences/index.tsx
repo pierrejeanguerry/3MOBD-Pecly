@@ -4,6 +4,14 @@ import { useRouter } from "expo-router";
 export default function Tab() {
   const router = useRouter();
 
+  const handleNameCaregiver = () => {
+      router.push("/(tabs)/account/preferences/nameCaregiver");
+  };
+
+  const handlePhoneCaregiver = () => {
+      router.push("/(tabs)/account/preferences/phoneCaregiver");
+  };
+
   const handlePressAdresse = () => {
     router.push("/(tabs)/account/preferences/address");
   };
@@ -29,6 +37,20 @@ export default function Tab() {
       <Text style={styles.titre}>Mes préférences</Text>
 
       <View style={styles.privacySection}>
+          <TouchableOpacity
+              style={styles.privacyOption}
+              onPress={handleNameCaregiver}
+          >
+              <Text style={styles.privacyOptionText}>Modifier mon nom et prénom</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+              style={styles.privacyOption}
+              onPress={handlePhoneCaregiver}
+          >
+              <Text style={styles.privacyOptionText}>Modifier mon numéro de téléphone</Text>
+          </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.privacyOption}
           onPress={handlePressAdresse}

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Animated } from "react-native";
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Animated, Switch } from "react-native";
 import Button from "../../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useState, useEffect } from "react";
@@ -8,6 +8,7 @@ export default function Instructions() {
     const { user, saveUser } = useAuth();
     const [instruction, setInstruction] = useState("");
     const [motives, setMotives] = useState<string[]>([]);
+    const [mustBeReferred, setMustBeReferred] = useState(false);
     const [newMotive, setNewMotive] = useState("");
     const [fadeAnim] = useState(new Animated.Value(0));
     const [successMessage, setSuccessMessage] = useState(false);
@@ -16,6 +17,7 @@ export default function Instructions() {
         if (user?.caregiverDetails) {
             setInstruction(user.caregiverDetails.instruction || "");
             setMotives(user.caregiverDetails.motives || []);
+            setMustBeReferred(user.caregiverDetails.mustBeReferred || false);
         }
     }, [user]);
 
@@ -29,8 +31,9 @@ export default function Instructions() {
                 .update({
                     "caregiverDetails.instruction": instruction.toLowerCase(),
                     "caregiverDetails.motives": motives.map((motive) => motive.toLowerCase()),
+                    "caregiverDetails.mustBeReferred": mustBeReferred
                 });
-            await saveUser({ ...user, caregiverDetails: { ...user.caregiverDetails, instruction: instruction.toLowerCase(), motives: motives.map((motive) => motive.toLowerCase()) } });
+            await saveUser({ ...user, caregiverDetails: { ...user.caregiverDetails, instruction: instruction.toLowerCase(), motives: motives.map((motive) => motive.toLowerCase()), mustBeReferred: mustBeReferred } });
             console.log("Instructions enregistrées");
 
             setSuccessMessage(true);
@@ -72,6 +75,17 @@ export default function Instructions() {
                 value={instruction}
                 onChangeText={setInstruction}
             />
+
+            <View style={styles.switchContainer}>
+                <Text style={styles.label}>Doit être référé par un professionnel :</Text>
+                <Switch
+                    value={mustBeReferred}
+                    onValueChange={setMustBeReferred}
+                    trackColor={{ false: "#767577", true: "#4CAF50" }}
+                    thumbColor={mustBeReferred ? "#fff" : "#f4f3f4"}
+                />
+            </View>
+
 
             <Text style={styles.label}>Saisissez vos motivations</Text>
             <View style={styles.motivesContainer}>
@@ -147,6 +161,13 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 2,
         width: "100%",
+    },
+    switchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingVertical: 10,
     },
     motivesContainer: {
         flexDirection: "row",

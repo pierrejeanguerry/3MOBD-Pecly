@@ -12,13 +12,16 @@ export default function Payment() {
         cash: false,
         check: false,
     });
-
+    const [thirdParty, setThirdParty] = useState<string | undefined>("");
+    const [vitalCard, setVitalCard] = useState<boolean | undefined>(false);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [successMessage, setSuccessMessage] = useState(false);
 
     useEffect(() => {
-        if (user?.caregiverDetails?.paymentMeans) {
+        if (user?.caregiverDetails?.paymentMeans && user.caregiverDetails?.price) {
             setPaymentMeans(user.caregiverDetails.paymentMeans);
+            setThirdParty(user.caregiverDetails.price.thirdParty);
+            setVitalCard(user.caregiverDetails.price.vitalCard);
         }
     }, [user]);
 
@@ -31,8 +34,10 @@ export default function Payment() {
                 .doc(user.id)
                 .update({
                     "caregiverDetails.paymentMeans": paymentMeans,
+                    "caregiverDetails.thirdParty": thirdParty,
+                    "caregiverDetails.vitalCard": vitalCard,
                 });
-            await saveUser({...user, caregiverDetails: {...user.caregiverDetails, paymentMeans,},});
+            await saveUser({...user, caregiverDetails: {...user.caregiverDetails, paymentMeans, price: {...user.caregiverDetails?.price, thirdParty, vitalCard,},},});
 
             console.log("Moyens de paiement enregistrés");
 
@@ -59,6 +64,16 @@ export default function Payment() {
         }));
     };
 
+    const handleThirdPartyChange = (option: string) => {
+        setThirdParty((prev) => {
+            const options = prev.split(",");
+            if (options.includes(option)) {
+                return options.filter(item => item !== option).join(",");
+            } else {
+                return options.length === 1 && options[0] === "" ? option : [...options, option].join(",");
+            }
+        });
+
     return (
         <View style={styles.container}>
             <Text style={styles.titre}>Moyens de Paiement</Text>
@@ -79,6 +94,43 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>Chèque</Text>
                     <Switch value={paymentMeans.check} onValueChange={() => toggleSwitch("check")} />
+                </View>
+            </View>
+
+            <View style={styles.switchContainer}>
+                <Text style={styles.label}>La carte vitale est accetpée</Text>
+                <Switch
+                    value={vitalCard}
+                    onValueChange={setVitalCard}
+                    trackColor={{ false: "#767577", true: "#4CAF50" }}
+                    thumbColor={vitalCard ? "#fff" : "#f4f3f4"}
+                />
+            </View>
+
+            <Text style={styles.label}>Sélectionnez l'organisme tiers</Text>
+            <View style={styles.motivesContainer}>
+                <View style={styles.paymentOption}>
+                    <Text>L'Assurance Maladie Obligatoire (AMO)</Text>
+                    <Switch
+                        value={thirdParty === "AMO"}
+                        onValueChange={() => handleThirdPartyChange("AMO")}
+                    />
+                </View>
+
+                <View style={styles.paymentOption}>
+                    <Text>Les Complémentaires Santé (AMC)</Text>
+                    <Switch
+                        value={thirdParty === "AMC"}
+                        onValueChange={() => handleThirdPartyChange("AMC")}
+                    />
+                </View>
+
+                <View style={styles.paymentOption}>
+                    <Text>Les Organismes Spécifiques</Text>
+                    <Switch
+                        value={thirdParty === "Specific"}
+                        onValueChange={() => handleThirdPartyChange("Specific")}
+                    />
                 </View>
             </View>
 
@@ -138,6 +190,13 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: "#EAEAEA",
+    },
+    switchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingVertical: 10,
     },
     successMessage: {
         marginTop: 20,
