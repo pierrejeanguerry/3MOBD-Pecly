@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     borderRadius: 10,
-    marginHorizontal: 5,
     marginBottom: 10,
     fontSize: 14,
     shadowColor: "#000",
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 2,
-    width: 200,
+    width: 284,
   },
   scroll: {
     flexGrow: 1,

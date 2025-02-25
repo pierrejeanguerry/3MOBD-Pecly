@@ -215,7 +215,7 @@ function MyCaregivers() {
   };
 
   if (history.length == 0) {
-    return <></>;
+    return;
   }
 
   return (
