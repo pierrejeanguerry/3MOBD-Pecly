@@ -1,14 +1,15 @@
-import { View, Text, StyleSheet, TextInput, Animated } from "react-native";
+import {View, Text, StyleSheet, TextInput, Animated, TouchableOpacity} from "react-native";
 import Button from "../../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
+import {theme} from "@/styles/theme";
 
-export default function NumeroTel() {
+export default function Gender() {
     const { user, saveUser } = useAuth();
 
-    const numeroTel = async (
-        phone: string,
+    const genre = async (
+        gender: string
     ): Promise<void> => {
         if (!user) {
             return;
@@ -18,10 +19,10 @@ export default function NumeroTel() {
                 .collection("Users")
                 .doc(user.id)
                 .update({
-                   contact: { phone: phone,}
+                    gender: gender
                 });
-            await saveUser({ ...user, contact:{   phone: phone, }});
-            console.log("Numéro de téléphone enregistrée");
+            await saveUser({ ...user,    gender: gender });
+            console.log("genre enregistrée");
 
             setSuccessMessage(true);
             Animated.timing(fadeAnim, {
@@ -39,40 +40,50 @@ export default function NumeroTel() {
         }
     };
 
-    const [phone, setPhone] = useState("");
+    const [gender, setGender] = useState("");
     const [fadeAnim] = useState(new Animated.Value(0));
     const [successMessage, setSuccessMessage] = useState(false);
 
-    const handleNumeroTel = async (
-        phone: string,
+    const handleGender = async (
+        gender: string
     ) => {
         try {
-            await numeroTel(phone);
+            await genre(gender);
         } catch (e) {
             console.error(e);
         }
     };
 
     useEffect(() => {
-        if (user?.address) {
-            setPhone(user.contact?.phone || "");
+        if (user) {
+            setGender(user.gender || "");
         }
     }, [user]);
 
     return (
         <View style={styles.container}>
 
-            <Text style={styles.titre}>Numéro de téléphone</Text>
+            <Text style={styles.titre}>Genre</Text>
 
-            <View style={styles.nomContainer}>
-                <TextInput
-                    style={[styles.input, styles.nomInput]}
-                    placeholder={phone || "Numéro de téléphone..."}
-                    placeholderTextColor="#A9A9A9"
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                />
+            <View style={styles.genderContainer}>
+                <TouchableOpacity
+                    style={[
+                        styles.genderButton,
+                        gender === "Féminin" && styles.genderButtonSelected,
+                    ]}
+                    onPress={() => setGender("Féminin")}
+                >
+                    <Text style={styles.genderText}>Féminin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.genderButton,
+                        gender === "Masculin" && styles.genderButtonSelected,
+                    ]}
+                    onPress={() => setGender("Masculin")}
+                >
+                    <Text style={styles.genderText}>Masculin</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -80,7 +91,7 @@ export default function NumeroTel() {
                 size={"medium"}
                 styleType={"primary"}
                 onPress={() =>
-                    handleNumeroTel(phone)
+                    handleGender(gender)
                 }
             >
                 Appliquer
@@ -90,7 +101,7 @@ export default function NumeroTel() {
                 <Animated.View
                     style={[styles.successMessage, { opacity: fadeAnim }]}
                 >
-                    <Text style={styles.successText}>Nom et prénom enregistrée !</Text>
+                    <Text style={styles.successText}>Genre enregistrée !</Text>
                 </Animated.View>
             )}
 
@@ -124,15 +135,31 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 2,
     },
-    nomContainer: {
+    genderContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        margin: 15,
-        width: "100%",
+        marginTop: 10,
+        marginBottom: 10,
     },
-    nomInput: {
+    genderButton: {
         flex: 1,
+        backgroundColor: theme.colors.backgroundTertiary,
+        padding: 15,
+        borderRadius: 10,
         marginHorizontal: 5,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+        elevation: 2,
+    },
+    genderButtonSelected: {
+        backgroundColor: "#007BFF",
+    },
+    genderText: {
+        fontSize: 14,
+        color: "#333",
     },
     successMessage: {
         marginTop: 20,

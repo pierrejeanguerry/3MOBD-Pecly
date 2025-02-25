@@ -6,15 +6,15 @@ export default function Tab() {
     const router = useRouter();
 
     const handlePressNom = () => {
-        router.push("/(tabs)/account/preferencesPatient/nom");
+        router.push("/(tabs)/account/preferencesPatient/name");
     };
 
     const handlePressNumeroTel = () => {
-        router.push("/(tabs)/account/preferencesPatient/numeroTel");
+        router.push("/(tabs)/account/preferencesPatient/phone");
     };
 
     const handlePressGenre = () => {
-        router.push("/(tabs)/account/preferencesPatient/genre");
+        router.push("/(tabs)/account/preferencesPatient/gender");
     };
 
 

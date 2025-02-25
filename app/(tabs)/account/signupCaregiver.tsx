@@ -89,11 +89,11 @@ export default function SignupCaregiver() {
             onChangeText={setPass}
           />
 
-          <Text style={styles.label}>Nom et Prénom</Text>
+          <Text style={styles.label}>Name et Prénom</Text>
           <View style={styles.nameContainer}>
             <TextInput
               style={[styles.input, styles.nameInput]}
-              placeholder="Nom..."
+              placeholder="Name..."
               placeholderTextColor="#A9A9A9"
               value={lastName}
               onChangeText={setLastName}

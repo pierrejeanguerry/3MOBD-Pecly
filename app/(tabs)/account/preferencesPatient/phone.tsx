@@ -4,12 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
 
-export default function Nom() {
+export default function Phone() {
     const { user, saveUser } = useAuth();
 
-    const nom = async (
-        lastname: string,
-        firstname: string,
+    const phoneNumber = async (
+        phone: string,
     ): Promise<void> => {
         if (!user) {
             return;
@@ -19,10 +18,10 @@ export default function Nom() {
                 .collection("Users")
                 .doc(user.id)
                 .update({
-                     lastname: lastname.toLowerCase(), firstname: firstname.toLowerCase(),
+                   contact: { phone: phone,}
                 });
-            await saveUser({ ...user,    lastname: lastname.toLowerCase(), firstname: firstname.toLowerCase() });
-            console.log("nom et prénom enregistrée");
+            await saveUser({ ...user, contact:{   phone: phone, }});
+            console.log("Numéro de téléphone enregistrée");
 
             setSuccessMessage(true);
             Animated.timing(fadeAnim, {
@@ -40,49 +39,39 @@ export default function Nom() {
         }
     };
 
-    const [lastname, setLastname] = useState("");
-    const [firstname, setFirstname] = useState("");
+    const [phone, setPhone] = useState("");
     const [fadeAnim] = useState(new Animated.Value(0));
     const [successMessage, setSuccessMessage] = useState(false);
 
-    const handleNom = async (
-        lastname: string,
-        firstname: string,
+    const handlePhoneNumber = async (
+        phone: string,
     ) => {
         try {
-            await nom(lastname, firstname);
+            await phoneNumber(phone);
         } catch (e) {
             console.error(e);
         }
     };
 
     useEffect(() => {
-        if (user?.address) {
-            setLastname(user.lastname || "");
-            setFirstname(user.firstname || "");
+        if (user?.contact) {
+            setPhone(user.contact.phone || "");
         }
     }, [user]);
 
     return (
         <View style={styles.container}>
 
-            <Text style={styles.titre}>Nom et prénom</Text>
+            <Text style={styles.titre}>Numéro de téléphone</Text>
 
             <View style={styles.nomContainer}>
                 <TextInput
                     style={[styles.input, styles.nomInput]}
-                    placeholder={lastname || "Nom..."}
+                    placeholder={phone || "Numéro de téléphone..."}
                     placeholderTextColor="#A9A9A9"
-                    value={lastname}
-                    onChangeText={setLastname}
-                />
-
-                <TextInput
-                    style={[styles.input, styles.nomInput]}
-                    placeholder={firstname || "Prénom..."}
-                    placeholderTextColor="#A9A9A9"
-                    value={firstname}
-                    onChangeText={setFirstname}
+                    keyboardType="phone-pad"
+                    value={phone}
+                    onChangeText={setPhone}
                 />
             </View>
 
@@ -91,7 +80,7 @@ export default function Nom() {
                 size={"medium"}
                 styleType={"primary"}
                 onPress={() =>
-                    handleNom(lastname, firstname)
+                    handlePhoneNumber(phone)
                 }
             >
                 Appliquer
@@ -101,7 +90,7 @@ export default function Nom() {
                 <Animated.View
                     style={[styles.successMessage, { opacity: fadeAnim }]}
                 >
-                    <Text style={styles.successText}>Nom et prénom enregistrée !</Text>
+                    <Text style={styles.successText}>Numéro de téléphone enregistrée !</Text>
                 </Animated.View>
             )}
 
