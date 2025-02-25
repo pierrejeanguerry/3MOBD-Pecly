@@ -13,6 +13,7 @@ import { addHours, addMinutes } from "date-fns";
 import { Availability } from "@/types/availability";
 import { theme } from "@/styles/theme";
 import Spinner from "react-native-loading-spinner-overlay";
+import { getTodayTimestamp } from "@/utils/manageTimestamp";
 
 export default function DateSelect() {
   const { caregiverData } = useCaregiver();
@@ -29,7 +30,7 @@ export default function DateSelect() {
     setLoading(true);
     setError(null);
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = getTodayTimestamp();
 
     const unsubscribe = firestore()
       .collection(`Users/${caregiverData?.id}/Availabilities`)
@@ -40,14 +41,14 @@ export default function DateSelect() {
           if (!snapshot.empty) {
             const formattedData: Availability[] = snapshot.docs
               .map((doc) => {
-                const docData = doc.data() as Partial<Availability>;
+                const docData = doc.data();
 
                 if (!docData.date || !docData.slots) return null;
-
+                const timestamp: Timestamp = docData.date;
                 return {
                   slots: docData.slots.sort(),
-                  date: format(new Date(docData.date), "dd/MM/yyyy"),
-                  value: new Date(docData.date),
+                  date: format(timestamp.toDate(), "dd/MM/yyyy"),
+                  value: timestamp.toDate(),
                 };
               })
               .filter((data): data is Availability => data !== null);

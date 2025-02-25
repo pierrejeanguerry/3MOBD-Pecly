@@ -1,5 +1,5 @@
 import { theme } from "@/styles/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,44 +7,153 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { addDays, formatDate } from "date-fns";
+import { addDays, addHours, format, isToday } from "date-fns";
+import { fr } from "date-fns/locale";
+import firestore, { Timestamp } from "@react-native-firebase/firestore";
+import { useAuth } from "@/hooks/useAuth";
+import Button from "@/components/Button";
+import { getTodayTimestamp } from "@/utils/manageTimestamp";
 
 export default function SlotsScreen() {
-  const [isSelected, setIsSelected] = useState<boolean[]>([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
+  const { user } = useAuth();
+  const [numSlotColumns, _] = useState(2);
+  const [isDaySelected, setIsDaySelected] = useState<boolean[]>([
+    true,
+    ...Array(6).fill(false),
   ]);
 
-  const today = new Date();
-  const week: string[] = [
-    `${formatDate(today, "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 1), "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 2), "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 3), "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 4), "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 5), "dd/MM/yyyy")}`,
-    `${formatDate(addDays(today, 6), "dd/MM/yyyy")}`,
-  ];
-  console.log(week);
+  const [isHourSelected, setIsHourSelected] = useState<boolean[][]>(
+    isDaySelected.map(() => Array(48).fill(false))
+  );
+
+  const today = getTodayTimestamp();
+  const week: string[] = Array.from({ length: 7 }, (_, i) =>
+    format(addDays(new Date(), i), "EE dd/MM/yyyy", { locale: fr })
+  );
+
+  const hours = Array.from({ length: 48 }, (_, i) => {
+    const hours = Math.floor(i / 2)
+      .toString()
+      .padStart(2, "0");
+    const minutes = i % 2 === 0 ? "00" : "30";
+    return `${hours}:${minutes}`;
+  });
+
+  useEffect(() => {
+    fetchDatas();
+  }, []);
+  async function fetchDatas() {
+    const availabilitiesRef = await firestore()
+      .collection(`Users/${user?.id}/Availabilities`)
+      .where("date", ">=", today)
+      .where("date", "<=", addDays(today.toDate(), 6))
+      .get();
+
+    if (!availabilitiesRef.empty) {
+      const updatedIsHourSelected = [...isHourSelected];
+
+      availabilitiesRef.docs.forEach((doc) => {
+        const data = doc.data();
+        const docDateTs: Timestamp = data.date;
+        const docTime = data.slots;
+
+        const docDate = docDateTs.toDate();
+        const dayIndex =
+          docDate.getDate() -
+          today.toDate().getDate() +
+          7 * (docDate.getMonth() - today.toDate().getMonth());
+        docTime.forEach((element: string) => {
+          const hourIndex = getHourIndex(element);
+          if (dayIndex >= 0 && dayIndex < 7 && hourIndex !== -1) {
+            updatedIsHourSelected[dayIndex][hourIndex] = true;
+          }
+        });
+      });
+
+      setIsHourSelected(updatedIsHourSelected);
+    } else {
+      console.log("empty");
+    }
+  }
+  function getHourIndex(time: string): number {
+    const hours = Array.from({ length: 48 }, (_, i) => {
+      const hours = Math.floor(i / 2)
+        .toString()
+        .padStart(2, "0");
+      const minutes = i % 2 === 0 ? "00" : "30";
+      return `${hours}:${minutes}`;
+    });
+
+    return hours.indexOf(time);
+  }
+
+  async function onSubmit() {
+    for (const [dayIndex] of isDaySelected.entries()) {
+      if (dayIndex != 0) break;
+
+      let list: string[] = [];
+      for (const [slotIndex, isSlots] of isHourSelected[dayIndex].entries()) {
+        if (!isSlots) continue;
+        list = [...list, hours[slotIndex]];
+      }
+
+      const availabilitiesRef = firestore()
+        .collection(`Users/${user?.id}/Availabilities`)
+        .where("date", "==", today);
+      let snapshot = await availabilitiesRef.get();
+      if (!snapshot.empty) {
+        snapshot.docs[0].ref.update({
+          slots: list,
+          slotsCount: list.length,
+        });
+      } else {
+        firestore().collection(`Users/${user?.id}/Availabilities`).add({
+          date: today,
+          slots: list,
+          slotsCount: list.length,
+        });
+      }
+    }
+  }
 
   return (
-    <View>
-      <FlatList
-        data={week}
-        renderItem={({ item, index }: { item: string; index: number }) => (
-          <DayTab
-            day={item}
-            isSelected={isSelected}
-            setIsSelected={setIsSelected}
-            value={index}
-          />
-        )}
-      />
+    <View style={styles.container}>
+      <Button onPress={onSubmit} size="long" styleType="primary">
+        {" "}
+        <Text>Submit</Text>
+      </Button>
+      <View style={styles.dayContainer}>
+        <FlatList
+          horizontal={true}
+          keyExtractor={(_, index) => index.toString()}
+          data={week}
+          renderItem={({ item, index }: { item: string; index: number }) => (
+            <DayTab
+              day={item}
+              isSelected={isDaySelected}
+              setIsSelected={setIsDaySelected}
+              value={index}
+            />
+          )}
+        />
+      </View>
+      <View style={styles.slotContainer}>
+        <FlatList
+          keyExtractor={(_, index) => index.toString()}
+          data={hours}
+          numColumns={numSlotColumns}
+          key={numSlotColumns}
+          renderItem={({ item, index }: { item: string; index: number }) => (
+            <Slot
+              hour={item}
+              value={index}
+              setIsSelected={setIsHourSelected}
+              isSelected={isHourSelected}
+              dayIndex={isDaySelected.findIndex((day) => day)}
+            />
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -74,12 +183,64 @@ function DayTab({
   );
 }
 
+function Slot({
+  hour,
+  setIsSelected,
+  value,
+  isSelected,
+  dayIndex,
+}: {
+  hour: string;
+  setIsSelected: (update: (prev: boolean[][]) => boolean[][]) => void;
+  value: number;
+  isSelected: boolean[][];
+  dayIndex: number;
+}) {
+  function onPress() {
+    setIsSelected((prev) =>
+      prev.map((day, index) =>
+        index === dayIndex
+          ? day.map((item, i) => (i === value ? !item : item))
+          : day
+      )
+    );
+  }
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.slot, isSelected[dayIndex][value] && styles.selected]}
+    >
+      <Text>{hour}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   day: {
     borderWidth: 1,
     backgroundColor: theme.colors.backgroundSecondary,
+    padding: 20,
   },
   selected: {
     backgroundColor: theme.colors.backgroundPrimary,
+  },
+  dayContainer: {
+    marginBottom: 10,
+  },
+  slotContainer: {
+    flex: 1,
+  },
+  slot: {
+    borderColor: "black",
+    borderWidth: 0.25,
+    borderRadius: 10,
+    width: "47.5%",
+    margin: 4,
+    backgroundColor: theme.colors.backgroundTertiary,
+    padding: 10,
   },
 });

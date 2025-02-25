@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 import Login from "../account/login";
 import { formatCaregiver, formatName } from "@/utils/formatString";
+import { getTodayTimestamp } from "@/utils/manageTimestamp";
 
 export default function MyAppointmentScreen() {
   const [passed, setPassed] = useState(false);
@@ -107,19 +108,18 @@ function NotPassedAppointment({ passed }: any) {
     await firestore().collection("Appointments").doc(id).delete();
 
     const date = dateTime.toDate();
-    const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+    const today = getTodayTimestamp();
+    // const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1)
+    //   .toString()
+    //   .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
     const timeStr = `${date.getHours().toString().padStart(2, "0")}:${date
       .getMinutes()
       .toString()
       .padStart(2, "0")}`;
 
-    console.log(dateStr, timeStr);
-
     const availabilitySnapshot = await firestore()
       .collection(`Users/${idCaregiver}/Availabilities`)
-      .where("date", "==", dateStr)
+      .where("date", "==", today)
       .limit(1)
       .get();
     if (!availabilitySnapshot.empty) {
