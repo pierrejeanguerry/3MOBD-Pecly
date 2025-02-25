@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import Button from "../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,6 +23,9 @@ export default function Login() {
         router.navigate("../account");
       }
     } catch (e) {
+      setLoading(false);
+      alert('Email ou mot de passe incorrect.');
+      setPass('');
       console.error(e);
     }
   };
