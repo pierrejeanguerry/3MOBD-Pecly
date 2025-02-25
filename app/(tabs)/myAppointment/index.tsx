@@ -73,8 +73,8 @@ function NotPassedAppointment({ passed }: any) {
     const unsubscribe = firestore()
       .collection("Appointments")
       .where("patientId", "==", user?.id)
-      .where("isPassed", "==", passed)
-      .orderBy("dateTime", "desc")
+      // .where("isPassed", "==", passed)
+      // .orderBy("dateTime", "desc")
       .onSnapshot(async (querySnapshot) => {
         let tempAppointment: any[] = [];
         for (const element of querySnapshot.docs) {

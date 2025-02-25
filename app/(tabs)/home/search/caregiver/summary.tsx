@@ -38,11 +38,9 @@ export default function Summary() {
     {
       title: "Date du rendez-vous",
       value: appointmentData?.dateTime
-        ? format(
-            addHours(appointmentData.dateTime.toDate(), 2),
-            "dd/MM/yyyy à HH:mm",
-            { locale: fr }
-          )
+        ? format(appointmentData.dateTime.toDate(), "dd/MM/yyyy à HH:mm", {
+            locale: fr,
+          })
         : null,
     },
     { title: "Raison", value: formatMotive(appointmentData?.motive) || null },
