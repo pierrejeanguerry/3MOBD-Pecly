@@ -15,7 +15,7 @@ export default function Name() {
             return;
         }
         try {
-            const userRef = await firestore()
+            await firestore()
                 .collection("Users")
                 .doc(user.id)
                 .update({
