@@ -66,13 +66,21 @@ export default function Payment() {
 
     const handleThirdPartyChange = (option: string) => {
         setThirdParty((prev) => {
-            const options = prev.split(",");
+            const currentValue = typeof prev === "string" ? prev : "";
+            let options = currentValue.split(" ").filter(Boolean);
+
             if (options.includes(option)) {
-                return options.filter(item => item !== option).join(",");
+                options = options.filter(item => item !== option);
             } else {
-                return options.length === 1 && options[0] === "" ? option : [...options, option].join(",");
+                options.push(option);
             }
+
+            return options.length > 0 ? options.join(" ") : "";
         });
+    };
+
+
+
 
     return (
         <View style={styles.container}>
@@ -112,7 +120,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>L'Assurance Maladie Obligatoire (AMO)</Text>
                     <Switch
-                        value={thirdParty === "AMO"}
+                        value={thirdParty.includes("AMO")}
                         onValueChange={() => handleThirdPartyChange("AMO")}
                     />
                 </View>
@@ -120,7 +128,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>Les Complémentaires Santé (AMC)</Text>
                     <Switch
-                        value={thirdParty === "AMC"}
+                        value={thirdParty.includes("AMC")}
                         onValueChange={() => handleThirdPartyChange("AMC")}
                     />
                 </View>
@@ -128,7 +136,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>Les Organismes Spécifiques</Text>
                     <Switch
-                        value={thirdParty === "Specific"}
+                        value={thirdParty.includes("Specific")}
                         onValueChange={() => handleThirdPartyChange("Specific")}
                     />
                 </View>
