@@ -8,58 +8,12 @@ import SpecialityLabel from "@/components/SpecialityLabel";
 import { User } from "@/types/user";
 import { theme } from "@/styles/theme";
 
+import specialties from './specialties.json';
+
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
   const [specialitiesList, setSpecialitiesList] = useState<string[]>([]);
   const [caregiversList, setCaregiversList] = useState<User[]>([]);
-
-  const specialties = [
-    "allergologue",
-    "anesthesiste",
-    "andrologue",
-    "cardiologue",
-    "chirurgien",
-    "chirurgien cardiaque",
-    "chirurgien esthetique",
-    "chirurgien general",
-    "chirurgien maxillo-facial",
-    "chirurgien pediatrique",
-    "chirurgien thoracique",
-    "chirurgien vasculaire",
-    "neurochirurgien",
-    "dermatologue",
-    "endocrinologue",
-    "gastro-enterologue",
-    "geriatre",
-    "gynecologue",
-    "hematologue",
-    "hepatologue",
-    "infectiologue",
-    "medecin en medecine aiguë",
-    "medecin du travail",
-    "medecin generaliste",
-    "medecin interniste",
-    "medecin nucleaire",
-    "medecin en soins palliatifs",
-    "medecin en medecine physique",
-    "medecin en medecine preventive",
-    "neonatologue",
-    "nephrologue",
-    "neurologue",
-    "odontologiste",
-    "oncologue",
-    "obstetricien",
-    "ophtalmologue",
-    "orthopediste",
-    "oto-rhino-laryngologue",
-    "pediatre",
-    "pneumologue",
-    "psychiatre",
-    "radiologue",
-    "radiotherapeute",
-    "rhumatologue",
-    "urologue",
-  ];
 
   const getCargivers = async () => {
     if (!search) {

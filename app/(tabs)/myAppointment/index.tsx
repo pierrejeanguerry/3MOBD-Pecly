@@ -128,7 +128,7 @@ function NotPassedAppointment({ passed }: any) {
         slots: arrayUnion(timeStr),
       });
     } else {
-      console.log("Aucune disponibilité trouvée pour cette date.");
+      console.error("Erreur bizarre");
     }
   };
 
