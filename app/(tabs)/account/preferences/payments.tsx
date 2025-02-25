@@ -36,11 +36,8 @@ export default function Payment() {
           price: { ...user.caregiverDetails?.price, thirdParty, vitalCard },
         },
       });
-      console.log(user);
 
       await firestore().collection("Users").doc(user.id).update(user);
-
-      console.log("Moyens de paiement enregistrés");
 
       setSuccessMessage(true);
       Animated.timing(fadeAnim, {

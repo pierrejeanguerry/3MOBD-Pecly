@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  Animated,
 } from "react-native";
 import { addDays, format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -21,6 +22,8 @@ export default function SlotsScreen() {
     true,
     ...Array(6).fill(false),
   ]);
+  const [successMessage, setSuccessMessage] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
 
   const [isHourSelected, setIsHourSelected] = useState<boolean[][]>(
     isDaySelected.map(() => Array(48).fill(false))
@@ -71,8 +74,6 @@ export default function SlotsScreen() {
       });
 
       setIsHourSelected(updatedIsHourSelected);
-    } else {
-      console.log("empty");
     }
   }
   function getHourIndex(time: string): number {
@@ -118,6 +119,17 @@ export default function SlotsScreen() {
           });
       }
     }
+    setSuccessMessage(true);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
+    setTimeout(() => {
+      setSuccessMessage(false);
+      fadeAnim.setValue(0);
+    }, 3000);
   }
 
   return (
@@ -159,6 +171,11 @@ export default function SlotsScreen() {
           <Text>Submit</Text>
         </Button>
       </View>
+      {successMessage && (
+        <Animated.View style={[styles.successMessage, { opacity: fadeAnim }]}>
+          <Text style={styles.successText}>Creneaux enregistrés !</Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -252,5 +269,19 @@ const styles = StyleSheet.create({
   submitContainer: {
     alignSelf: "center",
     marginVertical: 10,
+  },
+  successMessage: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#28a745",
+    borderRadius: 5,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  successText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

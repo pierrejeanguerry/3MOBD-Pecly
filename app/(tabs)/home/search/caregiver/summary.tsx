@@ -54,8 +54,6 @@ export default function Summary() {
     },
   ].filter((condition) => condition.value !== null);
 
-  // console.log(appointmentData.dateTime.toDate());
-
   const [checkedConditions, setCheckedConditions] = useState<{
     [key: string]: boolean;
   }>(
@@ -161,8 +159,6 @@ export default function Summary() {
     reminderDate.setDate(reminderDate.getDate() - 1);
     reminderDate.setHours(9, 0, 0, 0);
 
-    console.log("Notification programmée pour :", reminderDate);
-
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Rappel de Rendez-vous",
@@ -179,8 +175,6 @@ export default function Summary() {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
       },
     });
-
-    console.log("Notification programmée avec ID :", notificationId);
   }
 
   return (

@@ -1,4 +1,11 @@
-import {useState, createContext, useContext, ReactNode, Dispatch, SetStateAction} from "react";
+import {
+  useState,
+  createContext,
+  useContext,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import firestore from "@react-native-firebase/firestore";
 import bcrypt from "react-native-bcrypt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,8 +19,8 @@ import {
 
 interface AuthContextType {
   user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>
-  saveUser: (user:User) => Promise<boolean>
+  setUser: Dispatch<SetStateAction<User | null>>;
+  saveUser: (user: User) => Promise<boolean>;
   register: (
     email: string,
     password: string,
@@ -101,15 +108,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const hash = await hashPassword(password);
-      const userRef = await firestore().collection("Users").add({
-        email,
-        password: hash,
-        isCaregiver: false,
-        firstname: firstName,
-        lastname: lastName,
-        contact : {phone : phone},
-        gender: gender,
-      });
+      const userRef = await firestore()
+        .collection("Users")
+        .add({
+          email,
+          password: hash,
+          isCaregiver: false,
+          firstname: firstName,
+          lastname: lastName,
+          contact: { phone: phone },
+          gender: gender,
+        });
       await saveUser({
         id: userRef.id,
         email,
@@ -117,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: false,
         firstname: firstName,
         lastname: lastName,
-        contact: { phone : phone },
+        contact: { phone: phone },
         gender: gender,
       });
     } catch (error) {
@@ -206,7 +215,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return true;
     } catch (error) {
       console.error("Erreur lors de l’enregistrement", error);
-      throw new Error('Erreur en enregistrant : ' + error as any);
+      throw new Error(("Erreur en enregistrant : " + error) as any);
     }
   };
 
@@ -226,8 +235,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async (): Promise<boolean> => {
     try {
-      await AsyncStorage.removeItem("user");
       setUser(null);
+      await AsyncStorage.removeItem("user");
       return true;
     } catch (error) {
       return false;
@@ -244,7 +253,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         checkIsLogged,
         setUser,
-        saveUser
+        saveUser,
       }}
     >
       {children}

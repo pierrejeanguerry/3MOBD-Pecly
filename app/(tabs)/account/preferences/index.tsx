@@ -1,89 +1,69 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Tab() {
   const router = useRouter();
+  const { user } = useAuth();
 
-  const handleNameCaregiver = () => {
-      router.push("/(tabs)/account/preferences/nameCaregiver");
-  };
+  const options = [
+    {
+      label: "Modifier mon nom et prénom",
+      path: "/(tabs)/account/preferences/name",
+    },
+    {
+      label: "Modifier mon numéro de téléphone",
+      path: "/(tabs)/account/preferences/phone",
+    },
+    { label: "Modifier mon genre", path: "/(tabs)/account/preferences/gender" },
+  ] as const;
 
-  const handlePhoneCaregiver = () => {
-      router.push("/(tabs)/account/preferences/phoneCaregiver");
-  };
+  const caregiverOptions = [
+    {
+      label: "Modifier mon adresse",
+      path: "/(tabs)/account/preferences/address",
+    },
+    {
+      label: "Instructions et motivations",
+      path: "/(tabs)/account/preferences/instructions",
+    },
+    { label: "Présentation", path: "/(tabs)/account/preferences/presentation" },
+    {
+      label: "Moyens de paiement",
+      path: "/(tabs)/account/preferences/payments",
+    },
+    { label: "Tarifs", path: "/(tabs)/account/preferences/pricing" },
+    { label: "Créneaux horaires", path: "/(tabs)/account/preferences/slots" },
+  ] as const;
 
-  const handlePressAdresse = () => {
-    router.push("/(tabs)/account/preferences/address");
-  };
-
-  const handlePressInstruction = () => {
-    router.push("/(tabs)/account/preferences/instructions");
-  };
-
-  const handlePressPresentation = () => {
-    router.push("/(tabs)/account/preferences/presentation");
-  };
-
-  const handlePressPayment = () => {
-    router.push("/(tabs)/account/preferences/payments");
-  };
-
-  const handleSlots = () => {
-    router.push("/(tabs)/account/preferences/slots");
+  const handlePress = (
+    path: ((typeof options)[number] | (typeof caregiverOptions)[number])["path"]
+  ) => {
+    router.push(path);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Mes préférences</Text>
-
-      <View style={styles.privacySection}>
+      <FlatList
+        data={user?.isCaregiver ? [...options, ...caregiverOptions] : options}
+        keyExtractor={(item) => item.path}
+        renderItem={({ item }) => (
           <TouchableOpacity
-              style={styles.privacyOption}
-              onPress={handleNameCaregiver}
+            style={styles.privacyOption}
+            onPress={() => handlePress(item.path)}
           >
-              <Text style={styles.privacyOptionText}>Modifier mon nom et prénom</Text>
+            <Text style={styles.privacyOptionText}>{item.label}</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-              style={styles.privacyOption}
-              onPress={handlePhoneCaregiver}
-          >
-              <Text style={styles.privacyOptionText}>Modifier mon numéro de téléphone</Text>
-          </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.privacyOption}
-          onPress={handlePressAdresse}
-        >
-          <Text style={styles.privacyOptionText}>Modifier mon adresse</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.privacyOption}
-          onPress={handlePressInstruction}
-        >
-          <Text style={styles.privacyOptionText}>
-            Instructions et motivations
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.privacyOption}
-          onPress={handlePressPresentation}
-        >
-          <Text style={styles.privacyOptionText}>Présentation</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.privacyOption}
-          onPress={handlePressPayment}
-        >
-          <Text style={styles.privacyOptionText}>Moyens de payments</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.privacyOption} onPress={handleSlots}>
-          <Text style={styles.privacyOptionText}>Creneaux horaires</Text>
-        </TouchableOpacity>
-      </View>
+        )}
+        contentContainerStyle={styles.list}
+      />
     </View>
   );
 }
@@ -99,9 +79,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: "#43193B",
+    marginBottom: 20,
   },
-  privacySection: {
-    margin: 30,
+  list: {
+    width: "100%",
+    paddingHorizontal: 20,
   },
   privacyOption: {
     backgroundColor: "#FFFFFF",

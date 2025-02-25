@@ -117,9 +117,10 @@ const Body = ({ caregiver }: { caregiver: User }) => (
     {caregiver.caregiverDetails?.price && (
       <PriceBlock price={caregiver.caregiverDetails.price} />
     )}
-    {caregiver.caregiverDetails?.paymentMeans && (
-      <PaymentBlock payment={caregiver.caregiverDetails.paymentMeans} />
-    )}
+    {caregiver.caregiverDetails?.paymentMeans &&
+      Object.values(caregiver.caregiverDetails.paymentMeans).some(
+        (val) => val
+      ) && <PaymentBlock payment={caregiver.caregiverDetails.paymentMeans} />}
     {caregiver.contact && <ContactBlock contact={caregiver.contact} />}
   </View>
 );
@@ -192,7 +193,10 @@ const PriceBlock = ({
         {price.prices?.map((item, index) => (
           <View style={styles.prices} key={index}>
             <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.text}>{item.price}</Text>
+            <Text style={styles.text}>
+              {item.price}
+              {" €"}
+            </Text>
           </View>
         ))}
         <Text></Text>

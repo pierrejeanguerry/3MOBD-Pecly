@@ -4,7 +4,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  Image,
+} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
 
@@ -36,7 +43,6 @@ export default function TabScreen() {
       .collection("Notifications")
       .where("timestamp", ">=", new Date())
       .get();
-    console.log(notifSnapshot.docs[0].data());
 
     if (!notifSnapshot.empty) {
       notifSnapshot.docs.forEach(async (notifDoc) => {
@@ -55,9 +61,6 @@ export default function TabScreen() {
             notifData.body,
             notifDate
           );
-          console.log("Nouvelle notification enregistrée");
-        } else {
-          console.log("Notification déjà programmée :", notifData.title);
         }
       });
     }
@@ -100,7 +103,12 @@ function Header() {
 
   return (
     <View style={styles.header}>
+      <Image
+        source={require("../../../assets/images/splashscreen_logo.png")}
+        style={styles.logo}
+      />
       <Text style={styles.title}>PECLY</Text>
+
       <Text style={styles.catchPhrase1}>La santé</Text>
       <Text style={styles.catchPhrase2}> à portée de main</Text>
       <Button
@@ -266,9 +274,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   title: {
-    fontWeight: "800",
+    fontWeight: "700",
+    color: theme.colors.textPrimary,
     fontSize: 20,
-    marginBottom: 10,
     marginTop: Platform.OS === "ios" ? 30 : 0,
   },
   itemWrapper: {
@@ -278,7 +286,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colors.backgroundPrimary,
-    height: 250,
+    height: 300,
     zIndex: 20,
     marginBottom: 10,
   },
@@ -330,5 +338,9 @@ const styles = StyleSheet.create({
   },
   footer: {
     minHeight: 20,
+  },
+  logo: {
+    width: 80,
+    height: 80,
   },
 });
