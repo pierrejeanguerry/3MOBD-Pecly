@@ -4,18 +4,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Platform,
-  TouchableOpacity,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
-import CustomModal from "@/components/CustomModal";
-import CaregiverScreen from "./search/caregiver/[caregiver]";
 
 let Notifications: typeof import("expo-notifications") | null = null;
 let getNotificationPermission: any = null;
