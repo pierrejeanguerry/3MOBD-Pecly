@@ -7,6 +7,7 @@ export default function accountLayout() {
       screenOptions={{
         headerShown: true,
         title: "",
+        headerTintColor: "white",
         headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
       }}
     />

@@ -122,10 +122,6 @@ export default function SlotsScreen() {
 
   return (
     <View style={styles.container}>
-      <Button onPress={onSubmit} size="long" styleType="primary">
-        {" "}
-        <Text>Submit</Text>
-      </Button>
       <View style={styles.dayContainer}>
         <FlatList
           horizontal={true}
@@ -157,6 +153,11 @@ export default function SlotsScreen() {
             />
           )}
         />
+      </View>
+      <View style={styles.submitContainer}>
+        <Button onPress={onSubmit} size="large" styleType="empty">
+          <Text>Submit</Text>
+        </Button>
       </View>
     </View>
   );
@@ -226,6 +227,7 @@ const styles = StyleSheet.create({
   },
   day: {
     borderWidth: 1,
+    borderRadius: 5,
     backgroundColor: theme.colors.backgroundSecondary,
     padding: 20,
   },
@@ -246,5 +248,9 @@ const styles = StyleSheet.create({
     margin: 4,
     backgroundColor: theme.colors.backgroundTertiary,
     padding: 10,
+  },
+  submitContainer: {
+    alignSelf: "center",
+    marginVertical: 10,
   },
 });

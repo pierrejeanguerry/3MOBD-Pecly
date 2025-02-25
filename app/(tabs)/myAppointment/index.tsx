@@ -79,6 +79,7 @@ function NotPassedAppointment({ passed }: any) {
       .collection("Appointments")
       .where("patientId", "==", user?.id)
       .where("isPassed", "==", passed)
+      .orderBy("dateTime", "desc")
       .onSnapshot(async (querySnapshot) => {
         let tempAppointment: any[] = [];
         for (const element of querySnapshot.docs) {
@@ -109,9 +110,7 @@ function NotPassedAppointment({ passed }: any) {
 
     const date = dateTime.toDate();
     const today = getTodayTimestamp();
-    // const dateStr = `${date.getFullYear()}-${(date.getMonth() + 1)
-    //   .toString()
-    //   .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+
     const timeStr = `${date.getHours().toString().padStart(2, "0")}:${date
       .getMinutes()
       .toString()
