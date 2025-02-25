@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { Stack, useRouter } from "expo-router";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import { useAppointment } from "@/contexts/appointmentContext";
@@ -53,6 +53,8 @@ export default function Summary() {
         : null,
     },
   ].filter((condition) => condition.value !== null);
+
+  // console.log(appointmentData.dateTime.toDate());
 
   const [checkedConditions, setCheckedConditions] = useState<{
     [key: string]: boolean;
