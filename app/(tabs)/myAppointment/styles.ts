@@ -1,3 +1,4 @@
+import { theme } from "@/styles/theme";
 import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -7,7 +8,7 @@ export default StyleSheet.create({
   },
   headerTitle: {
     height: Platform.OS === "ios" ? 100 : 50,
-    backgroundColor: "rgb(46,116,191)",
+    backgroundColor: theme.colors.backgroundPrimary,
     display: "flex",
     justifyContent: "flex-end",
     padding: 10,
@@ -37,6 +38,6 @@ export default StyleSheet.create({
     position: "absolute",
     width: "50%",
     height: 2,
-    backgroundColor: "rgb(46,116,191)",
+    backgroundColor: theme.colors.backgroundPrimary,
   },
 });

@@ -5,25 +5,20 @@ import {
   Animated,
   FlatList,
   StyleSheet,
-  Button,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
 import styles from "./styles";
 import firestore, { arrayUnion } from "@react-native-firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
 
-import Login from "../account/login";
 import { formatCaregiver, formatName } from "@/utils/formatString";
 import { getTodayTimestamp } from "@/utils/manageTimestamp";
+import Button from "@/components/Button";
+import { theme } from "@/styles/theme";
 
 export default function MyAppointmentScreen() {
   const [passed, setPassed] = useState(false);
   const underlinePosition = useRef(new Animated.Value(0)).current;
-  const { user } = useAuth();
-
-  if (!user) {
-    return <Login />;
-  }
 
   const handleSwitch = (isPassed: boolean) => {
     Animated.timing(underlinePosition, {
@@ -173,7 +168,8 @@ function NotPassedAppointment({ passed }: any) {
             </Text>
             {!passed ? (
               <Button
-                title={"Annuler"}
+                size="long"
+                styleType="danger"
                 onPress={() =>
                   handleCancel(
                     item.id,
@@ -181,7 +177,9 @@ function NotPassedAppointment({ passed }: any) {
                     item.appointment.dateTime
                   )
                 }
-              />
+              >
+                <Text>Annuler</Text>
+              </Button>
             ) : null}
           </View>
         )}
@@ -193,11 +191,11 @@ function NotPassedAppointment({ passed }: any) {
 const unique = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: theme.colors.backgroundSecondary,
     padding: 10,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.backgroundTertiary,
     padding: 15,
     marginVertical: 5,
     borderRadius: 10,
