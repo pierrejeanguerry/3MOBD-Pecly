@@ -7,15 +7,29 @@ import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
-import * as Notifications from "expo-notifications";
-import { getNotificationPermission } from "@/utils/scheduleNotification";
+
+let Notifications: typeof import("expo-notifications") | null = null;
+let getNotificationPermission: any = null;
+
+if (Platform.OS === "android") {
+  // @ts-ignore
+  import("expo-notifications").then((module) => {
+    Notifications = module;
+  });
+
+  // @ts-ignore
+  import("@/utils/scheduleNotification").then((module) => {
+    getNotificationPermission = module.getNotificationPermission;
+  });
+}
 
 export default function TabScreen() {
   useEffect(() => {
-    getGeneralNotifications();
+    if (Platform.OS === "android") getGeneralNotifications();
   }, []);
 
   async function getGeneralNotifications() {
+    if (!Notifications) return;
     const allNotifs = await Notifications.getAllScheduledNotificationsAsync();
 
     const notifSnapshot = await firestore()
@@ -54,6 +68,7 @@ export default function TabScreen() {
     body: string,
     timestamp: Date
   ) {
+    if (!Notifications) return;
     const permission = await getNotificationPermission();
     if (permission !== "granted") return;
 
