@@ -120,7 +120,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>L'Assurance Maladie Obligatoire (AMO)</Text>
                     <Switch
-                        value={thirdParty.includes("AMO")}
+                        value={thirdParty?.includes("AMO")}
                         onValueChange={() => handleThirdPartyChange("AMO")}
                     />
                 </View>
@@ -128,7 +128,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>Les Complémentaires Santé (AMC)</Text>
                     <Switch
-                        value={thirdParty.includes("AMC")}
+                        value={thirdParty?.includes("AMC")}
                         onValueChange={() => handleThirdPartyChange("AMC")}
                     />
                 </View>
@@ -136,7 +136,7 @@ export default function Payment() {
                 <View style={styles.paymentOption}>
                     <Text>Les Organismes Spécifiques</Text>
                     <Switch
-                        value={thirdParty.includes("Specific")}
+                        value={thirdParty?.includes("Specific")}
                         onValueChange={() => handleThirdPartyChange("Specific")}
                     />
                 </View>
