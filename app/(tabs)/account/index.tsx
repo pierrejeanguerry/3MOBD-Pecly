@@ -22,6 +22,9 @@ export default function Account() {
   const handlePressInfos = () => {
     router.push("/(tabs)/account/infos");
   };
+  const handlePressPreferencesPatient = () => {
+    router.push("../account/preferencesPatient/");
+  };
 
   return (
     <>
@@ -80,6 +83,11 @@ export default function Account() {
             <View style={styles.privacySection}>
               {user?.isCaregiver && (
                   <TouchableOpacity style={styles.privacyOption} onPress={handlePressPreferences}>
+                    <Text style={styles.privacyOptionText}>Mes préférences</Text>
+                  </TouchableOpacity>
+              )}
+              {!user?.isCaregiver && (
+                  <TouchableOpacity style={styles.privacyOption} onPress={handlePressPreferencesPatient}>
                     <Text style={styles.privacyOptionText}>Mes préférences</Text>
                   </TouchableOpacity>
               )}
