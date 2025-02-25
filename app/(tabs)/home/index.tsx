@@ -4,9 +4,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { User } from "@/types/user";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View, Platform } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { theme } from "@/styles/theme";
+import CustomModal from "@/components/CustomModal";
+import CaregiverScreen from "./search/caregiver/[caregiver]";
 
 let Notifications: typeof import("expo-notifications") | null = null;
 let getNotificationPermission: any = null;
@@ -138,8 +147,11 @@ function Informations() {
 
 function MyCaregivers() {
   const { user } = useAuth();
+  const router = useRouter();
   const [history, setHistory] = useState<User[]>([]);
   const [itemsToShowCount, setItemsToShowCount] = useState(5);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [caregiverID, setCaregiverId] = useState("");
 
   useEffect(() => {
     if (!user?.id) return;
@@ -210,6 +222,10 @@ function MyCaregivers() {
       .slice(0, itemsToShowCount);
   }, [history, itemsToShowCount]);
 
+  function override(id: string) {
+    router.push(`/(tabs)/home/search/caregiver/${id}`);
+  }
+
   const handleShowMore = () => {
     setItemsToShowCount(itemsToShowCount + 5);
   };
@@ -227,7 +243,11 @@ function MyCaregivers() {
             key={index}
             style={index !== history.length - 1 && styles.itemWrapper}
           >
-            <SpecialistLabel item={item} type="summarized" />
+            <SpecialistLabel
+              item={item}
+              type="summarized"
+              overrideOnPress={override}
+            />
           </View>
         ))}
       {history.length > itemsToShowCount && (

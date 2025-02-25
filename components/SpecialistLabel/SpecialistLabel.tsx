@@ -17,6 +17,7 @@ import { getTodayTimestamp } from "@/utils/manageTimestamp";
 interface SpecialistLabelProps {
   item: User;
   type: LabelType;
+  overrideOnPress: (id: string) => void;
 }
 
 interface SpecialistLabelChildProps {
@@ -24,10 +25,16 @@ interface SpecialistLabelChildProps {
   onPress: () => void;
 }
 
-const SpecialistLabel: React.FC<SpecialistLabelProps> = ({ item, type }) => {
+const SpecialistLabel: React.FC<SpecialistLabelProps> = ({
+  item,
+  type,
+  overrideOnPress = null,
+}) => {
   const router = useRouter();
   const onPress = () => {
-    router.push(`/(tabs)/home/search/caregiver/${item.id}`);
+    if (!overrideOnPress)
+      router.push(`/(tabs)/home/search/caregiver/${item.id}`);
+    else overrideOnPress(item.id);
   };
 
   return (
