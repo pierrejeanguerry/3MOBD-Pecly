@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: false,
         firstname: firstName,
         lastname: lastName,
-        phone: phone,
+        contact : {phone : phone},
         gender: gender,
       });
       await saveUser({
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: false,
         firstname: firstName,
         lastname: lastName,
-        contact: { phone },
+        contact: { phone : phone },
         gender: gender,
       });
     } catch (error) {

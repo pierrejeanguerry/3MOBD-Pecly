@@ -1,6 +1,5 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import {
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
