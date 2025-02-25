@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { addDays, addHours, format, isToday } from "date-fns";
+import { addDays, format } from "date-fns";
 import { fr } from "date-fns/locale";
 import firestore, { Timestamp } from "@react-native-firebase/firestore";
 import { useAuth } from "@/hooks/useAuth";
@@ -89,8 +89,6 @@ export default function SlotsScreen() {
 
   async function onSubmit() {
     for (const [dayIndex] of isDaySelected.entries()) {
-      if (dayIndex != 0) break;
-
       let list: string[] = [];
       for (const [slotIndex, isSlots] of isHourSelected[dayIndex].entries()) {
         if (!isSlots) continue;
