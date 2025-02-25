@@ -15,7 +15,6 @@ export default StyleSheet.create({
   headerTitleText: {
     color: "white",
     fontSize: 20,
-    fontFamily: "Roboto",
     fontWeight: "800",
   },
   tabsContainer: {
