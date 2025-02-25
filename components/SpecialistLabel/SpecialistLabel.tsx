@@ -4,7 +4,7 @@ import { LabelType } from "./Specialist.types";
 import { useRouter } from "expo-router";
 import { User } from "@/types/user";
 import { useCallback, useEffect, useState } from "react";
-import firestore from "@react-native-firebase/firestore";
+import firestore, { Timestamp } from "@react-native-firebase/firestore";
 import { format } from "date-fns";
 import { theme } from "@/styles/theme";
 import {
@@ -12,6 +12,7 @@ import {
   formatName,
   formatSpeciality,
 } from "@/utils/formatString";
+import { getTodayTimestamp } from "@/utils/manageTimestamp";
 
 interface SpecialistLabelProps {
   item: User;
@@ -81,13 +82,12 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
   const getNextAvailability = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const today = new Date();
-    const todayString = today.toISOString().split("T")[0];
+    const today = getTodayTimestamp();
 
     try {
       const availabilities = await firestore()
         .collection(`Users/${item.id}/Availabilities`)
-        .where("date", ">=", todayString)
+        .where("date", ">=", today)
         .orderBy("date", "asc")
         .where("slotsCount", "!=", 0)
         .limit(1)
@@ -95,8 +95,8 @@ const SpecialistLabelDetailled: React.FC<SpecialistLabelChildProps> = ({
 
       if (!availabilities.empty) {
         const nextAvailability = availabilities.docs[0].data();
-        const date = nextAvailability.date;
-        const formattedDate = format(date, "dd/MM/yyyy");
+        const date: Timestamp = nextAvailability.date;
+        const formattedDate = format(date.toDate(), "dd/MM/yyyy");
         setAvailability(formattedDate);
       } else {
         setAvailability(null);

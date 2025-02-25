@@ -13,12 +13,12 @@ export default function CaregiverLayout() {
             headerStyle: { backgroundColor: theme.colors.backgroundPrimary },
           }}
         >
-          {/* <Stack.Screen name="[caregiver]" />
+          <Stack.Screen name="[caregiver]" />
           <Stack.Screen name="appointment" />
           <Stack.Screen name="confirmed" />
           <Stack.Screen name="date" />
           <Stack.Screen name="error" />
-          <Stack.Screen name="summary" /> */}
+            <Stack.Screen name="summary" />
         </Stack>
       </AppointmentProvider>
     </CaregiverProvider>

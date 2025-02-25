@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: false,
         firstname: firstName,
         lastname: lastName,
-        phone: phone,
+        contact : {phone : phone},
         gender: gender,
       });
       await saveUser({
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isCaregiver: false,
         firstname: firstName,
         lastname: lastName,
-        contact: { phone },
+        contact: { phone : phone },
         gender: gender,
       });
     } catch (error) {
@@ -182,9 +182,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    if (!password || !email) throw new Error("Email or Passord empty");
-    if (password.length < 8) throw new Error("Password too small !");
-
     const querySnapshot = await firestore()
       .collection("Users")
       .where("email", "==", email)
@@ -199,7 +196,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (await comparePassword(password, userData.password)) {
       await saveUser(userData);
       return true;
-    } else return false;
+    } else throw new AuthError(ERROR_MESSAGES.INCORRECT_PASSWORD);
   };
 
   const saveUser = async (user: User): Promise<boolean> => {
@@ -209,7 +206,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return true;
     } catch (error) {
       console.error("Erreur lors de l’enregistrement", error);
-      return false;
+      throw new Error('Erreur en enregistrant : ' + error as any);
     }
   };
 
