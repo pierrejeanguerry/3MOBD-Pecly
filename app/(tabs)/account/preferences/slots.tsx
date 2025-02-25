@@ -97,7 +97,11 @@ export default function SlotsScreen() {
 
       const availabilitiesRef = firestore()
         .collection(`Users/${user?.id}/Availabilities`)
-        .where("date", "==", today);
+        .where(
+          "date",
+          "==",
+          Timestamp.fromDate(addDays(today.toDate(), dayIndex))
+        );
       let snapshot = await availabilitiesRef.get();
       if (!snapshot.empty) {
         snapshot.docs[0].ref.update({
@@ -105,11 +109,13 @@ export default function SlotsScreen() {
           slotsCount: list.length,
         });
       } else {
-        firestore().collection(`Users/${user?.id}/Availabilities`).add({
-          date: today,
-          slots: list,
-          slotsCount: list.length,
-        });
+        firestore()
+          .collection(`Users/${user?.id}/Availabilities`)
+          .add({
+            date: Timestamp.fromDate(addDays(today.toDate(), dayIndex)),
+            slots: list,
+            slotsCount: list.length,
+          });
       }
     }
   }
