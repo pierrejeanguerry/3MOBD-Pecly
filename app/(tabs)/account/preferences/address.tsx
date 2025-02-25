@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect, useState } from "react";
 import firestore from "@react-native-firebase/firestore";
 
-export default function Adresse() {
+export default function Address() {
     const { user, saveUser } = useAuth();
 
     const adresse = async (

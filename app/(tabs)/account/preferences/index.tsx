@@ -5,7 +5,7 @@ export default function Tab() {
   const router = useRouter();
 
   const handlePressAdresse = () => {
-    router.push("/(tabs)/account/preferences/adresse");
+    router.push("/(tabs)/account/preferences/address");
   };
 
   const handlePressInstruction = () => {
