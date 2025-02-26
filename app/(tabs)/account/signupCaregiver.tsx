@@ -12,6 +12,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { theme } from "@/styles/theme";
 import { useRouter } from "expo-router";
 import Spinner from "react-native-loading-spinner-overlay";
+import { Dropdown } from 'react-native-element-dropdown';
+import specialities from "../home/search/specialties.json"
 
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
@@ -24,6 +26,7 @@ export default function SignupCaregiver() {
   const [phone, setPhone] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
   const [gender, setGender] = useState("");
+  const [speciality, setSpeciality] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,7 +38,8 @@ export default function SignupCaregiver() {
     firstName: string,
     phone: string,
     licenseNumber: string,
-    gender: string
+    gender: string,
+    speciality: string
   ) => {
     try {
       if (!email.match(emailRegex)) {
@@ -50,7 +54,8 @@ export default function SignupCaregiver() {
         firstName,
         phone,
         licenseNumber,
-        gender
+        gender,
+        speciality
       );
       if (await login(email, pass)) {
         setLoading(false);
@@ -139,6 +144,8 @@ export default function SignupCaregiver() {
             onChangeText={setPhone}
           />
 
+
+
           <Text style={styles.label}>Saisissez votre numéro de CPS</Text>
           <TextInput
             style={styles.input}
@@ -147,6 +154,21 @@ export default function SignupCaregiver() {
             value={licenseNumber}
             onChangeText={setLicenseNumber}
           />
+
+          <Text style={styles.label}>Spécialité</Text>
+          <Dropdown
+              style={styles.dropdown}
+              data={specialities.map((speciality) => ({
+                label: speciality,
+                value: speciality,
+              }))}
+              labelField="label"
+              valueField="value"
+              placeholder="Sélectionnez une spécialité"
+              value={speciality}
+              onChange={(item) => setSpeciality(item.value)}
+          />
+
           <View style={{ alignSelf: "center" }}>
             <Button
               size={"large"}
@@ -159,7 +181,8 @@ export default function SignupCaregiver() {
                   firstName,
                   phone,
                   licenseNumber,
-                  gender
+                  gender,
+                  speciality,
                 )
               }
             >
@@ -242,6 +265,13 @@ const styles = StyleSheet.create({
   genderText: {
     fontSize: 14,
     color: "#333",
+  },
+  dropdown: {
+    backgroundColor: theme.colors.backgroundTertiary,
+    borderRadius: 10,
+    padding: 15,
+    marginHorizontal: 5,
+    marginBottom: 10,
   },
   scroll: {
     flexGrow: 1,

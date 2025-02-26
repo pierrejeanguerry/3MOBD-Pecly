@@ -36,7 +36,8 @@ interface AuthContextType {
     firstName: string,
     phone: string,
     licenseNumber: string,
-    gender: string
+    gender: string,
+    speciality: string,
   ) => Promise<void>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<boolean>;
@@ -141,7 +142,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     firstName: string,
     phone: string,
     licenseNumber: string,
-    gender: string
+    gender: string,
+    speciality: string
   ): Promise<void> => {
     if (
       !password ||
@@ -149,7 +151,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       !lastName ||
       !firstName ||
       !phone ||
-      !licenseNumber
+      !licenseNumber ||
+      !speciality
     )
       throw new ValidationError(ERROR_MESSAGES.EMPTY_FIELDS);
     if (password.length < 8)
@@ -171,7 +174,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         lastname: lastName,
         firstname: firstName,
         contact: { phone },
-        caregiverDetails: { licenseNumber },
+        caregiverDetails: { licenseNumber, speciality },
+
       });
 
       await saveUser({
@@ -182,7 +186,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         lastname: lastName,
         firstname: firstName,
         contact: { phone },
-        caregiverDetails: { licenseNumber },
+        caregiverDetails: { licenseNumber, speciality },
         gender: gender,
       });
     } catch (error) {
