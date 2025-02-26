@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import { useAuth } from "@/hooks/useAuth";
 import firestore from "@react-native-firebase/firestore";
+import {theme} from "@/styles/theme";
 
 type Price = {
   price: number;
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     padding: 20,
   },
   titre: {
