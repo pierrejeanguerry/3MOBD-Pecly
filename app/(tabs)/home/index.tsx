@@ -151,7 +151,10 @@ function MyCaregivers() {
   const [itemsToShowCount, setItemsToShowCount] = useState(5);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user) {
+      setHistory([]);
+      return;
+    }
 
     const userRef = firestore().doc(`Users/${user?.id}`);
 
