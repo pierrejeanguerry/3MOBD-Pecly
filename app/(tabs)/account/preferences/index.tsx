@@ -31,7 +31,7 @@ export default function Tab() {
       path: "/(tabs)/account/preferences/address",
     },
     {
-      label: "Instructions et motivations",
+      label: "Instructions et motifs",
       path: "/(tabs)/account/preferences/instructions",
     },
     { label: "Présentation", path: "/(tabs)/account/preferences/presentation" },

@@ -168,7 +168,7 @@ export default function SlotsScreen() {
       </View>
       <View style={styles.submitContainer}>
         <Button onPress={onSubmit} size="large" styleType="empty">
-          <Text>Submit</Text>
+          <Text>Appliquer</Text>
         </Button>
       </View>
       {successMessage && (

@@ -110,7 +110,7 @@ export default function Instructions() {
         />
       </View>
 
-      <Text style={styles.label}>Saisissez vos motivations</Text>
+      <Text style={styles.label}>Saisissez vos motifs</Text>
       <View style={styles.motivesContainer}>
         <TextInput
           style={[styles.input, styles.motivesInput]}
@@ -143,7 +143,7 @@ export default function Instructions() {
 
       {successMessage && (
         <Animated.View style={[styles.successMessage, { opacity: fadeAnim }]}>
-          <Text style={styles.successText}>Instructions enregistrées !</Text>
+          <Text style={styles.successText}>Instructions et motifs enregistrées !</Text>
         </Animated.View>
       )}
     </View>
