@@ -11,14 +11,9 @@ import {
 interface SearchbarProps {
   search: string;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: () => void;
 }
 
-const Searchbar: React.FC<SearchbarProps> = ({
-  search,
-  setSearch,
-  onSubmit,
-}) => {
+const Searchbar: React.FC<SearchbarProps> = ({ search, setSearch }) => {
   return (
     <View style={styles.container}>
       <FontAwesome style={styles.icon} size={28} name="search" />
@@ -26,7 +21,6 @@ const Searchbar: React.FC<SearchbarProps> = ({
         style={styles.input}
         onChangeText={(text) => setSearch(text)}
         value={search}
-        onSubmitEditing={onSubmit}
       />
       {search !== "" && (
         <TouchableNativeFeedback onPress={() => setSearch("")}>
