@@ -3,6 +3,7 @@ import Button from "../../../../components/Button/Button";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useState, useEffect } from "react";
 import firestore from "@react-native-firebase/firestore";
+import {theme} from "@/styles/theme";
 
 export default function Presentation() {
   const { user, saveUser } = useAuth();
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#DFF3FF",
+    backgroundColor: theme.colors.backgroundSecondary,
     padding: 20,
   },
   titre: {
