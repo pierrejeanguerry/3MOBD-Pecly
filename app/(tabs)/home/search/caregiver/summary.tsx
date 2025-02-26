@@ -8,7 +8,7 @@ import { useAppointment } from "@/contexts/appointmentContext";
 import { useCaregiver } from "@/contexts/caregiverContext";
 import Checkbox from "expo-checkbox";
 import Button from "@/components/Button";
-import firestore from "@react-native-firebase/firestore";
+import firestore, { Timestamp } from "@react-native-firebase/firestore";
 import { DatabaseError, ERROR_MESSAGES } from "@/utils/errors";
 import { theme } from "@/styles/theme";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -21,6 +21,7 @@ import {
 import { AppointmentData } from "@/types/appointment";
 import { User } from "@/types/user";
 import { getNotificationPermission } from "@/utils/scheduleNotification";
+import { getTodayTimestamp } from "@/utils/manageTimestamp";
 
 export default function Summary() {
   const { user } = useAuth();
@@ -101,12 +102,15 @@ export default function Summary() {
         patientId: user.id,
         isPassed: false,
       });
+      const slotDate: Date = date;
+      slotDate.setHours(0, 0, 0, 0);
+      const slotTimestamp = Timestamp.fromDate(slotDate);
 
       const oldAvailabilityRef = await firestore()
         .collection("Users")
         .doc(appointmentData.caregiverId)
         .collection("Availabilities")
-        .where("date", "==", date.toISOString().split("T")[0])
+        .where("date", "==", slotTimestamp)
         .get();
 
       if (!oldAvailabilityRef.empty) {
@@ -159,7 +163,7 @@ export default function Summary() {
     reminderDate.setDate(reminderDate.getDate() - 1);
     reminderDate.setHours(9, 0, 0, 0);
 
-    const notificationId = await Notifications.scheduleNotificationAsync({
+    await Notifications.scheduleNotificationAsync({
       content: {
         title: "Rappel de Rendez-vous",
         body: `Rendez-vous le ${format(

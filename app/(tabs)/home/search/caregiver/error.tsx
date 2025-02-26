@@ -22,7 +22,7 @@ export default function Error() {
       />
       <View style={styles.container}>
         <FontAwesome name="window-close-o" size={100} color={"red"} />
-        <Text style={styles.title}>RENDEZ-VOUS CONFIRME</Text>
+        <Text style={styles.title}>ERREUR LORS DE LA PRISE DE RENDEZ-VOUS</Text>
         <Button size="large" styleType="primary" onPress={() => handlePress()}>
           <Text>Changer de plage horaire</Text>
         </Button>
@@ -43,5 +43,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });
