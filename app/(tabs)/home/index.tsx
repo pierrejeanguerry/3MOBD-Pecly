@@ -342,5 +342,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 80,
     height: 80,
+    marginTop: Platform.OS === 'ios' ? 80 : 0
   },
 });
