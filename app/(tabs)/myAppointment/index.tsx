@@ -97,8 +97,6 @@ function NotPassedAppointment({ passed }: any) {
     return () => unsubscribe();
   }, [passed, user?.id]);
 
-  console.log(appointments.length);
-
   const handleCancel = async (
     id: string,
     idCaregiver: string,
