@@ -149,11 +149,12 @@ function MyCaregivers() {
   const router = useRouter();
   const [history, setHistory] = useState<User[]>([]);
   const [itemsToShowCount, setItemsToShowCount] = useState(5);
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [caregiverID, setCaregiverId] = useState("");
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user) {
+      setHistory([]);
+      return;
+    }
 
     const userRef = firestore().doc(`Users/${user?.id}`);
 
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colors.backgroundPrimary,
-    height: 300,
+    height: Platform.OS === 'ios' ? 380 : 300,
     zIndex: 20,
     marginBottom: 10,
   },
