@@ -70,6 +70,7 @@ function NotPassedAppointment({ passed }: any) {
   const { user } = useAuth();
 
   useEffect(() => {
+    if (!user)return;
     const unsubscribe = firestore()
       .collection("Appointments")
       .where("patientId", "==", user?.id)
@@ -95,6 +96,8 @@ function NotPassedAppointment({ passed }: any) {
 
     return () => unsubscribe();
   }, [passed, user?.id]);
+
+  console.log(appointments.length);
 
   const handleCancel = async (
     id: string,

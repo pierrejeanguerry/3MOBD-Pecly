@@ -9,7 +9,7 @@ export default function MyAccount() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    if (await logout()) router.replace("../account/");
+    await logout();
   };
 
   const handlePressPreferences = () => {
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    shadowColor: "#000000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    // shadowColor: "#000000",
+    // shadowOpacity: 0.1,
+    // shadowRadius: 5,
   },
   privacyOptionText: {
     fontSize: 16,

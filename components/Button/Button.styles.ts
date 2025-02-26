@@ -9,22 +9,20 @@ const sizes: Record<ButtonSize, string> = {
   small: "width: 129px; height: 58px;",
 };
 
+
+
 const types: Record<ButtonStyleType, any> = {
   default: css`
     background-color: #ffffff;
-    box-shadow: 0 4px #000000;
   `,
   primary: css`
     background-color: #1E6F5C;
-    box-shadow: 0 4px #000000;
   `,
   danger: css`
     background-color: #f22125;
-    box-shadow: 0 4px #000000;
   `,
   empty: css`
     background-color: transparent;
-    box-shadow: 0 4px #000000;
     border: 1px solid #1E6F5C;
     color: #1E6F5C;
   `,
