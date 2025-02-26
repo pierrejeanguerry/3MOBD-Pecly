@@ -70,7 +70,7 @@ function NotPassedAppointment({ passed }: any) {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (!user)return;
+    if (!user) return;
     const unsubscribe = firestore()
       .collection("Appointments")
       .where("patientId", "==", user?.id)
@@ -168,19 +168,21 @@ function NotPassedAppointment({ passed }: any) {
               {"\n"}
             </Text>
             {!passed ? (
-              <Button
-                size="long"
-                styleType="danger"
-                onPress={() =>
-                  handleCancel(
-                    item.id,
-                    item.idCaregiver,
-                    item.appointment.dateTime
-                  )
-                }
-              >
-                <Text>Annuler</Text>
-              </Button>
+              <View style={unique.buttonContainer}>
+                <Button
+                  size="long"
+                  styleType="danger"
+                  onPress={() =>
+                    handleCancel(
+                      item.id,
+                      item.idCaregiver,
+                      item.appointment.dateTime
+                    )
+                  }
+                >
+                  <Text>Annuler</Text>
+                </Button>
+              </View>
             ) : null}
           </View>
         )}
@@ -224,5 +226,8 @@ const unique = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     marginTop: 5,
+  },
+  buttonContainer: {
+    alignSelf: "center",
   },
 });

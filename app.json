@@ -17,7 +17,8 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Nous avons besoin de votre localisation pour afficher les résultats autour de vous.",
-        "NSLocationAlwaysUsageDescription": "Nous avons besoin de votre localisation pour suivre votre position en continu."
+        "NSLocationAlwaysUsageDescription": "Nous avons besoin de votre localisation pour suivre votre position en continu.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -25,7 +26,11 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.Pecly",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,6 +53,14 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Pecly to use your location"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
       ]
     ],
     "experiments": {
@@ -56,6 +69,9 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "3a95a552-d8ab-4b8a-8cf5-174b6d168364"
       }
     }
   }

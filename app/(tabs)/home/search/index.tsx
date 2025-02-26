@@ -56,13 +56,16 @@ export default function SearchScreen() {
     debouncedCaregivers();
   }, [search]);
 
-  function onSubmit() {}
-
   return (
     <View style={styles.container}>
       <View>
+<<<<<<< Updated upstream
         <Text style={styles.title}>Nom, specialite, etablissement, ... </Text>
         <Searchbar search={search} setSearch={setSearch} onSubmit={onSubmit} />
+=======
+        <Text style={styles.title}>Nom, spécialité, établissement, ... </Text>
+        <Searchbar search={search} setSearch={setSearch} />
+>>>>>>> Stashed changes
         {specialitiesList.length != 0 && (
           <FlatList
             style={styles.containerItem}

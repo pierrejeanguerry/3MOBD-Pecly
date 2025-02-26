@@ -17,7 +17,7 @@ import { getTodayTimestamp } from "@/utils/manageTimestamp";
 interface SpecialistLabelProps {
   item: User;
   type: LabelType;
-  overrideOnPress: (id: string) => void;
+  overrideOnPress?: (id: string) => void;
 }
 
 interface SpecialistLabelChildProps {
